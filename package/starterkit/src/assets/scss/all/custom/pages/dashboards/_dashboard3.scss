@@ -1,0 +1,35 @@
+.earningsbox{
+    .c3-line{
+        stroke-width:2px;  
+    }
+}
+
+.product-sales{
+    &.c3 line, &.c3 path {
+        stroke: $gray-200; 
+        
+    }
+    .c3-shape{
+        stroke:transparent!important; 
+        stroke-width:3px;
+    }
+}
+
+// Dashboard - 1
+
+.stats-bar .active {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.sales-overview .c3-line {
+	stroke-width: 3px;
+}
+
+.sales-overview .c3-grid {
+  stroke-dasharray: 0px;
+  stroke: rgba(120, 130, 140, 0.13); 
+}
+
+.sales-overview .c3-legend-item {
+  display: none;
+}

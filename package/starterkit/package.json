@@ -1,0 +1,61 @@
+{
+  "name": "adminpro",
+  "version": "1.0.0",
+  "homepage": "/",
+  "description": "adminpro react admin comes with the beautiful Ui with easy to use code",
+  "main": "index.js",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "keywords": [],
+  "author": "Wrappixel",
+  "license": "ISC",
+  "devDependencies": {
+    "lodash": "^4.17.19",
+    "mixin-deep": "^2.0.1",
+    "node": "^8.15.0"
+  },
+  "dependencies": {
+    "apexcharts": "^3.19.2",
+    "axios": "^0.19.2",
+    "chroma-js": "^1.4.1",
+    "feather-icons-react": "^0.4.1",
+    "firebase": "^5.7.2",
+    "formik": "^1.5.8",
+    "handlebars": "^4.7.6",
+    "history": "4.7.2",
+    "immutability-helper": "2.7.1",
+    "joi": "^13.7.0",
+    "joi-validation-strategy": "^0.3.3",
+    "minimist": "^1.2.5",
+    "moment": "^2.26.0",
+    "namor": "^1.1.3",
+    "node-sass": "^4.14.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-hook-form": "^5.7.2",
+    "react-iframe": "1.3.0",
+    "react-perfect-scrollbar": "1.2.0",
+    "react-redux": "^7.2.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^3.4.1",
+    "react-select": "^2.2.0",
+    "reactstrap": "^8.4.1",
+    "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0",
+    "rxjs": "^6.5.5",
+    "validator": "^10.10.0",
+    "yup": "^0.27.0"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
