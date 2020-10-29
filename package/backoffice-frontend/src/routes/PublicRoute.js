@@ -1,7 +1,7 @@
 import React from "react";
 import {useSelector} from 'react-redux'
 import { Route, Redirect } from "react-router-dom";
-import { AuthenticationService } from "../jwt/_services";
+//import { AuthenticationService } from "../jwt/_services";
 
 export const PublicRoute = ({ component: Component, ...rest }) => {
   //const currentUser = AuthenticationService.currentUserValue;

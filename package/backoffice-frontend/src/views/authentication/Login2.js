@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import {useSelector, useDispatch} from 'react-redux'
+import React, { useState, useEffect } from "react";
+import {useDispatch} from 'react-redux'
 import axios from 'axios';
 import {handleLogin} from '../../redux/session/Actions';
 import {withRouter} from 'react-router-dom'
@@ -31,14 +31,34 @@ const Login2 = (props) => {
   const [errors,              setErrors]              = useState([]);
   const [errorMessage,        setErrorMessage]        = useState('');
   const [sending,             setSending]             = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail]                             = useState("");
+  const [password, setPassword]                       = useState("");
+  const [loading,             setLoading]             = useState(true);
 
   const dispatch = useDispatch();
 
   const onInputChange = (e) => {
     formValidators([e.target.name], e.target.value);
   };
+
+  let search = ((props.location.search !== '' && props.location.search !== null) ? props.location.search : null);
+  let state = ((props.location.state !== '' && props.location.state !== null) ? props.location.state : null);
+
+  let query = null;
+
+  let withTkn = null;
+  let tkn = null;
+
+  if(search !== null){
+    query = new URLSearchParams(props.location.search);
+    withTkn = query.get('withTkn');
+    if(withTkn !== null && withTkn !== undefined){
+      tkn = query.get('tkn');
+    }
+
+    console.log(withTkn);
+    console.log(tkn);
+  }
 
   const formValidators = (fieldName, value) => {
     validators[fieldName].errors = [];
@@ -59,6 +79,7 @@ const Login2 = (props) => {
     });
   };
 
+  /*
   const validForm = () => {
     let status = true;
     Object.keys(validators).forEach((field) => {
@@ -70,6 +91,7 @@ const Login2 = (props) => {
     });
     return status;
   };
+  */
 
   const showErrors = (fieldName) => {
     const validator = validators[fieldName];
@@ -154,7 +176,7 @@ const login = (e) => {
         setSending(true);
 
         axios({
-            url: '/login',
+            url: '/login/back',
             method: 'POST',
             data: {
                 email,
@@ -180,112 +202,159 @@ const login = (e) => {
     }
 }
 
-  let auth = localStorage.getItem('auth');
-  let user = localStorage.getItem('userData');
-
   console.log('------------------------------------')
-  console.log('AUTH', auth);
-  console.log('USUARIO', user);
+  //console.log('AUTH', auth);
+  //console.log('USUARIO', user);
 
-  return (
-    <div
-      className="auth-wrapper  align-items-center d-flex"
-      style={sidebarBackground}
-    >
-      {/*--------------------------------------------------------------------------------*/}
-      {/*Login2 Cards*/}
-      {/*--------------------------------------------------------------------------------*/}
-      <div className="container">
-        <div>
-          <Row className="no-gutters justify-content-center">
-            <Col md="6" lg="4" className="bg-dark text-white">
-              <div className="p-4">
-                <h3 className="display-5">
-                  Bienvenido,
-                  <br /> <span className="text-primary font-bold">Artesano</span>
-                </h3>
-                <p className="op-5 mt-4">
-                  Este es el sistema administrativo de <strong>Pampatar</strong> en el cual podrá administrar su tienda y mirar su progreso a través de nuestra plataforma.
-                </p>
-                <p className="mt-5">Ingrese con su cuenta de Pampatar.cl</p>
-              </div>
-            </Col>
-            <Col md="6" lg="4" className="bg-white">
-              <div className="p-4">
-                <h3 className="font-medium mb-3 font-weight-bold">Ingresar al administrador</h3>
-                <Form onSubmit={(e) => login(e)} className="mt-3" action="/dashbaord">
-                  <Label for="email" className="font-medium">
-                    Correo Electrónico
-                  </Label>
-                  <InputGroup className="mb-2" size="lg">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="ti-user"></i>
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                        onInputChange(e);
-                      }}
-                      placeholder="Email"
-                    />
-                  </InputGroup>
-                  {showErrors("email")}
-                  <Label for="password" className="mt-3 font-medium">
-                    Contraseña
-                  </Label>
-                  <InputGroup className="mb-3" size="lg">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="ti-pencil"></i>
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
-                      type="password"
-                      id="password"
-                      name="password"
-                      value={password}
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                        onInputChange(e);
-                      }}
-                      placeholder="Password"
-                    />
-                  </InputGroup>
-                  {showErrors("password")}
-                  <div className="d-none no-block align-items-center mb-4 mt-4">
-                    <CustomInput
-                      type="checkbox"
-                      id="exampleCustomCheckbox"
-                      label="Remember Me"
-                    />
-                  </div>
-                  <Row className="mb-3">
-                    <Col xs="12">
-                      <Button
-                        disabled={sending}
-                        color="primary"
-                        size="lg"
-                        type="submit"
-                        block
-                      >
-                        {(sending) ? 'cargando..' : 'Ingresar'}
-                      </Button>
-                    </Col>
-                  </Row>
-                </Form>
-              </div>
-            </Col>
-          </Row>
+
+  useEffect(() => {
+    if(tkn !== null){
+      if(loading){
+        let config = {
+          headers: {
+            'Authorization': `Bearer ${tkn}`
+          }
+        }
+        let url = '/boLogin/'+tkn;
+        axios.get(url, config).then((res) => {
+          if(res.data.data.result){
+            console.log('Logueado');
+            console.log(res.data);
+            let allData = res.data.data;
+            allData.token = tkn;
+            dispatch(handleLogin(res.data.data));
+          }
+        }).catch((err) => {
+          //props.history.push('/');
+          if(err.response.data !== null && err.response.data !== undefined){
+            //console.log(err.response.data.data.message);
+            let location = {
+              path: '/',
+              state: {errorMessage : err.response.data.data.message}
+            }
+
+            props.history.push(location);
+          }
+        });
+      }
+    }
+  }, []);
+
+  if(tkn === null){
+    return (
+      <div
+        className="auth-wrapper  align-items-center d-flex"
+        style={sidebarBackground}
+      >
+        {/*--------------------------------------------------------------------------------*/}
+        {/*Login2 Cards*/}
+        {/*--------------------------------------------------------------------------------*/}
+        <div className="container">
+          {state !== null && state.hasOwnProperty('errorMessage') && 
+            <div className="alert alert-danger">
+              {state.errorMessage}
+            </div>
+          }
+          <div>
+            <Row className="no-gutters justify-content-center">
+              <Col md="6" lg="4" className="bg-dark text-white">
+                <div className="p-4">
+                  <h3 className="display-5">
+                    Bienvenido,
+                    <br /> <span className="text-primary font-bold">Artesano</span>
+                  </h3>
+                  <p className="op-5 mt-4">
+                    Este es el sistema administrativo de <strong>Pampatar</strong> en el cual podrá administrar su tienda y mirar su progreso a través de nuestra plataforma.
+                  </p>
+                  <p className="mt-5">Ingrese con su cuenta de Pampatar.cl</p>
+                </div>
+              </Col>
+              <Col md="6" lg="4" className="bg-white">
+                <div className="p-4">
+                  <h3 className="font-medium mb-3 font-weight-bold">Ingresar al administrador</h3>
+                  <Form onSubmit={(e) => login(e)} className="mt-3" action="/dashbaord">
+                    <Label for="email" className="font-medium">
+                      Correo Electrónico
+                    </Label>
+                    <InputGroup className="mb-2" size="lg">
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="ti-user"></i>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={email}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          onInputChange(e);
+                        }}
+                        placeholder="Email"
+                      />
+                    </InputGroup>
+                    {showErrors("email")}
+                    <Label for="password" className="mt-3 font-medium">
+                      Contraseña
+                    </Label>
+                    <InputGroup className="mb-3" size="lg">
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="ti-pencil"></i>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input
+                        type="password"
+                        id="password"
+                        name="password"
+                        value={password}
+                        onChange={(e) => {
+                          setPassword(e.target.value);
+                          onInputChange(e);
+                        }}
+                        placeholder="Password"
+                      />
+                    </InputGroup>
+                    {showErrors("password")}
+                    <div className="d-none no-block align-items-center mb-4 mt-4">
+                      <CustomInput
+                        type="checkbox"
+                        id="exampleCustomCheckbox"
+                        label="Remember Me"
+                      />
+                    </div>
+                    <Row className="mb-3">
+                      <Col xs="12">
+                        <Button
+                          disabled={sending}
+                          color="primary"
+                          size="lg"
+                          type="submit"
+                          block
+                        >
+                          {(sending) ? 'cargando..' : 'Ingresar'}
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Form>
+                </div>
+              </Col>
+            </Row>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }else{
+    return(
+      <div className="min-vh-100 d-flex align-items-center justify-content-center">
+        <div>
+          <h2 className="h1 font-weight-bold">Espere un momento</h2>
+          <h4>Redireccionando .....</h4>
+        </div>
+      </div> 
+    )
+  }
 };
 
 export default withRouter(Login2);

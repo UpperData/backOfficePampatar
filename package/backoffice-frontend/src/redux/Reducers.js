@@ -7,6 +7,7 @@ import emailReducer from "./email/";
 import maintodoReducer from "./todos/Todos";
 import todoReducer from "./todos/";
 import sessionReducer from './session/Reducer'
+import backofficeReducer from './backoffice/Reducer'
 
 const Reducers = combineReducers({
   settings,
@@ -16,7 +17,8 @@ const Reducers = combineReducers({
   notesReducer,
   todoReducer,
   maintodoReducer,
-  session: sessionReducer
+  session: sessionReducer,
+  backoffice: backofficeReducer
 });
 
 export default Reducers;

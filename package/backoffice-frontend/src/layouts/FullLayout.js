@@ -4,8 +4,10 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import Header from "./layout-components/header/Header";
 import Sidebar from "./layout-components/sidebar/Sidebar";
 import Footer from "./layout-components/footer/Footer";
-import Customizer from "./layout-components/customizer/Customizer";
+//import Customizer from "./layout-components/customizer/Customizer";
 import ThemeRoutes from "../routes/Router";
+import ThemeRoutesByRole from '../routes/RouterByRole';
+
 import Spinner from "./../views/spinner/Spinner";
 export default (props) => {
   const [width, setWidth] = useState(window.innerWidth);
@@ -74,7 +76,7 @@ export default (props) => {
       {/*--------------------------------------------------------------------------------*/}
       {/* Sidebar                                                                        */}
       {/*--------------------------------------------------------------------------------*/}
-      <Sidebar {...props} routes={ThemeRoutes} />
+      <Sidebar {...props} routes={ThemeRoutesByRole} />
       {/*--------------------------------------------------------------------------------*/}
       {/* Page Main-Content                                                              */}
       {/*--------------------------------------------------------------------------------*/}
@@ -82,7 +84,7 @@ export default (props) => {
         <div className="page-content container-fluid">
           <Suspense fallback={<Spinner />}>
             <Switch>
-              {ThemeRoutes.map((prop, key) => {
+              {ThemeRoutesByRole.map((prop, key) => {
                 if (prop.navlabel) {
                   return null;
                 } else if (prop.collapse) {
@@ -110,7 +112,12 @@ export default (props) => {
                   return (
                     <Redirect from={prop.path} to={prop.pathTo} key={key} />
                   );
-                } else {
+                } else if (prop.onlyRoute) {
+                  //console.log('renderizando ruta unica:', prop);
+                  return (
+                    <Route path={prop.path}component={prop.component} key={key} />
+                  );
+                }else {
                   return (
                     <Route
                       path={prop.path}
@@ -120,8 +127,6 @@ export default (props) => {
                   );
                 }
               })}
-
-              <Redirect from="*" to="/safasfsafasfsafasf" />
             </Switch>
           </Suspense>
         </div>

@@ -2,6 +2,10 @@
 export const LOGIN = "LOGIN";
 export const LOGOUT = "LOGOUT";
 
+// BACKOFFICE CONSTANTS
+export const SET_ROLE = "SET_ROLE";
+export const SET_BACKOFFICE_MENU = "SET_BACKOFFICE_MENU";
+
 // SETTINGS CONSTANTS
 export const LOGO_BG = "LOGO_BG";
 export const NAVBAR_BG = "NAVBAR_BG";

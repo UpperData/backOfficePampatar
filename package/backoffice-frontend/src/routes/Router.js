@@ -3,15 +3,19 @@ import AuthRoutes from "./AuthRoutes";
 
 //Lazy loading and code splitting
 //apps
+
 const Chat = lazy(() => import("../views/chat/Chat"));
 const Contacts = lazy(() => import("../views/contacts/Contacts"));
 const Email = lazy(() => import("../views/email/Email"));
 const Notes = lazy(() => import("../views/notes/Notes"));
 const Todo = lazy(() => import("../views/todo/Todo"));
 //dashboards
-const Analytical = lazy(() => import("../views/dashboards/Analytical"));
-const Demographical = lazy(() => import("../views/dashboards/Demographical"));
-const Modern = lazy(() => import("../views/dashboards/Modern"));
+const Home = lazy(() => import("../views/dashboards/Home"));
+/*
+  const Analytical = lazy(() => import("../views/dashboards/Analytical"));
+  const Demographical = lazy(() => import("../views/dashboards/Demographical"));
+  const Modern = lazy(() => import("../views/dashboards/Modern"));
+*/
 //Ui-components Dropdown
 const Alerts = lazy(() => import("../views/ui-components/Alert"));
 const Badges = lazy(() => import("../views/ui-components/Badge"));
@@ -90,36 +94,10 @@ var ThemeRoutes = [
     icon: "",
   },
   {
-    collapse: true,
-    path: "/dashboards",
-    name: "Dashboards",
-    state: "dashboardpages",
+    path: "/dashboard",
+    name: "Dashboard",
     icon: "home",
-    badges: "side-badge badge badge-info",
-    badgeno: "3",
-    child: [
-      {
-        path: "/dashboards/analytical",
-        name: "Analytical",
-        mini: "B",
-        icon: "mdi mdi-adjust",
-        component: Analytical,
-      },
-      {
-        path: "/dashboards/demographical",
-        name: "Demographical",
-        mini: "B",
-        icon: "mdi mdi-adjust",
-        component: Demographical,
-      },
-      {
-        path: "/dashboards/modern",
-        name: "Modern",
-        mini: "B",
-        icon: "mdi mdi-adjust",
-        component: Modern,
-      },
-    ],
+    component: Home,
   },
   {
     collapse: true,
@@ -496,13 +474,6 @@ var ThemeRoutes = [
         component: Starterkit,
       },
       {
-        path: "/sample-pages/profile",
-        name: "Profile",
-
-        icon: "mdi mdi-account-network",
-        component: Profile,
-      },
-      {
         path: "/sample-pages/search-result",
         name: "Search Result",
 
@@ -596,11 +567,18 @@ var ThemeRoutes = [
     icon: "map-pin",
     component: Vectormap,
   },
+
+  {
+    path: "/perfil",
+    name: "Perfil",
+    component: Profile,
+    onlyRoute:true
+  },
   {
     path: "/",
-    pathTo: "/dashboards/analytical",
+    pathTo: "/dashboard/",
     name: "Dashboard",
     redirect: true,
-  },
+  }
 ];
 export default ThemeRoutes;

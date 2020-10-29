@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import {useSelector, useDispatch} from 'react-redux'
 import {Link} from 'react-router-dom'
+import {set_role, set_backoffice_menu} from '../../../redux/backoffice/Actions'
 import {
   Nav,
   NavItem,
   NavLink,
   Button,
   Navbar,
-  NavbarBrand,
   Collapse,
   UncontrolledDropdown,
   DropdownToggle,
@@ -28,20 +28,24 @@ import * as data from "./Data";
 /*--------------------------------------------------------------------------------*/
 /* Import images which are need for the HEADER                                    */
 /*--------------------------------------------------------------------------------*/
-import logodarkicon from "../../../assets/images/logo-icon.png";
 import logolighticon from "../../../assets/images/logo-light-icon.png";
-import logodarktext from "../../../assets/images/logo-text.png";
 import logolighttext from "../../../assets/images/logo-light-text.png";
 import profilephoto from "../../../assets/images/users/5.jpg";
 
 import logo from "../../../assets/images/pampatar/pampatar_color_1.png";
 import logoIcon from "../../../assets/images/pampatar/isotipo_color.png";
+import { handleLogout } from "../../../redux/session/Actions";
 
 export default () => {
   const [isOpen, setIsOpen] = useState(false);
   const [collapse, setCollapse] = useState(false);
 
-  const settings = useSelector((state) => state.settings);
+  const session     = useSelector(state => state.session);
+  const settings    = useSelector((state) => state.settings);
+  const backoffice  = useSelector((state) => state.backoffice);
+  const dispatch    = useDispatch();
+
+  let shopName = session.userData.shop.name;
 
   const toggle = () => {
     setIsOpen(!isOpen);
@@ -54,6 +58,12 @@ export default () => {
   const showMobilemenu = () => {
     document.getElementById("main-wrapper").classList.toggle("show-sidebar");
   };
+
+  const goToChangeRol = () => {
+    localStorage.removeItem('role');
+    dispatch(set_role({}));
+    dispatch(set_backoffice_menu(null));
+  }
 
   const sidebarHandler = () => {
     let element = document.getElementById("main-wrapper");
@@ -107,7 +117,7 @@ export default () => {
           {/*--------------------------------------------------------------------------------*/}
           {/* Logos Or Icon will be goes here for Light Layout && Dark Layout                */}
           {/*-------------------------------------------------------------------------------*/}
-          <NavbarBrand href="/">
+          <Link className="navbar-brand" to="/">
             <b className="logo-icon">
               <img src={logoIcon} height="50" alt="homepage" className="dark-logo" />
               <img src={logolighticon} alt="homepage" className="light-logo" />
@@ -116,7 +126,7 @@ export default () => {
               <img src={logo} height="50" alt="homepage" className="dark-logo" />
               <img src={logolighttext} className="light-logo" alt="homepage" />
             </span>
-          </NavbarBrand>
+          </Link>
           {/*--------------------------------------------------------------------------------*/}
           {/* Mobile View Toggler  [visible only after 768px screen]                         */}
           {/*--------------------------------------------------------------------------------*/}
@@ -452,7 +462,7 @@ export default () => {
                 />
               </DropdownToggle>
               <DropdownMenu right className="user-dd">
-                <div className="d-flex no-block align-items-center p-3 bg-info text-white mb-2">
+                <div className="d-flex no-block align-items-center p-3 bg-primary text-white mb-2">
                   <div className="">
                     <img
                       src={profilephoto}
@@ -462,20 +472,34 @@ export default () => {
                     />
                   </div>
                   <div className="ml-2">
-                    <h4 className="mb-0 text-white">Cristiansito</h4>
-                    <p className=" mb-0">varun@gmail.com</p>
+                    <h4 className="mb-0 text-white">
+                      {shopName}
+                    </h4>
+                    <p className=" mb-0">
+                      {session.userData.account.email}
+                    </p>
+                    <span className="badge badge-info">{backoffice.role.name}</span>
                   </div>
                 </div>
                 <DropdownItem>
-                  <i className="ti-user mr-1 ml-1" /> Mi Perfil
+                  <Link to="/perfil" className="text-secondary">
+                    <i className="ti-user mr-1 ml-1" /> Mi Perfil
+                  </Link>
                 </DropdownItem>
                 <DropdownItem>
-                  <i className="ti-settings mr-1 ml-1" /> Configuración
+                  <Link to="/perfil" className="text-secondary">
+                    <i className="ti-settings mr-1 ml-1" /> Configuración
+                  </Link>
+                </DropdownItem>
+                <DropdownItem>
+                  <button onClick={() => goToChangeRol()} className="btn-unstyled">
+                    <i className="mdi mdi-shape-plus mr-1 ml-1" /> Cambiar Rol
+                  </button>
                 </DropdownItem>
                 <DropdownItem divider />
-                <Link to='/cerrar-sesion' className="btn-rounded btn btn-primary ml-3 mb-2 mt-2">
-                  <i className="fa fa-power-off mr-1 ml-1" /> Cerrar sesión
-                </Link>
+                  <button onClick={() => dispatch(handleLogout())} className="btn btn-rounded btn-primary mr-3 ml-3">
+                    <i className="fa fa-power-off mr-1 ml-1" /> Cerrar sesión
+                  </button>
               </DropdownMenu>
             </UncontrolledDropdown>
             {/*--------------------------------------------------------------------------------*/}

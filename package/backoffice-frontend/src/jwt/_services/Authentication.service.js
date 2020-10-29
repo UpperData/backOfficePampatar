@@ -1,16 +1,26 @@
 import { BehaviorSubject } from "rxjs";
 import { HandleResponse } from "../_helpers";
+import axios from 'axios'
 
 const currentUserSubject = new BehaviorSubject(
-  JSON.parse(localStorage.getItem("currentUser"))
+  JSON.parse(localStorage.getItem("userData"))
+);
+
+const userToken = new BehaviorSubject(
+  localStorage.getItem("token")
 );
 
 export const AuthenticationService = {
   login,
   logout,
+  loginWithTkn,
   currentUser: currentUserSubject.asObservable(),
+  userToken:   userToken.asObservable(),
   get currentUserValue() {
     return currentUserSubject.value;
+  },
+  get tokenValue() {
+    return userToken.value;
   },
 };
 
@@ -25,15 +35,29 @@ function login(username, password) {
     .then(HandleResponse)
     .then((user) => {
       // store user details and jwt token in local storage to keep user logged in between page refreshes
-      localStorage.setItem("currentUser", JSON.stringify(user));
+      localStorage.setItem("userData", JSON.stringify(user));
       currentUserSubject.next(user);
 
       return user;
   });
 }
 
+async function loginWithTkn(token) {
+  let url = '/boLogin/'+token;
+  let config = {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  }
+  let res = await axios.get(url, config);
+  return res;
+}
+
 function logout() {
   // remove user from local storage to log user out
-  localStorage.removeItem("currentUser");
+  localStorage.removeItem("userData");
+  localStorage.removeItem("token");
+  localStorage.removeItem("role");
   currentUserSubject.next(null);
+  userToken.next(null);
 }

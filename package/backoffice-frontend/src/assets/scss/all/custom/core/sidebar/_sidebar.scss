@@ -33,6 +33,14 @@ sidebar navigation
   ul {
     .sidebar-item {
       width: $sidebar-width-full;
+      .sidebar-btn{
+        color: $sidebar-text;
+        opacity: 0.4;
+        line-height: 25px;
+        &:hover {
+          opacity: 1;
+        }
+      }
       .sidebar-link {
         color: $sidebar-text;
         padding: $sidebar-link-padding;

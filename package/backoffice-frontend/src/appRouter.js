@@ -1,48 +1,164 @@
-import React, {Fragment} from "react";
+import React, {useState, useEffect} from "react";
+
+import {Route, Switch, withRouter } from "react-router-dom";
 import axios from 'axios'
 import {publicRoutes, AuthRoutes} from "./routes/";
-import { Router, Route, Switch, Redirect } from "react-router-dom";
-import { Provider } from "react-redux";
-import { configureStore } from "./redux/Store";
-import { History } from "./jwt/_helpers";
 import { PrivateRoute } from "./routes/PrivateRoutes";
-import BlankLayout from "./layouts/BlankLayout";
 import {PublicRoute} from "./routes/PublicRoute";
-import {useSelector} from 'react-redux'
 
-let urls = {
-  development: process.env.REACT_APP_DEV_API_URL,
-  production:  process.env.REACT_APP_PRODUCTION_API_URL
-}
+import { AuthenticationService } from "./jwt/_services";
 
-axios.defaults.baseURL = urls[process.env.NODE_ENV];
+import {useSelector, useDispatch} from 'react-redux'
+import {handleLogin} from './redux/session/Actions'
+import { set_backoffice_menu, set_role } from "./redux/backoffice/Actions";
 
-const AppRouter = () => {
-  return (
-    <Fragment>
-          <Route exact path="/authentication/Login" component={BlankLayout} />
-          
-          {AuthRoutes.map((prop, key) => {
-            return (
-              <PublicRoute
-                path={prop.path}
-                key={key}
-                component={prop.component}
-              />
-            );
-          })}
+//components
+import SetRole from "./views/roles/SetRole";
 
-          {publicRoutes.map((prop, key) => {
-            return (
-              <PrivateRoute
-                path={prop.path}
-                key={key}
-                component={prop.component}
-              />
-            );
-          })}
-    </Fragment>
-  );
+const AppRouter = (props) => {
+
+  const [loading, setloading] = useState(true);
+  const [searchAuthData, setSearchAuthData] = useState(true);
+
+  const session = useSelector(state => state.session);
+  const backoffice = useSelector(state => state.backoffice);
+  const dispatch = useDispatch();
+
+  let userInStorage = AuthenticationService.currentUserValue;
+
+  let search = ((props.location.search !== '' && props.location.search !== null) ? props.location.search : null);
+  let loginWithTkn = search !== null && props.location.pathname === '/authentication/Login';
+  let query = null;
+  let withTkn = null;
+  let tkn = null;
+
+  if(loginWithTkn){
+
+    query = new URLSearchParams(props.location.search);
+    withTkn = query.get('withTkn');
+    
+    if(withTkn !== null && withTkn !== undefined){
+      tkn = query.get('tkn');
+    }
+
+    console.log(withTkn);
+    console.log(tkn);
+    console.log(props.location.pathname);
+  }
+
+  const getMenuItems = (roleUrl) => {
+
+      setSearchAuthData(false);
+      if(backoffice.menu === null){
+        //console.log('autentication complete, search data...');
+        axios.get(roleUrl).then((res) => {
+          console.log(res.data);
+          dispatch(set_backoffice_menu(res.data));
+          props.history.push('/');
+        }).catch((err) => {
+          console.error(err);
+        })
+      }
+    
+  }
+
+  useEffect(() => {
+    if(loading){
+      if(loginWithTkn){
+        setloading(false);
+      }else{
+        if(userInStorage === null){
+          setloading(false);
+        }else{
+          //console.log(AuthenticationService.currentUserValue);
+          console.log('logueando por token');
+          let token = AuthenticationService.tokenValue;
+          let res = AuthenticationService.loginWithTkn(token);
+          res.then((res) => {
+            console.log(res.data);
+              if(res.data.data.result){
+                dispatch(handleLogin(res.data.data));
+                setloading(false);
+              }else{
+                setloading(false);
+              }
+          }).catch((err) => {
+            console.log(err);
+            //AuthenticationService.logout();
+            setloading(false);
+          });
+        }
+      }
+    }else{
+      if(session.auth){
+        axios.defaults.headers.common = {'Authorization': `Bearer ${localStorage.getItem('token')}`}
+        let RoleInLocalStorage = localStorage.getItem('role');
+
+        console.log('Render Router');
+
+        if(backoffice.role.hasOwnProperty('id')){
+          let roleUrl = `/admin-panel/${backoffice.role.id}`;
+          if(backoffice.menu === null){
+            getMenuItems(roleUrl);
+          }
+        }else if(RoleInLocalStorage !== undefined && Number(RoleInLocalStorage) > -1 && RoleInLocalStorage !== null){
+          console.log('Rol cargado desde el localstorage', RoleInLocalStorage);
+          let roles = session.userData.role;
+          let getRoleByUser = roles.find(item => item.id === Number(RoleInLocalStorage));
+          dispatch(set_role(getRoleByUser));
+
+          /*
+          console.log(getRoleByUser);
+          let roleUrl = `/admin-panel/${RoleInLocalStorage}`;
+          getMenuItems(roleUrl);
+          */
+        }
+      }
+    }
+  });
+
+  if(!loading){
+    return (
+        
+          <Switch>
+
+            <Route exact path='/account/set-role' component={SetRole} />
+              
+            {AuthRoutes.map((prop, key) => {
+                return (
+                  <PublicRoute
+                    path={prop.path}
+                    key={key}
+                    component={prop.component}
+                  />
+                );
+            })}
+
+            {publicRoutes.map((prop, key) => {
+              return (
+                <PrivateRoute
+                  path={prop.path}
+                  key={key}
+                  component={prop.component}
+                />
+              );
+            })}
+
+
+            {/*(!session.auth) &&
+              <Fragment>
+                <Redirect from="/account/set-role" to='/authentication/Login' />
+              </Fragment>
+            */}
+            
+          </Switch>
+  
+    );
+  }else{
+    return (
+      ''
+    )
+  }
 };
 
-export default AppRouter;
+export default withRouter(AppRouter);
