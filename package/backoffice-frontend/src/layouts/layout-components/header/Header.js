@@ -491,10 +491,8 @@ export default () => {
                     <i className="ti-settings mr-1 ml-1" /> Configuración
                   </Link>
                 </DropdownItem>
-                <DropdownItem>
-                  <button onClick={() => goToChangeRol()} className="btn-unstyled">
+                <DropdownItem onClick={() => goToChangeRol()}>
                     <i className="mdi mdi-shape-plus mr-1 ml-1" /> Cambiar Rol
-                  </button>
                 </DropdownItem>
                 <DropdownItem divider />
                   <button onClick={() => dispatch(handleLogout())} className="btn btn-rounded btn-primary mr-3 ml-3">

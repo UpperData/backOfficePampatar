@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react'
-import {Redirect} from 'react-router-dom'
+import {Redirect, withRouter} from 'react-router-dom'
 import {useSelector, useDispatch} from 'react-redux'
 import {Link} from 'react-router-dom'
-import { set_role } from '../../redux/backoffice/Actions';
+import { set_role, set_backoffice_menu } from '../../redux/backoffice/Actions';
 import Spinner from '../spinner/Spinner';
+import { AuthenticationService } from '../../jwt/_services';
 
-function SetRole() {
+function SetRole(props) {
 
     const session = useSelector(state => state.session);
     const backoffice = useSelector(state => state.backoffice);
@@ -21,6 +22,15 @@ function SetRole() {
         setsetting(true);
         e.preventDefault();
         dispatch(set_role(role));
+        let roleUrl = `/admin-panel/${role.id}`;
+        let result = AuthenticationService.getMenuItems(roleUrl);
+        result.then((res) => {
+          console.log(res);
+          props.history.push('/');
+          dispatch(set_backoffice_menu(res.data));
+        }).catch((err) => {
+          console.error(err);
+        });
     }
 
     useEffect(() => {
@@ -83,4 +93,4 @@ function SetRole() {
     }
 }
 
-export default SetRole
+export default withRouter(SetRole);

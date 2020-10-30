@@ -17,6 +17,8 @@ const App = () => {
 
   //AuthenticationService.logout();
 
+  console.log('cargando ruta de la API:'+ urls[process.env.NODE_ENV]);
+
   return (
     <Provider store={configureStore()}>
       <Router history={History}>

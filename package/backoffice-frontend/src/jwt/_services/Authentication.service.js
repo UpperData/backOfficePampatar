@@ -13,6 +13,7 @@ const userToken = new BehaviorSubject(
 export const AuthenticationService = {
   login,
   logout,
+  getMenuItems,
   loginWithTkn,
   currentUser: currentUserSubject.asObservable(),
   userToken:   userToken.asObservable(),
@@ -51,6 +52,11 @@ async function loginWithTkn(token) {
   }
   let res = await axios.get(url, config);
   return res;
+}
+
+async function getMenuItems(roleUrl) {
+  let result = await axios.get(roleUrl);
+  return result;
 }
 
 function logout() {

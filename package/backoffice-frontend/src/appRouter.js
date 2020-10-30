@@ -19,6 +19,7 @@ const AppRouter = (props) => {
 
   const [loading, setloading] = useState(true);
   const [searchAuthData, setSearchAuthData] = useState(true);
+  const [searchSession, setSearchSession]   = useState(true);
 
   const session = useSelector(state => state.session);
   const backoffice = useSelector(state => state.backoffice);
@@ -47,46 +48,50 @@ const AppRouter = (props) => {
   }
 
   const getMenuItems = (roleUrl) => {
-
+    if(searchAuthData){
       setSearchAuthData(false);
       if(backoffice.menu === null){
         //console.log('autentication complete, search data...');
-        axios.get(roleUrl).then((res) => {
-          console.log(res.data);
-          dispatch(set_backoffice_menu(res.data));
+        let result = AuthenticationService.getMenuItems(roleUrl);
+        result.then((res) => {
+          //console.log(res);
           props.history.push('/');
+          dispatch(set_backoffice_menu(res.data));
         }).catch((err) => {
           console.error(err);
         })
       }
-    
+    }
   }
 
   useEffect(() => {
     if(loading){
-      if(loginWithTkn){
-        setloading(false);
-      }else{
-        if(userInStorage === null){
+      if(searchSession){
+        setSearchSession(false);
+        if(loginWithTkn){
           setloading(false);
         }else{
-          //console.log(AuthenticationService.currentUserValue);
-          console.log('logueando por token');
-          let token = AuthenticationService.tokenValue;
-          let res = AuthenticationService.loginWithTkn(token);
-          res.then((res) => {
-            console.log(res.data);
-              if(res.data.data.result){
-                dispatch(handleLogin(res.data.data));
-                setloading(false);
-              }else{
-                setloading(false);
-              }
-          }).catch((err) => {
-            console.log(err);
-            //AuthenticationService.logout();
+          if(userInStorage === null){
             setloading(false);
-          });
+          }else{
+            //console.log(AuthenticationService.currentUserValue);
+            console.log('logueando por token');
+            let token = AuthenticationService.tokenValue;
+            let res = AuthenticationService.loginWithTkn(token);
+            res.then((res) => {
+              console.log(res.data);
+                if(res.data.data.result){
+                  dispatch(handleLogin(res.data.data));
+                  setloading(false);
+                }else{
+                  setloading(false);
+                }
+            }).catch((err) => {
+              console.log(err);
+              //AuthenticationService.logout();
+              setloading(false);
+            });
+          }
         }
       }
     }else{
@@ -106,12 +111,6 @@ const AppRouter = (props) => {
           let roles = session.userData.role;
           let getRoleByUser = roles.find(item => item.id === Number(RoleInLocalStorage));
           dispatch(set_role(getRoleByUser));
-
-          /*
-          console.log(getRoleByUser);
-          let roleUrl = `/admin-panel/${RoleInLocalStorage}`;
-          getMenuItems(roleUrl);
-          */
         }
       }
     }
