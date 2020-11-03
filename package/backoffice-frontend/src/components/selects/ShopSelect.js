@@ -3,7 +3,7 @@ import Select from 'react-select'
 
 function ShopSelect(props) {
     
-    console.log(props);
+    //console.log(props);
     let values = props.list;
     let allValues = [];
     

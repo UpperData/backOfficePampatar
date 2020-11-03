@@ -5,7 +5,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { useSelector, useDispatch } from "react-redux";
 import FeatherIcon from "feather-icons-react";
 
-import profile from "../../../assets/images/users/5.jpg";
+import profile from "../../../assets/images/users/user.png";
 import { handleLogout } from "../../../redux/session/Actions";
 
 const Sidebar = (props) => {

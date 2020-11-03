@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import {
     Row,
     Col,
@@ -6,7 +6,9 @@ import {
     CardBody,
     CardTitle,
     Breadcrumb, 
-    BreadcrumbItem
+    BreadcrumbItem,
+    FormGroup,
+    Input
 } from 'reactstrap';
 import TagsInput from "react-tagsinput";
 import Datetime from "react-datetime";
@@ -19,6 +21,7 @@ import moment from 'moment'
 import "react-datetime/css/react-datetime.css";
 import "react-tagsinput/react-tagsinput.css";
 import ShopSelect from '../../../components/selects/ShopSelect';
+import CustomFileInput from '../../../components/files/CustomFileInput';
 
 //lang
 require("moment/locale/es");
@@ -46,16 +49,18 @@ function CreateContrat() {
     const [nota, setnota]                           = useState('');
     const [tags, setTags]                           = useState([]);
 
+    const [attachment, setattachment]               = useState(null);
+    const [binaryData, setBinaryData]               = useState(null);
+
     let urlGet = '/setting/seller/shoptRequest-pre';
 
     const sendData = (e) => {
         e.stopPropagation();
         e.preventDefault();
+        seterrorMessage('');
 
         let urlSend = '/setting/seller/shopContract';
-
         //setsending(true);
-
         let realTags = [];
 
         if(tags.length > 0){
@@ -69,7 +74,7 @@ function CreateContrat() {
         }
 
         let data = {
-            shopRequestId,
+            shopRequestId: shopRequestId.value,
             contractDesc: { 
                 number,
                 inicio: moment(inicio).format('YYYY-MM-DD'),
@@ -78,11 +83,30 @@ function CreateContrat() {
                 comService,
                 minStock,
                 nota,
-                tags: realTags
+                tags: realTags,
+                attachment: binaryData
             }
         }
 
         console.log(data);
+        console.log('Enviando datos');
+
+        axios({
+            url: urlSend,
+            method: 'post',
+            data
+        }).then((res) => {
+            if(!res.data.data.result){
+                console.log(res.data.data.message);
+                seterrorMessage(res.data.data.message);
+            }else{
+                
+            }
+        }).catch((err) => {
+            if(err.response.data){
+                console.error(err.response.data);
+            }
+        });
     }
 
     useEffect(() => {
@@ -92,7 +116,6 @@ function CreateContrat() {
                 console.log(res.data);
                 if(res.data && res.data.hasOwnProperty('message')){
                     seterrorMessage(res.data.data.message);
-                    setloading(false);
                 }else{
                     setData(res.data);
                     setloading(false);
@@ -108,6 +131,165 @@ function CreateContrat() {
     }, []);
 
     if(!loading){
+        return (
+            <div>
+                <h1 className="h4 mb-3 font-weight-bold">Crear contrato</h1>
+                {(errorMessage !== '') &&
+                    <div className="alert alert-primary">
+                        <p className="mb-0">
+                            {errorMessage}
+                        </p>
+                    </div>
+                }
+                <Row>
+                    <Col md="12">
+                        <Card>
+                            <div className="p-3">
+                                <CardTitle>
+                                    <i className="mdi mdi-border-all mr-2"></i>Datos del contrato
+                                </CardTitle>
+                            </div>
+                            <CardBody className="border-top">
+                                <form onSubmit={(e) => sendData(e)} action="">
+                                <Row>
+                                    <Col md="12">
+                                        <div className="form-group">
+                                            <label htmlFor="">Tienda:</label>
+                                            <ShopSelect onChange={setShopRequestId} value={shopRequestId} list={data.rsShopRequestByStatus} />
+                                            <hr/>
+                                        </div>
+                                    </Col>
+                                    <Col md="4">
+                                        <div className="form-group">
+                                            <label htmlFor="">Número de contrato:</label>
+                                            <input 
+                                                type="number"
+                                                min="0" 
+                                                value={number}
+                                                onChange={(e) => setnumber(e.target.value)}
+                                                placeholder="Número del contrato" 
+                                                className="form-control"
+                                            />
+                                        </div>
+                                    </Col>
+                                    <Col md="4">
+                                        <div className="form-group">
+                                            <label htmlFor="">Inicio del contrato:</label>
+                                            <Datetime
+                                                locale="es"
+                                                value={inicio}
+                                                onChange={(date) => setinicio(date)}
+                                                dateFormat="YYYY-MM-DD"
+                                                timeFormat={false}
+                                                inputProps={{ placeholder: "Fecha de inicio del contrato" }}
+                                            />
+                                        </div>
+                                    </Col>
+                                    <Col md="4">
+                                        <div className="form-group">
+                                            <label htmlFor="">Fin del contrato:</label>
+                                            <Datetime
+                                                locale="es"
+                                                value={fin}
+                                                onChange={(date) => setfin(date)}
+                                                dateFormat="YYYY-MM-DD"
+                                                timeFormat={false}
+                                                inputProps={{ placeholder: "Fecha de fin del contrato" }}
+                                            />
+                                        </div>
+                                    </Col>
+                                    <Col md="4">
+                                        <div className="form-group">
+                                            <label htmlFor="">Número de productos que proveerá la tienda</label>
+                                            <input 
+                                                type="number"
+                                                value={comProduct}
+                                                onChange={(e) => setcomProduct(e.target.value)}
+                                                min="0" 
+                                                placeholder="Número de productos" 
+                                                className="form-control"
+                                            />
+                                        </div>
+                                    </Col>
+                                    <Col md="4">
+                                        <div className="form-group">
+                                            <label htmlFor="">Stock mínimo por producto</label>
+                                            <input 
+                                                type="number"
+                                                value={minStock}
+                                                onChange={(e) => setminStock(e.target.value)}
+                                                min="0" 
+                                                placeholder="Stock mínimo" 
+                                                className="form-control"
+                                            />
+                                        </div>
+                                    </Col>
+                                    <Col md="4">
+                                        <div className="form-group">
+                                            <label htmlFor="">Número de servicios que proveerá la tienda</label>
+                                            <input 
+                                                type="number"
+                                                value={comService}
+                                                onChange={(e) => setcomService(e.target.value)}
+                                                min="0" 
+                                                placeholder="Número de servicios" 
+                                                className="form-control"
+                                            />
+                                        </div>
+                                    </Col>
+                                    <Col md="4">
+                                        <div className="form-group">
+                                            <label htmlFor="">Nota:</label>
+                                            <textarea 
+                                                placeholder="Escriba una nota descriptiva" 
+                                                value={nota}
+                                                onChange={(e) => setnota(e.target.value)}
+                                                name="" id="" 
+                                                cols="30" 
+                                                rows="1" 
+                                                className="form-control"
+                                                maxLength="40"
+                                            >
+                                            </textarea>
+                                        </div>
+                                    </Col>
+                                    <Col md="4">
+                                        <div className="form-group">
+                                            <label htmlFor="">Etiquetas:</label>
+                                            <TagsInput
+                                                className="my-tags-input react-tagsinput"
+                                                value={tags}
+                                                onChange={(tags) => setTags(tags)}
+                                                tagProps={{
+                                                    className: "react-tagsinput-tag bg-info text-white rounded",
+                                                }}
+                                                inputProps={{
+                                                    className: 'react-tagsinput-input',
+                                                    placeholder: 'Añadir etiqueta'
+                                                }}
+                                            />
+                                        </div>
+                                    </Col>
+                                    <Col md="4">
+                                        <FormGroup className="mb-1">
+                                            <label htmlFor="">Adjuntar archivo:</label>
+                                            <CustomFileInput value={attachment} setBinary={setBinaryData} onChange={setattachment} />
+                                        </FormGroup>  
+                                    </Col>
+                                </Row>
+                                <div className="py-2">
+                                    <button type="submit" className="btn btn-info d-block w-100">
+                                        Crear contrato <i className="mdi mdi-send mr-2"></i>
+                                    </button>
+                                </div>
+                                </form>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                </Row>
+            </div>
+        )
+    }else{
         if(errorMessage !== ''){
             return(
                 <div>
@@ -120,158 +302,13 @@ function CreateContrat() {
                 </div>
             )
         }else{
-            return (
+            return(
                 <div>
                     <h1 className="h4 mb-3 font-weight-bold">Crear contrato</h1>
-                    <Row>
-                        <Col md="12">
-                            <Card>
-                                <div className="p-3">
-                                    <CardTitle>
-                                        <i className="mdi mdi-border-all mr-2"></i>Datos del contrato
-                                    </CardTitle>
-                                </div>
-                                <CardBody className="border-top">
-                                    <form onSubmit={(e) => sendData(e)} action="">
-                                    <Row>
-                                        <Col md="12">
-                                            <div className="form-group">
-                                                <label htmlFor="">Tienda:</label>
-                                                <ShopSelect onChange={setShopRequestId} value={shopRequestId} list={data.rsShopRequestByStatus} />
-                                            </div>
-                                        </Col>
-                                        <Col md="4">
-                                            <div className="form-group">
-                                                <label htmlFor="">Número de contrato:</label>
-                                                <input 
-                                                    type="number"
-                                                    min="0" 
-                                                    value={number}
-                                                    onChange={(e) => setnumber(e.target.value)}
-                                                    placeholder="Número del contrato" 
-                                                    className="form-control"
-                                                />
-                                            </div>
-                                        </Col>
-                                        <Col md="4">
-                                            <div className="form-group">
-                                                <label htmlFor="">Inicio del contrato:</label>
-                                                <Datetime
-                                                    locale="es"
-                                                    value={inicio}
-                                                    onChange={(date) => setinicio(date)}
-                                                    dateFormat="YYYY-MM-DD"
-                                                    timeFormat={false}
-                                                    inputProps={{ placeholder: "Fecha de inicio del contrato" }}
-                                                />
-                                            </div>
-                                        </Col>
-                                        <Col md="4">
-                                            <div className="form-group">
-                                                <label htmlFor="">Fin del contrato:</label>
-                                                <Datetime
-                                                    locale="es"
-                                                    value={fin}
-                                                    onChange={(date) => setfin(date)}
-                                                    dateFormat="YYYY-MM-DD"
-                                                    timeFormat={false}
-                                                    inputProps={{ placeholder: "Fecha de fin del contrato" }}
-                                                />
-                                            </div>
-                                        </Col>
-                                        <Col md="4">
-                                            <div className="form-group">
-                                                <label htmlFor="">Número de productos que proveerá la tienda</label>
-                                                <input 
-                                                    type="number"
-                                                    value={comProduct}
-                                                    onChange={(e) => setcomProduct(e.target.value)}
-                                                    min="0" 
-                                                    placeholder="Número de productos" 
-                                                    className="form-control"
-                                                />
-                                            </div>
-                                        </Col>
-                                        <Col md="4">
-                                            <div className="form-group">
-                                                <label htmlFor="">Stock mínimo por producto</label>
-                                                <input 
-                                                    type="number"
-                                                    value={minStock}
-                                                    onChange={(e) => setminStock(e.target.value)}
-                                                    min="0" 
-                                                    placeholder="Stock mínimo" 
-                                                    className="form-control"
-                                                />
-                                            </div>
-                                        </Col>
-                                        <Col md="4">
-                                            <div className="form-group">
-                                                <label htmlFor="">Número de servicios que proveerá la tienda</label>
-                                                <input 
-                                                    type="number"
-                                                    value={comService}
-                                                    onChange={(e) => setcomService(e.target.value)}
-                                                    min="0" 
-                                                    placeholder="Número de servicios" 
-                                                    className="form-control"
-                                                />
-                                            </div>
-                                        </Col>
-                                        <Col md="6">
-                                            <div className="form-group">
-                                                <label htmlFor="">Nota:</label>
-                                                <textarea 
-                                                    placeholder="Escriba una nota descriptiva" 
-                                                    value={nota}
-                                                    onChange={(e) => setnota(e.target.value)}
-                                                    name="" id="" 
-                                                    cols="30" 
-                                                    rows="1" 
-                                                    className="form-control"
-                                                    maxLength="40"
-                                                >
-                                                </textarea>
-                                            </div>
-                                        </Col>
-                                        <Col md="6">
-                                            <div className="form-group">
-                                                <label htmlFor="">Etiquetas:</label>
-                                                <TagsInput
-                                                    className="my-tags-input react-tagsinput"
-                                                    value={tags}
-                                                    onChange={(tags) => setTags(tags)}
-                                                    tagProps={{
-                                                        className: "react-tagsinput-tag bg-info text-white rounded",
-                                                    }}
-                                                    inputProps={{
-                                                        className: 'react-tagsinput-input',
-                                                        placeholder: 'Añadir etiqueta'
-                                                    }}
-                                                />
-                                            </div>
-                                        </Col>
-                                    </Row>
-                                    <div className="py-2">
-                                        <button type="submit" className="btn btn-info">
-                                            Crear contrato
-                                        </button>
-                                    </div>
-                                    </form>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                    </Row>
+                    <InlineSpinner />
                 </div>
             )
         }
-    }else{
-        return(
-            <div>
-                <h1 className="h4 mb-3 font-weight-bold">Crear contrato</h1>
-                <InlineSpinner />
-            </div>
-        )
     }
 }
 

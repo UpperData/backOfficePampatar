@@ -16,7 +16,7 @@ const INIT_STATE = {
   activeTheme: "light",
   activeSidebarType: "full",
   activeLogoBg: "skin6",
-  activeNavbarBg: "skin1",
+  activeNavbarBg: "skin2",
   activeSidebarBg: "skin6",
   activeSidebarPos: "fixed",
   activeHeaderPos: "fixed",

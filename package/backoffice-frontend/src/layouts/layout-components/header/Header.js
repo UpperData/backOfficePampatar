@@ -30,7 +30,7 @@ import * as data from "./Data";
 /*--------------------------------------------------------------------------------*/
 import logolighticon from "../../../assets/images/logo-light-icon.png";
 import logolighttext from "../../../assets/images/logo-light-text.png";
-import profilephoto from "../../../assets/images/users/5.jpg";
+import profilephoto from "../../../assets/images/users/user.png";
 
 import logo from "../../../assets/images/pampatar/pampatar_color_1.png";
 import logoIcon from "../../../assets/images/pampatar/isotipo_color.png";
@@ -119,12 +119,10 @@ export default () => {
           {/*-------------------------------------------------------------------------------*/}
           <Link className="navbar-brand" to="/">
             <b className="logo-icon">
-              <img src={logoIcon} height="50" alt="homepage" className="dark-logo" />
-              <img src={logolighticon} alt="homepage" className="light-logo" />
+              <img src={logoIcon} height="50" alt="homepage" className="dark-logo d-none d-md-inline" />
             </b>
             <span className="logo-text">
               <img src={logo} height="50" alt="homepage" className="dark-logo" />
-              <img src={logolighttext} className="light-logo" alt="homepage" />
             </span>
           </Link>
           {/*--------------------------------------------------------------------------------*/}
@@ -230,7 +228,7 @@ export default () => {
                 />
               </DropdownToggle>
               <DropdownMenu right className="user-dd">
-                <div className="d-flex no-block align-items-center p-3 bg-primary text-white mb-2">
+                <div className="d-flex no-block align-items-center p-3 bg-white mb-2">
                   <div className="">
                     <img
                       src={profilephoto}
@@ -240,7 +238,7 @@ export default () => {
                     />
                   </div>
                   <div className="ml-2">
-                    <h4 className="mb-0 text-white">
+                    <h4 className="mb-0 font-weight-bold">
                       {shopName}
                     </h4>
                     <p className=" mb-0">

@@ -3042,7 +3042,7 @@ input[type="button"].btn-block {
   .custom-file-input:disabled ~ .custom-file-label {
     background-color: #e9ecef; }
   .custom-file-input:lang(en) ~ .custom-file-label::after {
-    content: "Browse"; }
+    content: "Buscar"; }
 
 .custom-file-label {
   position: absolute;
@@ -3069,7 +3069,7 @@ input[type="button"].btn-block {
     padding: 0.375rem 0.75rem;
     line-height: 1.5;
     color: #525f7f;
-    content: "Browse";
+    content: "Buscar";
     background-color: #f6f9fc;
     border-left: 1px solid #e9ecef;
     border-radius: 0 2px 2px 0; }
