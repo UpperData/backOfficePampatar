@@ -21,6 +21,7 @@
     "node": "^8.15.0"
   },
   "dependencies": {
+    "@mdi/font": "^5.8.55",
     "apexcharts": "^3.19.2",
     "axios": "^0.19.2",
     "chart.js": "2.7.2",

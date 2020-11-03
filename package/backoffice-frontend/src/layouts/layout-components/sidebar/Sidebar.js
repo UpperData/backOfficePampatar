@@ -88,6 +88,8 @@ const Sidebar = (props) => {
       return str;
   }
 
+  console.log(backoffice.menu);
+
   const formatRoutesByRoleToSidebar = (routes) => {
     let formattedRoutes = [];
 
@@ -103,7 +105,7 @@ const Sidebar = (props) => {
       thisRouteFormatted.collapse   = (thisRouteData.sModule.length > 0) ? true : false;
       thisRouteFormatted.path       = '/';
       thisRouteFormatted.name       = thisRouteData.module;
-      thisRouteFormatted.icon       = '';
+      thisRouteFormatted.icon       = thisRouteData.icon;
 
       if(thisRouteData.sModule.length > 0){
         let subpages = [];
@@ -218,8 +220,10 @@ const Sidebar = (props) => {
                       aria-expanded={state[prop.state]}
                       onClick={() => setState(firstdd)}
                     >
-                      <FeatherIcon icon={prop.icon} />
-                      {/* <i className={prop.icon} /> */}
+                      {/*
+                        <FeatherIcon icon={prop.icon} />
+                      */}
+                      <i className={prop.icon} />
                       <span className="hide-menu">{prop.name}</span>
                     </span>
                     <Collapse isOpen={state[prop.state]}>

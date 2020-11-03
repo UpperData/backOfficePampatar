@@ -4,7 +4,10 @@ import { lazy } from "react";
 
 const Home = lazy(() => import("../views/dashboards/Home"));
 const Profile = lazy(() => import("../views/sample-pages/Profile"));
+
 const ProcessRequest = lazy(() => import("../views/administrador/postulaciones/procesar/ProcessRequest"));
+const CreateContract = lazy(() => import("../views/administrador/contratos/CreateContrat"));
+
 //const auths = [].concat(AuthRoutes);
 
 var ThemeRoutesByRole = [
@@ -29,6 +32,12 @@ var ThemeRoutesByRole = [
     path: "/processRequest",
     name: "Procesar postulacion",
     component: ProcessRequest,
+    onlyRoute:true
+  },
+  {
+    path: "/createContrat",
+    name: "Procesar postulacion",
+    component: CreateContract,
     onlyRoute:true
   },
   {

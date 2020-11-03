@@ -52,3 +52,26 @@
     padding: 0;
     margin: 0;
 }
+
+.react-tagsinput{
+    &.my-tags-input{
+        border: 1px solid #e9ecef;
+        padding: 0px 5px;
+        border-radius: 2px;
+        
+        .react-tagsinput-input{
+            margin: 0px;
+            padding: 6.2px;
+            width: auto;
+            color: $primary;
+            font-size: 14px;
+        }
+
+        .react-tagsinput-tag{
+            background-color: $primary !important;
+            color: #fff !important;
+            border: 1px solid transparent;
+            padding: 3px 6px;
+        }
+    }
+}

@@ -14,32 +14,36 @@ import {
 import axios from 'axios'
 import InlineSpinner from '../../../spinner/InlineSpinner';
 
-
-function ProcessRequest() {
+const ProcessRequest = () => {
 
     const [loading, setloading]             = useState(true);
+    const [search,  setSearch]              = useState(true);
     const [sending, setsending]             = useState(false);
     const [data,    setData]                = useState([]);
-    const [seeIdDetails, setSeeIdDetails]   = useState(true);
+    //const [seeIdDetails, setSeeIdDetails]   = useState(true);
     const [seeItem, setSeeItem]             = useState(null);
     const [errormessage, seterrormessage]   = useState('');
+    const [successmessage, setsuccessmessage]   = useState('');
 
     useEffect(() => {
         let url = '/setting/seller/shoptRequest';
         if(loading){
-            axios.get(url)
-            .then((res) => {
-                console.log(res.data);
-                setData(res.data);
-                setloading(false);
-            }).catch((err) => {
-                console.error(err);
-            });
+            if(search){
+                setSearch(false);
+                axios.get(url)
+                .then((res) => {
+                    console.log(res.data);
+                    setData(res.data.rsShopRequestByStatus);
+                    setloading(false);
+                }).catch((err) => {
+                    console.error(err);
+                });
+            }
         }
-    }, []);
+    });
 
     const seeDetails = (item) => {
-        setSeeIdDetails(item.shopRequest.id);
+        //setSeeIdDetails(item.shopRequest.id);
         setSeeItem(item);
     }
 
@@ -47,12 +51,13 @@ function ProcessRequest() {
         let urlPostulation = '/setting/seller/pre';
 
         let data = {
-            shopRequestId:seeItem.shopRequest.id,
+            shopRequestId:seeItem.id,
             action
         }
 
         setsending(true);
         seterrormessage('');
+        setsuccessmessage('');
 
         axios({
             url: urlPostulation,
@@ -66,7 +71,10 @@ function ProcessRequest() {
                 console.log(res.data.data.message);
                 seterrormessage(res.data.data.message);
             }else{
-                
+                setSeeItem(null);
+                setsuccessmessage('Solicitud procesada correctamente');
+                setloading(true);
+                setSearch(true);
             }
         }).catch((err) => {
             console.error(err);
@@ -79,6 +87,13 @@ function ProcessRequest() {
             return (
                 <div>
                     <h1 className="h4 mb-3 font-weight-bold">Procesar postulaciones</h1>
+                    {(successmessage !== '') &&
+                        <div className="alert alert-success">
+                            <p className="mb-0">
+                                {successmessage}
+                            </p>
+                        </div>
+                    }
                     <Row>
                         <Col md="12">
                             <Card>
@@ -101,16 +116,16 @@ function ProcessRequest() {
                                                 return (
                                                     <tr key={key}>
                                                         <td>
-                                                            <span href="#" id={`tooltip-brand-${item.shopRequest.id}`}>
-                                                                {item.people.firstName+' '+item.people.lastName}
+                                                            <span href="#" id={`tooltip-brand-${item.id}`}>
+                                                                {item.Account.Person.firstName+' '+item.Account.Person.lastName}
                                                             </span>
-                                                            <UncontrolledTooltip placement="top" target={`tooltip-brand-${item.shopRequest.id}`}>
-                                                                {item.shopRequest.name}
+                                                            <UncontrolledTooltip placement="top" target={`tooltip-brand-${item.id}`}>
+                                                                {item.marca}
                                                             </UncontrolledTooltip>
                                                         </td>
-                                                        <td>{item.shopRequest.employees}</td>
+                                                        <td>{item.employees}</td>
                                                         <td>
-                                                            {item.shopRequest.salesChannels.length > 0 && item.shopRequest.salesChannels.map((subitem, subkey) => {
+                                                            {item.salesChannels.length > 0 && item.salesChannels.map((subitem, subkey) => {
                                                                 return (
                                                                     <Badge key={subkey} color="primary" className="mx-1">
                                                                         {subitem.name}
@@ -139,7 +154,6 @@ function ProcessRequest() {
             )
         }else{
             let item = seeItem;
-            let shop = seeItem.shopRequest;
             return (
                 <div>
                     <Breadcrumb listClassName="px-0">
@@ -147,7 +161,7 @@ function ProcessRequest() {
                         <BreadcrumbItem><button onClick={() => setSeeItem(null)} className="btn-unstyled text-primary">Procesar</button></BreadcrumbItem>
                         <BreadcrumbItem active>Detalles de la postulación</BreadcrumbItem>
                     </Breadcrumb>
-                    <h1 className="h4 mb-3 font-weight-bold">Detalles de la postulación: {item.shopRequest.name}</h1>
+                    <h1 className="h4 mb-3 font-weight-bold">Detalles de la postulación: {item.marca}</h1>
                     {(errormessage !== '') &&
                         <div className="alert alert-danger">
                             <p className="mb-0">
@@ -162,33 +176,33 @@ function ProcessRequest() {
                                     <CardTitle><i className="mdi mdi-account mr-2"></i>Datos del postulante</CardTitle>
                                 </div>
                                 <CardBody className="border-top">
-                                    <h4><span className="font-weight-bold">Nombre</span>: {item.people.firstName+' '+item.people.lastName}</h4>
+                                    <h4><span className="font-weight-bold">Nombre</span>: {item.Account.Person.firstName+' '+item.Account.Person.lastName}</h4>
                                     <h6>
-                                        <span>Género: {item.people.gender}</span>
+                                        <span>Género: {item.Account.Person.gender}</span>
                                     </h6>
                                     <h6>
-                                        <span>Nacionalidad: {item.people.nationality}</span>
+                                        <span>Nacionalidad: {item.Account.Person.Nationality.name}</span>
                                     </h6>
                                     <hr/>
                                     <h6>
-                                        <span>Email: {item.account.email}</span>
+                                        <span>Email: {item.Account.email}</span>
                                     </h6>
                                     <h6>
-                                        {typeof item.account.preference === 'object' &&
+                                        {typeof item.Account.preference === 'object' &&
                                             <Fragment>
                                                 <h6 className="font-weight-bold">
                                                     Preferencia:
                                                 </h6>
                                                 <Badge color="info" className="mx-r">
-                                                    {item.account.preference.name}
+                                                    {item.Account.preference.name}
                                                 </Badge>
                                             </Fragment>
                                         }
 
-                                        {typeof item.account.preference === 'array' &&
+                                        {typeof item.Account.preference === 'array' &&
                                             <Fragment>
                                                 <h6 className="font-weight-bold">Preferencias:</h6>
-                                                {item.account.preference.length > 0 && item.account.preference.map((subitem, subkey) => {
+                                                {item.Account.preference.length > 0 && item.Account.preference.map((subitem, subkey) => {
                                                     return (
                                                         <Badge key={subkey} color="info" className="mx-r">
                                                             {subitem.name}
@@ -207,26 +221,26 @@ function ProcessRequest() {
                                     <CardTitle><i className="mdi mdi-store mr-2"></i>Datos de la tienda</CardTitle>
                                 </div>
                                 <CardBody className="border-top">
-                                    <h4><span className="font-weight-bold">Nombre de la tienda</span>: {shop.name}</h4>
+                                    <h4><span className="font-weight-bold">Nombre de la tienda</span>: {item.marca}</h4>
                                     <p>
-                                        Descripción: {shop.descShop}
+                                        Descripción: {item.descShop}
                                     </p>
                                     <hr/>
-                                    {typeof shop.affirmations === 'object' &&
+                                    {typeof item.affirmations === 'object' &&
                                         <Fragment>
                                             <h6 className="font-weight-bold">
                                                 Afirmación:
                                             </h6>
                                             <p>
-                                                {shop.affirmations.name}
+                                                {item.affirmations.name}
                                             </p>
                                         </Fragment>
                                     }
 
-                                    {typeof shop.affirmations === 'array' &&
+                                    {typeof item.affirmations === 'array' &&
                                         <Fragment>
                                             <h6 className="font-weight-bold">Afirmaciones:</h6>
-                                            {shop.affirmations.length > 0 && shop.affirmations.map((subitem, subkey) => {
+                                            {item.affirmations.length > 0 && item.affirmations.map((subitem, subkey) => {
                                                 return (
                                                     <p key={subkey} className="mx-1">
                                                         {subitem.name}
@@ -237,17 +251,17 @@ function ProcessRequest() {
                                     }
 
                                     <h6>
-                                        ¿Tiene inicio de actividades? - <strong>{shop.startActivity ? 'si' : 'no'}</strong>
+                                        ¿Tiene inicio de actividades? - <strong>{item.startActivity ? 'si' : 'no'}</strong>
                                     </h6>
                                     <h6>
-                                        ¿Cuenta con tienda física? - <strong>{shop.isStore ? 'si' : 'no'}</strong>
+                                        ¿Cuenta con tienda física? - <strong>{item.isStore ? 'si' : 'no'}</strong>
                                     </h6>
                                     <hr/>
                                     <h6>
-                                        Número de empleados: <strong>{shop.employees}</strong>
+                                        Número de empleados: <strong>{item.employees}</strong>
                                     </h6>
                                     <h6>
-                                        Canales de venta: {shop.salesChannels.length > 0 && shop.salesChannels.map((subitem, subkey) => {
+                                        Canales de venta: {item.salesChannels.length > 0 && item.salesChannels.map((subitem, subkey) => {
                                                                 return (
                                                                     <Badge key={subkey} color="info" className="mx-1">
                                                                         {subitem.name}
@@ -259,7 +273,7 @@ function ProcessRequest() {
                                     <h6 className="font-weight-bold">Contacto</h6>
                                         <Fragment>
                                             <h6 className="font-weight-bold">Teléfonos:</h6>
-                                            {shop.phone.length > 0 && shop.phone.map((subitem, subkey) => {
+                                            {item.phone.length > 0 && item.phone.map((subitem, subkey) => {
                                                 return (
                                                     <p key={subkey} className="mb-0">
                                                         <i className="fa fa-phone mr-2"></i>{subitem.phoneNmber}
