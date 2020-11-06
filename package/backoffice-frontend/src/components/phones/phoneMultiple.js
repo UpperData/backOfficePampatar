@@ -4,6 +4,9 @@ import MultipleSelect from '../selects/MultipleSelect';
 
 function PhoneMultiple(props) {
 
+    const [search,         setsearch]               = useState(true);
+    const [loading,        setloading]              = useState(true);
+
     const [phonesNumber,   setPhonesNumber]     = useState([]);
     const [count,          setcount]            = useState(0);
     const listPhoneTypes = useSelector(state => state.backoffice.phoneTypes.rows);
@@ -57,8 +60,21 @@ function PhoneMultiple(props) {
     }
 
     useEffect(() => {
-        if(phonesNumber !== props.value){
-            props.onChange(phonesNumber);
+        if(loading){
+            if(search){
+                setsearch(false);
+                if(props.loadValue){
+                    setPhonesNumber(props.loadValue);
+                    props.onChange(props.loadValue);
+                    setloading(false);
+                }else{
+                    setloading(false);
+                }
+            }
+        }else{
+            if(phonesNumber !== props.value){
+                props.onChange(phonesNumber);
+            }
         }
     }, []);
 
@@ -102,7 +118,7 @@ function PhoneMultiple(props) {
                                         <div className="col-md-4 my-1">
                                         </div>
                                         <div className="col-md-8 my-1">
-                                            <input type="text" value={(activeInput) ? isActive[0].phoneNumber : '' } onChange={(e) => phoneNumberChange(e.target.value, item.id)} 
+                                            <input type="text" value={(activeInput) ? isActive[0].number : '' } onChange={(e) => phoneNumberChange(e.target.value, item.id)} 
                                             className={"form-control" + ((activeError && isError[0].validateNumber === false) ? ' is-invalid' : '')} placeholder="Número de teléfono" />
                                             {activeError && isError[0].validateNumber === false &&
                                                 <small className="my-2 text-danger font-weight-bold">Verifique el número de teléfono</small>
