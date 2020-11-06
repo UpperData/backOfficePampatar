@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from "react";
-
-import {Route, Switch, withRouter } from "react-router-dom";
 import axios from 'axios'
+import {Route, Switch, withRouter } from "react-router-dom";
+
 import {publicRoutes, AuthRoutes} from "./routes/";
+
 import { PrivateRoute } from "./routes/PrivateRoutes";
 import {PublicRoute} from "./routes/PublicRoute";
 
@@ -10,16 +11,38 @@ import { AuthenticationService } from "./jwt/_services";
 
 import {useSelector, useDispatch} from 'react-redux'
 import {handleLogin} from './redux/session/Actions'
-import { set_backoffice_menu, set_role } from "./redux/backoffice/Actions";
+import { 
+  set_backoffice_menu, 
+  set_role, 
+  set_phone_types,
+  set_store_types,
+  set_sales_channels,
+  set_people_types,
+  set_document_types,
+  set_regions,
+  set_genders,
+  set_nationalities,
+  set_banks
+} 
+from "./redux/backoffice/Actions";
 
 //components
 import SetRole from "./views/roles/SetRole";
+
+let urls = {
+  development: process.env.REACT_APP_DEV_API_URL,
+  production:  process.env.REACT_APP_PRODUCTION_API_URL
+}
+
+axios.defaults.baseURL = urls[process.env.NODE_ENV];
+console.log('cargando ruta de la API:'+ urls[process.env.NODE_ENV]);
 
 const AppRouter = (props) => {
 
   const [loading, setloading] = useState(true);
   const [searchAuthData, setSearchAuthData] = useState(true);
   const [searchSession, setSearchSession]   = useState(true);
+  const [searchMasters, setSearchMasters]   = useState(true);
 
   const session = useSelector(state => state.session);
   const backoffice = useSelector(state => state.backoffice);
@@ -98,6 +121,48 @@ const AppRouter = (props) => {
       if(session.auth){
         axios.defaults.headers.common = {'Authorization': `Bearer ${localStorage.getItem('token')}`}
         let RoleInLocalStorage = localStorage.getItem('role');
+
+        //si esta logueado entonces buscar maestros
+        if(searchMasters){
+          setSearchMasters(false);
+          console.log('Seteando maestros');
+
+          if(backoffice.phoneTypes === null){
+            dispatch(set_phone_types());
+          }
+
+          if(backoffice.storeTypes === null){
+            dispatch(set_store_types());
+          }
+
+          if(backoffice.salesChannels === null){
+            dispatch(set_sales_channels());
+          }
+
+          if(backoffice.documentTypes === null){
+            dispatch(set_document_types());
+          }
+
+          if(backoffice.peopleTypes === null){
+            dispatch(set_people_types());
+          }
+
+          if(backoffice.regions === null){
+            dispatch(set_regions());
+          }
+
+          if(backoffice.nationalities === null){
+            dispatch(set_nationalities());
+          }
+
+          if(backoffice.genders === null){
+            dispatch(set_genders());
+          }
+
+          if(backoffice.banks === null){
+            dispatch(set_banks());
+          }
+        }
 
         console.log('Render Router');
 

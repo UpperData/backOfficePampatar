@@ -17,23 +17,45 @@ import img5 from "../../assets/images/users/5.jpg";
 
 const Home = () => {
 
-  const session = useSelector(state => state.session);
+  const session     = useSelector(state => state.session);
+  const settings    = useSelector((state) => state.settings);
+  const backoffice  = useSelector((state) => state.backoffice);
+
+  let shopName = session.userData.shop.name;
+  let role = backoffice.role.name;
+  let account = session.userData.account;
 
   return (
     <div>
       <h1 className="h4 mb-3 font-weight-bold">Dashboard</h1>
       <Row>
-        <Col xs={12}>
-          <Card>
-              <span className="lstick"></span>
-              <CardBody>
-                <h4 className="card-title">Mi tienda</h4>
-                <div className="my-3">
-                  <h1 className="text-primary"><i className="mdi mdi-store-outline"></i> {session.userData.shop.name}</h1>
-                </div>
-              </CardBody>
-          </Card>
-        </Col>
+        {(role === 'Vendedor') &&
+          <Col xs={12}>
+            <Card>
+                <span className="lstick"></span>
+                <CardBody>
+                  <h4 className="card-title">Mi tienda</h4>
+                  <div className="my-3">
+                    <h1 className="text-primary"><i className="mdi mdi-store-outline"></i> {session.userData.shop.name}</h1>
+                  </div>
+                </CardBody>
+            </Card>
+          </Col>
+        }
+
+        {(role === 'Administrador') &&
+          <Col xs={12}>
+            <Card>
+                <span className="lstick"></span>
+                <CardBody>
+                  <h4 className="card-title">Administración</h4>
+                  <div className="my-3">
+                    <h1 className="text-primary h4"><i className="mdi mdi-view-dashboard"></i> Usuario: {account.email}</h1>
+                  </div>
+                </CardBody>
+            </Card>
+          </Col>
+        }
       </Row>
     </div>
   );

@@ -67,17 +67,19 @@ function SetRole(props) {
                         {(!setting) &&
                             <div className="row justify-content-center py-4">
                                 {(roles.length > 0 && roles.map((item, key) => {
-                                    return (
-                                        <a onClick={(e) => setThisRole(e, item)} href="##" key={key} className="col-md-auto col-12">
-                                            <div className="card shadow w-100">
-                                                <div className="card-body py-4">
-                                                    <h2 className="text-primary py-3 mb-0 text-center font-weight-bold">
-                                                        {item.name}
-                                                    </h2>
+                                    if(item.name !== 'Comprador'){
+                                        return (
+                                            <a onClick={(e) => setThisRole(e, item)} href="##" key={key} className="col-md-auto col-12">
+                                                <div className="card shadow w-100">
+                                                    <div className="card-body py-4">
+                                                        <h2 className="text-primary py-3 mb-0 text-center font-weight-bold">
+                                                            {item.name}
+                                                        </h2>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </a>
-                                    )
+                                            </a>
+                                        )
+                                    }
                                 }))}
                             </div>
                         }

@@ -5,25 +5,38 @@ function CustomFileInput(props) {
 
     let files = props.value;
 
+    function getBuffer(fileData) {
+        return function(resolve) {
+            var reader = new FileReader();
+            reader.readAsArrayBuffer(fileData);
+            reader.onload = function() {
+                var arrayBuffer = this.result,
+                array = new Uint8Array(arrayBuffer),
+                binaryString = String.fromCharCode.apply(null, array);
+
+                resolve(array);
+            }
+        }
+    }
+
     const handleImageUpload = (e) => {
         e.preventDefault();
         let filesSelected = e.target.files;
 
         if(filesSelected.length > 0){
-            const convertTo = async () => {
-                console.log('File:', filesSelected[0]);
-                var fileToLoad = filesSelected[0];
-                var fileReader = new FileReader();
-                var result = null;
-    
-                fileReader.onload = await function(){ 
-                    result = fileReader.result; 
-                    
-                    props.setBinary(result);
+            // Eventhandler for file input. 
+            function convertTo() {
+                console.log('convirtiendo files:', filesSelected);
+                let fileData = new Blob([filesSelected[0]]);
+                var promise = new Promise(getBuffer(fileData));
+                // Wait for promise to be resolved, or log error.
+                promise.then(function(data) {
+                    console.log(data);
+                    props.setBinary(data);
                     props.onChange(filesSelected);
-                };
-    
-                fileReader.readAsBinaryString(fileToLoad);
+                }).catch(function(err) {
+                    console.log('Error: ',err);
+                });
             }
             
             convertTo();

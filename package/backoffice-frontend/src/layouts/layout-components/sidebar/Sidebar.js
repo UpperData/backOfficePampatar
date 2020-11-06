@@ -36,7 +36,9 @@ const Sidebar = (props) => {
 
   //VARIABLES
   let shopName = session.userData.shop.name;
-  //console.log(shopName);
+  let role = backoffice.role.name;
+  let account = session.userData.account;
+
 
   /*--------------------------------------------------------------------------------*/
   /*To Expand SITE_LOGO With Sidebar-Menu on Hover                                  */
@@ -163,7 +165,7 @@ const Sidebar = (props) => {
               >
                 <img src={profile} alt="user" />
                 <span className="hide-menu">
-                  {shopName}
+                  {(role === 'Vendedor') ? shopName : role}
                 </span>
               </span>
               <Collapse isOpen={state.collapse}>

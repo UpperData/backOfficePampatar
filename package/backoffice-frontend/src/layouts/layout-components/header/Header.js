@@ -46,6 +46,8 @@ export default () => {
   const dispatch    = useDispatch();
 
   let shopName = session.userData.shop.name;
+  let role = backoffice.role.name;
+  let account = session.userData.account;
 
   const toggle = () => {
     setIsOpen(!isOpen);
@@ -239,10 +241,10 @@ export default () => {
                   </div>
                   <div className="ml-2">
                     <h4 className="mb-0 font-weight-bold">
-                      {shopName}
+                      {(role === 'Vendedor') ? shopName : account.name}
                     </h4>
                     <p className=" mb-0">
-                      {session.userData.account.email}
+                      {(role === 'Vendedor') ? account.email : account.email}
                     </p>
                     <span className="badge badge-info">{backoffice.role.name}</span>
                   </div>
