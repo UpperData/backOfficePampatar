@@ -22,7 +22,8 @@ import {
   set_regions,
   set_genders,
   set_nationalities,
-  set_banks
+  set_banks,
+  set_address_types
 } 
 from "./redux/backoffice/Actions";
 
@@ -161,6 +162,10 @@ const AppRouter = (props) => {
 
           if(backoffice.banks === null){
             dispatch(set_banks());
+          }
+
+          if(backoffice.addressTypes === null){
+            dispatch(set_address_types());
           }
         }
 

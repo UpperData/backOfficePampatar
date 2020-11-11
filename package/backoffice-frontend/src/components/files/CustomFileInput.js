@@ -4,17 +4,36 @@ import {Input} from 'reactstrap';
 function CustomFileInput(props) {
 
     let files = props.value;
+    let returnFileType = props.returnFileType ? props.returnFileType : 'binary';
 
     function getBuffer(fileData) {
         return function(resolve) {
             var reader = new FileReader();
-            reader.readAsArrayBuffer(fileData);
-            reader.onload = function() {
-                var arrayBuffer = this.result,
-                array = new Uint8Array(arrayBuffer),
-                binaryString = String.fromCharCode.apply(null, array);
 
-                resolve(array);
+            if(returnFileType === 'binary'){
+                console.log('binary');
+                reader.readAsArrayBuffer(fileData);
+
+                reader.onload = function() {
+                    var result = this.result;
+                    var array = new Uint8Array(result);
+                    var binaryString = String.fromCharCode.apply(null, array);
+                    resolve(array);
+                }
+            }
+
+            if(returnFileType === 'base64'){
+                console.log('base64');
+                //console.log(fileData);
+
+                reader.readAsDataURL(fileData);
+                reader.onloadend = () => {
+                    var result = reader.result;
+                    var base64 = result.split(',')[1];
+                    
+                    console.log(base64);
+                    resolve(base64);
+                };
             }
         }
     }

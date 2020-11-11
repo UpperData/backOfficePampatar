@@ -9,7 +9,8 @@ import {
     SET_REGIONS,
     SET_NATIONALITIES,
     SET_GENDERS,
-    SET_BANKS
+    SET_BANKS,
+    SET_ADDRESS_TYPES
 } from '../constants';
 import axios from 'axios'
 
@@ -174,6 +175,23 @@ export const set_banks = () => {
             if(res.data.data.result){
                 dispatch({
                     type: SET_BANKS,
+                    payload: res.data.data
+                })
+            }
+          })
+          .catch(err => console.log(err + "action"))
+    }
+}
+
+export const set_address_types = () => {
+    let urlBanks = '/addressType';
+    return dispatch => {
+        axios
+          .get(urlBanks)
+          .then(res => {
+            if(res.data.data.result){
+                dispatch({
+                    type: SET_ADDRESS_TYPES,
                     payload: res.data.data
                 })
             }

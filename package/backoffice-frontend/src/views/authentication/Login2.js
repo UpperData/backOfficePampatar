@@ -250,7 +250,7 @@ const login = (e) => {
         {/*Login2 Cards*/}
         {/*--------------------------------------------------------------------------------*/}
         <div className="container">
-          {state !== null && state.hasOwnProperty('errorMessage') && 
+          {state !== null && state !== undefined && typeof state === 'object' && state.hasOwnProperty('errorMessage') && 
             <div className="alert alert-danger">
               {state.errorMessage}
             </div>

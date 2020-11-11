@@ -14,12 +14,12 @@ import {
     Input
 } from 'reactstrap';
 
-function UserIndentityDocument() {
+function UserIndentityDocument(props) {
 
     const [document, setdocument]                           = useState([]);
-    const [listDocumentTypes,   setListDocumentTypes]       = useState([]);
+    const [listDocumentTypes,     setListDocumentTypes]       = useState([]);
     const [searchDocumentTypes,   setSearchDocumentTypes]   = useState(false);
-    const [personTypeId,        setPersonTypeId]            = useState(0);
+    const [personTypeId,          setPersonTypeId]            = useState(0);
     const [count,    setcount]                              = useState(0);
 
     const backoffice = useSelector(state => state.backoffice);
@@ -28,14 +28,14 @@ function UserIndentityDocument() {
     const handleCheckInDocumentTypes = (dataObject) => {
         //console.log('Check in tipo de documento');
         let dataInArray = document;
-        let value = dataInArray.find(data => data.docType === dataObject.docType);
+        let value = dataInArray.find(data => data.docType.id === dataObject.docType.id);
 
         if(!value){
             dataInArray.push(dataObject);
             setdocument(dataInArray);
             //console.log('Elementos:', dataInArray);
         }else{
-            let dataInArrayWithoutElement = dataInArray.filter(data => data.docType !== dataObject.docType);
+            let dataInArrayWithoutElement = dataInArray.filter(data => data.docType.id !== dataObject.docType.id);
             setdocument(dataInArrayWithoutElement);
             //console.log('Elementos:', dataInArrayWithoutElement);
         }
@@ -65,7 +65,7 @@ function UserIndentityDocument() {
 
         for (let i = 0; i < documentList.length; i++) {
             const thisDocument = documentList[i];
-            if(thisDocument.docType === id){
+            if(thisDocument.docType.id === id){
                 thisDocument.docNumber = value;
             }
 
@@ -79,6 +79,13 @@ function UserIndentityDocument() {
         setcount(count + 2);
     }
 
+    useEffect(() => {
+        if(document !== props.value){
+            //console.log('cambiando data', document);
+            props.onChange(document);
+        }
+    });
+
     let userDocumentIderntity = listDocumentTypes;
 
     return (
@@ -88,7 +95,7 @@ function UserIndentityDocument() {
                 <div className="radios py-2">
                     {peopleTypeList.length > 0 && peopleTypeList.map((item, key) => {
                         return (
-                            <CustomInput key={key} checked={(personTypeId === item.id)} onChange={() => changePersonType(item.id)}  type="radio" id={`person-type-${item.id}`} name={`person-type`} label={item.name} />
+                            <CustomInput className="d-inline-flex mr-3" key={key} checked={(personTypeId === item.id)} onChange={() => changePersonType(item.id)}  type="radio" id={`person-type-${item.id}`} name={`person-type`} label={item.name} />
                         )
                     })}
                 </div>
@@ -108,11 +115,11 @@ function UserIndentityDocument() {
                 }
                 <div className="cheboxex pt-2">
                     {userDocumentIderntity.length > 0 && searchDocumentTypes === false && userDocumentIderntity.map((item, key) => {
-                        let isActive = document.filter(data => data.docType === item.id);
+                        let isActive = document.filter(data => data.docType.id === item.id);
                         let activeInput = isActive.length > 0;
                         //console.log(isActive[0]);
                         //console.log(document);
-                        let sendObject = {docType: item.id, docNumber: '', attachment: null};
+                        let sendObject = {docType: {id: item.id, name: item.name}, docNumber: ''};
 
                         return (
                             <div key={key} className="row align-items-center">

@@ -9,7 +9,8 @@ import {
     SET_REGIONS,
     SET_GENDERS,
     SET_NATIONALITIES,
-    SET_BANKS
+    SET_BANKS,
+    SET_ADDRESS_TYPES
   } from "../constants";
   
   const INIT_STATE = {
@@ -23,7 +24,8 @@ import {
     regions:        null,
     nationalities:  null,
     genders:        null,
-    banks:          null
+    banks:          null,
+    addressTypes:    null
   };
   
   export default (state = INIT_STATE, action) => {
@@ -82,6 +84,11 @@ import {
         return {
             ...state,
             banks: action.payload
+        };
+      case SET_ADDRESS_TYPES:
+        return {
+            ...state,
+            addressTypes: action.payload
         };
       default:
         return state;

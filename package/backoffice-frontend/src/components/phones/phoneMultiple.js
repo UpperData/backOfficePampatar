@@ -76,7 +76,7 @@ function PhoneMultiple(props) {
                 props.onChange(phonesNumber);
             }
         }
-    }, []);
+    });
 
     let phoneIterator = 1;
     
@@ -96,7 +96,6 @@ function PhoneMultiple(props) {
                         let activeInput = isActive.length > 0;
                         let thisErrors  = {};
 
-                        
                         let isError = errors.filter(data => data.id === item.id);
                         let activeError = isError.length > 0;
                         //console.log(isError);

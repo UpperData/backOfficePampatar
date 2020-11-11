@@ -233,7 +233,7 @@ function AddWarehouseSeller(props) {
                                 <Card>
                                     <div className="p-3">
                                         <CardTitle>
-                                            <i className="mdi mdi-border-all mr-2"></i>Seleccione un almacen para ser editado.
+                                            <i className="mdi mdi-border-all mr-2"></i>Seleccione un almacen
                                         </CardTitle>
                                     </div>
                                     <CardBody className="border-top">
@@ -317,7 +317,7 @@ function AddWarehouseSeller(props) {
                                                 </Col>
                                                 <Col md="6">
                                                     <div className="form-group">
-                                                        <label htmlFor="warehouseNDpto">N# de dpto:</label>
+                                                        <label htmlFor="warehouseNDpto"># de dpto:</label>
                                                         <input 
                                                             type="text"
                                                             id="warehouseNDpto"
