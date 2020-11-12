@@ -38,9 +38,11 @@ function UpdateSeller() {
 
     const session = useSelector(state => state.session);
 
-    const [loading, setloading] = useState(true);
-    const [search, setsearch]   = useState(true);
-    const [isvald, setisvald]  = useState(false);
+    const [loading, setloading]     = useState(true);
+    const [search, setsearch]       = useState(true);
+    const [sending, setsending]     = useState(false);
+    const [isvald, setisvald]       = useState(false);
+    const [errors, seterrors]       = useState({});
 
     //data
     const requestId = session.userData.shop.postulacionId;
@@ -49,8 +51,8 @@ function UpdateSeller() {
     //user
     const [firstName,      setfirstName]            = useState('');
     const [lastName,       setlastName ]            = useState('');
-    const [genderId,       setgenderId]             = useState('');
-    const [nationalityId,  setnationalityId ]       = useState('');
+    const [genderId,       setgenderId]             = useState(null);
+    const [nationalityId,  setnationalityId ]       = useState(null);
     const [birthDate,      setbirthDate ]           = useState('');
     const [phone,          setphone ]               = useState([]);
     const [document,       setdocument ]            = useState(null);
@@ -89,95 +91,206 @@ function UpdateSeller() {
         } 
     });
 
+    const validate = () => {
+        let errorsCount = 0;
+        let thiserrors = {};
+
+        //firstName
+        if(firstName.trim() === ''){
+            thiserrors.firstName = 'Debe ingresar un nombre';
+            errorsCount++;
+        }else if(firstName.trim().length < 6){
+            thiserrors.firstName = 'El nombre ingresado es demasiado corto';
+            errorsCount++;
+        }else if(firstName.trim().length > 40){
+            thiserrors.firstName = 'El nombre ingresado es demasiado largo';
+            errorsCount++;
+        }
+
+        //lastName
+        if(lastName.trim() === ''){
+            thiserrors.lastName = 'Debe ingresar un apellido';
+            errorsCount++;
+        }else if(lastName.trim().length < 6){
+            thiserrors.lastName = 'El apellido ingresado es demasiado corto';
+            errorsCount++;
+        }else if(lastName.trim().length > 40){
+            thiserrors.lastName = 'El apellido ingresado es demasiado largo';
+            errorsCount++;
+        }
+
+        //birthDate
+        if(birthDate === ''){
+            thiserrors.birthDate = 'Ingrese su fecha de nacimiento';
+            errorsCount++;
+        }
+
+        //genderId
+        if(genderId === null){
+            thiserrors.genderId = 'Seleccione un género';
+            errorsCount++;
+        }
+
+        //nationalityId
+        if(nationalityId === null){
+            thiserrors.nationalityId = 'Seleccione el tipo de nacionalidad';
+            errorsCount++;
+        }
+
+        //owner
+        if(owner.trim() === ''){
+            thiserrors.owner = 'Debe indicar el nombre del propietario';
+            errorsCount++;
+        }
+
+        //rut
+        if(rut.trim() === ''){
+            thiserrors.rut = 'Ingrese el RUT del propietario';
+            errorsCount++;
+        }
+
+        //number
+        if(number.trim() === ''){
+            thiserrors.number = 'Ingrese el número de cuenta';
+            errorsCount++;
+        }
+
+        //employees
+        if(employees.trim() === ''){
+            thiserrors.employees = 'Ingrese número de empleados';
+            errorsCount++;
+        }
+
+        //shopDescription
+        if(shopDescription.trim() === ''){
+            thiserrors.shopDescription = 'Ingrese una descripción para su tienda';
+            errorsCount++;
+        }
+
+        //bank
+        if(bank === null){
+            thiserrors.bank = 'Debe seleccionar un banco';
+            errorsCount++;
+        }
+
+        //accountType
+        if(accountType === null){
+            thiserrors.accountType = 'Seleccione un tipo de cuenta bancaria';
+            errorsCount++;
+        }
+
+        //processId
+        if(processId === null){
+            thiserrors.processId = 'Seleccione un tipo de producción';
+            errorsCount++;
+        }
+
+        if(errorsCount > 0){
+            seterrors(thiserrors);
+            return false;
+        }
+
+        return true;
+    }
+
     const updateAccount = (e) => {
+
         e.preventDefault();
         e.stopPropagation();
+        seterrors({});
 
-        //Set Format
+        let validation = validate();
         
-        let newDocuments = [];
-        for (let i = 0; i < document.length; i++) {
-            const element = document[i];
-            let newElement = {};
+        if(validation){
+            //Set Format
+            setsending(true);
 
-            newElement.docType       = element.docType;
-            newElement.number        = element.docNumber;
+            let newDocuments = [];
+            for (let i = 0; i < document.length; i++) {
+                const element = document[i];
+                let newElement = {};
 
-            newDocuments.push(newElement);
-        }
+                newElement.docType       = element.docType;
+                newElement.number        = element.docNumber;
 
-        let newPhonesNumber = [];
-        for (let i = 0; i < phone.length; i++) {
-            const element = phone[i];
+                newDocuments.push(newElement);
+            }
+
+            let newPhonesNumber = [];
+            for (let i = 0; i < phone.length; i++) {
+                const element = phone[i];
+                
+                let newElement = {};
+                //newElement.id           = i+1;
+                newElement.number       = element.number.toString();
+                newElement.phoneType    = {id:element.phoneType.value, name:element.phoneType.label}
+
+                newPhonesNumber.push(newElement);
+            }
+
+            let newAddressList = [];
+            for (let i = 0; i < address.length; i++) {
+                const element = address[i];
+
+                element.dirType     = {id:element.dirType.value, name:element.dirType.label};
+                element.region      = {id:element.region.value, name:element.region.label};
+                element.province    = {id:element.province.value, name:element.province.label};
+                element.comuna      = {id:element.comuna.value, name:element.comuna.label};
+
+                newAddressList.push(element);
+            }
+
+            let newBankData             = {};
+            newBankData.bank            = {id: bank.value,          name:bank.label};
+            newBankData.accountType     = {id: accountType.value,   name:accountType.label};
+            newBankData.owner           = owner;
+            newBankData.rut             = rut;
+            newBankData.number          = number;
+
+            let formatProcessId         = {};
+            formatProcessId.id          = processId.value;
+            formatProcessId.name        = processId.label;
             
-            let newElement = {};
-            //newElement.id           = i+1;
-            newElement.number       = element.number.toString();
-            newElement.phoneType    = {id:element.phoneType.value, name:element.phoneType.label}
+            let data = {
+                //user
+                requestId,
+                firstName,
+                lastName,
+                birthDate:              moment(birthDate).format('YYYY/MM/DD'),
+                genderId:               genderId.value,
+                nationalityId:          nationalityId.value,
+                phone:                  newPhonesNumber,
+                logo,                   //null
+                document:               newDocuments,
+                partner,                //array
+                address:                newAddressList,
+                paymentCong:            newBankData,
+                startActivityAttachment,
+                employees:              Number(employees),
+                startActivity,
+                isLocal,
+                processId:              formatProcessId
+            }
 
-            newPhonesNumber.push(newElement);
+            //var binaryDataToArray = Array.from(binaryData);
+            if(startActivity){
+                data.startActivityAttachment = binaryData;
+            }
+            
+            axios({
+                url: urlUpdate,
+                method: 'PUT',
+                data
+            }).then((res) => {
+                console.log(res);
+                setsending(false);
+            }).catch((err) => {
+                console.error(err);
+                setsending(false);
+            });
+            
+            console.log(data);
         }
-
-        let newAddressList = [];
-        for (let i = 0; i < address.length; i++) {
-            const element = address[i];
-
-            element.dirType     = {id:element.dirType.value, name:element.dirType.label};
-            element.region      = {id:element.region.value, name:element.region.label};
-            element.province    = {id:element.province.value, name:element.province.label};
-            element.comuna      = {id:element.comuna.value, name:element.comuna.label};
-
-            newAddressList.push(element);
-        }
-
-        let newBankData             = {};
-        newBankData.bank            = {id: bank.value,          name:bank.label};
-        newBankData.accountType     = {id: accountType.value,   name:accountType.label};
-        newBankData.owner           = owner;
-        newBankData.rut             = rut;
-        newBankData.number          = number;
-
-        let formatProcessId         = {};
-        formatProcessId.id          = processId.value;
-        formatProcessId.name        = processId.label;
-        
-        let data = {
-            //user
-            requestId,
-            firstName,
-            lastName,
-            birthDate:              moment(birthDate).format('YYYY/MM/DD'),
-            genderId:               genderId.value,
-            nationalityId:          nationalityId.value,
-            phone:                  newPhonesNumber,
-            logo,                   //null
-            document:               newDocuments,
-            partner,                //array
-            address:                newAddressList,
-            paymentCong:            newBankData,
-            startActivityAttachment,
-            employees:              Number(employees),
-            startActivity,
-            isLocal,
-            processId:              formatProcessId
-        }
-
-        //var binaryDataToArray = Array.from(binaryData);
-        if(startActivity){
-            data.startActivityAttachment = binaryData;
-        }
-        
-        axios({
-            url: urlUpdate,
-            method: 'PUT',
-            data
-        }).then((res) => {
-            console.log(res);
-        }).catch((err) => {
-            console.error(err);
-        });
-        
-        console.log(data);
         
     }
 
@@ -204,8 +317,15 @@ function UpdateSeller() {
                                                 value={firstName}
                                                 onChange={(e) => setfirstName(e.target.value)}
                                                 placeholder="Nombre" 
-                                                className="form-control"
+                                                className={((typeof errors === 'object' && errors.hasOwnProperty('firstName') ? 'is-invalid' : '') +' form-control')}
                                             />
+                                            {(typeof errors === 'object' && errors.hasOwnProperty('firstName')) &&
+                                                <div className="help-block text-danger font-weight-bold">
+                                                    <small>
+                                                        {errors.firstName}
+                                                    </small>
+                                                </div>
+                                            }
                                         </div>
                                     </Col>
                                     <Col md="6">
@@ -217,8 +337,15 @@ function UpdateSeller() {
                                                 value={lastName}
                                                 onChange={(e) => setlastName(e.target.value)}
                                                 placeholder="Apellido" 
-                                                className="form-control"
+                                                className={((typeof errors === 'object' && errors.hasOwnProperty('lastName') ? 'is-invalid' : '') +' form-control')}
                                             />
+                                            {(typeof errors === 'object' && errors.hasOwnProperty('lastName')) &&
+                                                <div className="help-block text-danger font-weight-bold">
+                                                    <small>
+                                                        {errors.lastName}
+                                                    </small>
+                                                </div>
+                                            }
                                         </div>
                                     </Col>
                                     <Col md="12">
@@ -230,20 +357,41 @@ function UpdateSeller() {
                                                 onChange={(date) => setbirthDate(date)}
                                                 dateFormat="YYYY-MM-DD"
                                                 timeFormat={false}
-                                                inputProps={{ placeholder: "Fecha de nacimiento" }}
+                                                inputProps={{ placeholder: "Fecha de nacimiento", className: ((typeof errors === 'object' && errors.hasOwnProperty('lastName') ? 'is-invalid' : '') +' form-control') }}
                                             />
+                                            {(typeof errors === 'object' && errors.hasOwnProperty('birthDate')) &&
+                                                <div className="help-block text-danger font-weight-bold">
+                                                    <small>
+                                                        {errors.birthDate}
+                                                    </small>
+                                                </div>
+                                            }
                                         </div>
                                     </Col>
                                     <Col md="6">
-                                        <div className="form-group">
+                                        <div className={((typeof errors === 'object' && errors.hasOwnProperty('genderId') ? 'has-error' : '') +' form-group')}>
                                             <label htmlFor="">Género</label>
                                             <GenderSelect onChange={setgenderId} value={genderId} />
+                                            {(typeof errors === 'object' && errors.hasOwnProperty('genderId')) &&
+                                                <div className="help-block text-danger font-weight-bold">
+                                                    <small>
+                                                        {errors.genderId}
+                                                    </small>
+                                                </div>
+                                            }
                                         </div>
                                     </Col>
                                     <Col md="6">
-                                        <div className="form-group">
+                                        <div className={((typeof errors === 'object' && errors.hasOwnProperty('nationalityId') ? 'has-error' : '') +' form-group')}>
                                             <label htmlFor="">Nacionalidad</label>
                                             <NationalitySelect onChange={setnationalityId} value={nationalityId} />
+                                            {(typeof errors === 'object' && errors.hasOwnProperty('nationalityId')) &&
+                                                <div className="help-block text-danger font-weight-bold">
+                                                    <small>
+                                                        {errors.nationalityId}
+                                                    </small>
+                                                </div>
+                                            }
                                         </div>
                                     </Col>
                                     <Col md="12">     
@@ -267,15 +415,29 @@ function UpdateSeller() {
                             <CardBody className="border-top">
                                 <Row>
                                     <Col md="6">
-                                        <div className="form-group">
+                                        <div  className={((typeof errors === 'object' && errors.hasOwnProperty('bank') ? 'has-error' : '') +' form-group')}>
                                             <label htmlFor="">Banco</label>
                                             <BankSelect value={bank} onChange={setbank} />
+                                            {(typeof errors === 'object' && errors.hasOwnProperty('bank')) &&
+                                                <div className="help-block text-danger font-weight-bold">
+                                                    <small>
+                                                        {errors.bank}
+                                                    </small>
+                                                </div>
+                                            }
                                         </div>
                                     </Col>
                                     <Col md="6">
-                                        <div className="form-group">
+                                        <div  className={((typeof errors === 'object' && errors.hasOwnProperty('accountType') ? 'has-error' : '') +' form-group')}>
                                             <label htmlFor="">Tipo de cuenta</label>
                                             <AccountBankSelect value={accountType} onChange={setaccountType} />
+                                            {(typeof errors === 'object' && errors.hasOwnProperty('accountType')) &&
+                                                <div className="help-block text-danger font-weight-bold">
+                                                    <small>
+                                                        {errors.accountType}
+                                                    </small>
+                                                </div>
+                                            }
                                         </div>
                                     </Col>
                                     <Col md="6">
@@ -288,8 +450,15 @@ function UpdateSeller() {
                                                 value={owner}
                                                 onChange={(e) => setowner(e.target.value)}
                                                 placeholder="Títular de la cuenta" 
-                                                className="form-control"
+                                                className={((typeof errors === 'object' && errors.hasOwnProperty('owner') ? 'is-invalid' : '') +' form-control')}
                                             />
+                                            {(typeof errors === 'object' && errors.hasOwnProperty('owner')) &&
+                                                <div className="help-block text-danger font-weight-bold">
+                                                    <small>
+                                                        {errors.owner}
+                                                    </small>
+                                                </div>
+                                            }
                                         </div>
                                     </Col>
                                     <Col md="6">
@@ -301,8 +470,15 @@ function UpdateSeller() {
                                                 value={rut}
                                                 onChange={(e) => setrut(e.target.value)}
                                                 placeholder="RUT" 
-                                                className="form-control"
+                                                className={((typeof errors === 'object' && errors.hasOwnProperty('rut') ? 'is-invalid' : '') +' form-control')}
                                             />
+                                            {(typeof errors === 'object' && errors.hasOwnProperty('rut')) &&
+                                                <div className="help-block text-danger font-weight-bold">
+                                                    <small>
+                                                        {errors.rut}
+                                                    </small>
+                                                </div>
+                                            }
                                         </div>
                                     </Col>
                                     <Col md="12">
@@ -314,8 +490,15 @@ function UpdateSeller() {
                                                 value={number}
                                                 onChange={(e) => setnumber(e.target.value)}
                                                 placeholder="Títular de la cuenta" 
-                                                className="form-control"
+                                                className={((typeof errors === 'object' && errors.hasOwnProperty('number') ? 'is-invalid' : '') +' form-control')}
                                             />
+                                            {(typeof errors === 'object' && errors.hasOwnProperty('number')) &&
+                                                <div className="help-block text-danger font-weight-bold">
+                                                    <small>
+                                                        {errors.number}
+                                                    </small>
+                                                </div>
+                                            }
                                         </div>
                                     </Col>
                                 </Row>
@@ -384,9 +567,16 @@ function UpdateSeller() {
                                                 <CustomFileInput returnFileType='base64' value={startActivityAttachment} setBinary={setBinaryData} onChange={setstartActivityAttachment} />
                                             </div>
                                         }
-                                        <div className="form-group">
+                                        <div className={((typeof errors === 'object' && errors.hasOwnProperty('processId') ? 'has-error' : '') +' form-group')}>
                                             <label htmlFor="">Tipo de producción</label>
                                             <ProductionTypeSelect value={processId} onChange={setprocessId} />
+                                            {(typeof errors === 'object' && errors.hasOwnProperty('processId')) &&
+                                                <div className="help-block text-danger font-weight-bold">
+                                                    <small>
+                                                        {errors.processId}
+                                                    </small>
+                                                </div>
+                                            }
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="">Colaboradores</label>
@@ -409,8 +599,15 @@ function UpdateSeller() {
                                                 value={employees}
                                                 onChange={(e) => setemployees(e.target.value)}
                                                 placeholder="N° de empleados" 
-                                                className="form-control"
+                                                className={((typeof errors === 'object' && errors.hasOwnProperty('employees') ? 'is-invalid' : '') +' form-control')}
                                             />
+                                            {(typeof errors === 'object' && errors.hasOwnProperty('employees')) &&
+                                                <div className="help-block text-danger font-weight-bold">
+                                                    <small>
+                                                        {errors.employees}
+                                                    </small>
+                                                </div>
+                                            }
                                         </div>
                                     </Col>
                                     <Col md="12">
@@ -424,15 +621,22 @@ function UpdateSeller() {
                                             id="description"
                                             cols="30" 
                                             rows="4" 
-                                            className="form-control"></textarea>
+                                            className={((typeof errors === 'object' && errors.hasOwnProperty('shopDescription') ? 'is-invalid' : '') +' form-control')}></textarea>
+                                            {(typeof errors === 'object' && errors.hasOwnProperty('shopDescription')) &&
+                                                <div className="help-block text-danger font-weight-bold">
+                                                    <small>
+                                                        {errors.shopDescription}
+                                                    </small>
+                                                </div>
+                                            }
                                         </div>
                                     </Col>
                                 </Row>
                             </CardBody>
                         </Card>
                         <p className="py-2">
-                            <button type="submit" className="btn btn-info d-block w-100">
-                                Actualizar datos
+                            <button disabled={sending} type="submit" className="btn btn-info d-block w-100">
+                                {(!sending) ? 'Actualizar datos' : <p className="mb-0"><i className="fa fa-spin fa-spinner"></i></p>}
                             </button>
                         </p>
                     </Col>

@@ -75,3 +75,9 @@
         }
     }
 }
+
+.has-error{
+    .css-bg1rzq-control{
+        border-color: $danger !important;
+    }
+}

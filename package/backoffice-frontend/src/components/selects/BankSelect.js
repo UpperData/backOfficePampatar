@@ -48,7 +48,7 @@ function BankSelect(props) {
         return (
             <Select 
                 isSearchable={true}
-                placeholder="Región" 
+                placeholder="Banco" 
                 value={(props.value !== undefined && props.value !== null) ? props.value :null} 
                 onChange={handleSelect} 
                 options={list} 

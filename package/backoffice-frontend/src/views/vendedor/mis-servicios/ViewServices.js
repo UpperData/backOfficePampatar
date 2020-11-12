@@ -15,6 +15,7 @@ import {
     Table
 } from 'reactstrap';
 import InlineSpinner from '../../spinner/InlineSpinner';
+import {Link} from 'react-router-dom'
 
 function ViewServices() {
 
@@ -51,8 +52,18 @@ function ViewServices() {
         return (
             <div>
                 <div>
-                    <h1 className="h4 mb-3 font-weight-bold">Listar servicios</h1>
-    
+                    <div className="row pb-3">
+                        <div className="col-md-6">
+                            <h1 className="h4 mb-3 font-weight-bold">Listar servicios</h1>
+                        </div>
+                        <div className="col-md-6">
+                            <div className="text-md-right">
+                                <Link to="/addService" className="btn btn-info btn-sm">
+                                    Nuevo servicio
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
                     {(errormessage !== '') &&
                         <div className="alert alert-danger">
                             {errormessage}

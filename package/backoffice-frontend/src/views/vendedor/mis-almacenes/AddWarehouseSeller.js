@@ -28,6 +28,8 @@ function AddWarehouseSeller(props) {
     const [successmessage, setsuccessmessage] = useState('');
     const [errormessage, seterrormessage] = useState('');
 
+    const [errors, seterrors] = useState({});
+
     const dirType = {id:3, name: "Almacen"};
     const [name,     setname]     = useState('');
 
@@ -108,104 +110,175 @@ function AddWarehouseSeller(props) {
         });
     }
 
+    const validate = () => {
+        let errorsCount = 0;
+        let thiserrors = {};
+
+        //name
+        if(name.trim() === ''){
+            thiserrors.name = 'Debe ingresar un nombre para el almacen';
+            errorsCount++;
+        }else if(name.trim().length < 6){
+            thiserrors.name = 'El nombre del almacen ingresado es demasiado corto';
+            errorsCount++;
+        }else if(name.trim().length > 40){
+            thiserrors.name = 'El nombre del almacen ingresado es demasiado largo';
+            errorsCount++;
+        }
+
+        //region
+        if(region === null){
+            thiserrors.region = 'Debe seleccionar una región';
+            errorsCount++;
+        }
+
+        //province
+        if(province === null){
+            thiserrors.province = 'Debe seleccionar una provincia';
+            errorsCount++;
+        }
+
+        //comuna
+        if(comuna === null){
+            thiserrors.comuna = 'Debe seleccionar una comuna';
+            errorsCount++;
+        }
+
+        //street
+        if(street.trim() === ''){
+            thiserrors.street = 'Debe ingresar una dirección de calle';
+            errorsCount++;
+        }
+
+        //number
+        if(number.trim() === ''){
+            thiserrors.number = 'Debe ingresar un número de dirección';
+            errorsCount++;
+        }
+
+        //local
+        if(local.trim() === ''){
+            thiserrors.local = 'Debe ingresar una dirección de local';
+            errorsCount++;
+        }
+
+        //phones
+        if(phonesNumber.length === 0){
+            thiserrors.phone = 'Debe ingresar como mínimo un número de teléfono';
+            errorsCount++;
+        }
+
+        if(errorsCount > 0){
+            seterrors(thiserrors);
+            return false;
+        }
+
+        return true;
+    }
+
     const addWarehouse = (e) => {
         e.preventDefault();
         e.stopPropagation();
+
+        seterrors({});
         setsuccessmessage('');
         seterrormessage('');
 
         let url = '/warehouse';
-
         let newPhonesNumber = [];
-        for (let i = 0; i < phonesNumber.length; i++) {
-            const element = phonesNumber[i];
-            let newElement = {};
+        
+        let validation = validate();
+        
+        if(validation){
 
-            newElement.number = new Number(element.number);
-            newElement.phoneType = {id:element.phoneType.value, name:element.phoneType.label}
+            setsending(true);
 
-            newPhonesNumber.push(newElement);
-        }
-
-        let formatRegion    = {};
-        formatRegion.id     = region.value;
-        formatRegion.name   = region.label;
-
-        let formatProvince    = {};
-        formatProvince.id     = province.value;
-        formatProvince.name   = province.label;
-
-        let formatComuna    = {};
-        formatComuna.id     = comuna.value;
-        formatComuna.name   = comuna.label;
-
-        setsending(true);
-
-        if(props.Edit){
-
-            let data = {
-                id: warehouse.value,
-                name,
-                phone: newPhonesNumber,
-                address: [{
-                    dirType,
-                    region: formatRegion,
-                    province: formatProvince,
-                    comuna: formatComuna,
-                    street,
-                    number,
-                    local
-                }]
+            for (let i = 0; i < phonesNumber.length; i++) {
+                const element = phonesNumber[i];
+                let newElement = {};
+    
+                newElement.number = new Number(element.number);
+                newElement.phoneType = {id:element.phoneType.value, name:element.phoneType.label}
+    
+                newPhonesNumber.push(newElement);
             }
+    
+            let formatRegion            = {};
+                formatRegion.id         = region.value;
+                formatRegion.name       = region.label;
+            let formatProvince          = {};
+                formatProvince.id       = province.value;
+                formatProvince.name     = province.label;
+            let formatComuna            = {};
+                formatComuna.id         = comuna.value;
+                formatComuna.name       = comuna.label;
 
-            axios({
-                url,
-                method: 'put',
-                data
-            }).then((res) => {
-                console.log(res);
-                setsending(false);
-                if(res.data.data.result){
-                    setsuccessmessage('¡Almacen Editado satisfactoriamente!')
-                }else{
-                    seterrormessage(res.data.data.message);
+            if(props.Edit){
+
+                let data = {
+                    id: warehouse.value,
+                    name,
+                    phone: newPhonesNumber,
+                    address: [{
+                        dirType,
+                        region: formatRegion,
+                        province: formatProvince,
+                        comuna: formatComuna,
+                        street,
+                        number,
+                        local
+                    }]
                 }
-            }).catch((err) => {
-                console.error(err);
-                setsending(false);
-            })
-        }else{
 
-            let data = {
-                name,
-                phone: newPhonesNumber,
-                address: [{
-                    dirType,
-                    region: formatRegion,
-                    province: formatProvince,
-                    comuna: formatComuna,
-                    street,
-                    number,
-                    local
-                }]
+                axios({
+                    url,
+                    method: 'put',
+                    data
+                }).then((res) => {
+                    console.log(res);
+                    setsending(false);
+                    if(res.data.data.result){
+                        setsuccessmessage('¡Almacen Editado satisfactoriamente!')
+                    }else{
+                        seterrormessage(res.data.data.message);
+                    }
+                }).catch((err) => {
+                    console.error(err);
+                    setsending(false);
+                })
+            }else{
+
+                let data = {
+                    name,
+                    phone: newPhonesNumber,
+                    address: [{
+                        dirType,
+                        region: formatRegion,
+                        province: formatProvince,
+                        comuna: formatComuna,
+                        street,
+                        number,
+                        local
+                    }]
+                }
+
+                axios({
+                    url,
+                    method: 'post',
+                    data
+                }).then((res) => {
+                    console.log(res);
+                    setsending(false);
+                    if(res.data.data.result){
+                        setsuccessmessage('¡Almacen creado satisfactoriamente!')
+                    }else{
+                        seterrormessage(res.data.data.message);
+                    }
+                }).catch((err) => {
+                    console.error(err);
+                    setsending(false);
+                })
             }
-
-            axios({
-                url,
-                method: 'post',
-                data
-            }).then((res) => {
-                console.log(res);
-                setsending(false);
-                if(res.data.data.result){
-                    setsuccessmessage('¡Almacen creado satisfactoriamente!')
-                }else{
-                    seterrormessage(res.data.data.message);
-                }
-            }).catch((err) => {
-                console.error(err);
-                setsending(false);
-            })
         }
     }
 
@@ -267,8 +340,15 @@ function AddWarehouseSeller(props) {
                                                             value={name}
                                                             onChange={(e) => setname(e.target.value)}
                                                             placeholder="Ingrese el nombre del almacen" 
-                                                            className="form-control"
+                                                            className={((typeof errors === 'object' && errors.hasOwnProperty('name') ? 'is-invalid' : '') +' form-control')}
                                                         />
+                                                        {(typeof errors === 'object' && errors.hasOwnProperty('name')) &&
+                                                            <div className="help-block text-danger font-weight-bold">
+                                                                <small>
+                                                                    {errors.name}
+                                                                </small>
+                                                            </div>
+                                                        }
                                                     </div>
                                                     <h3 className="h6 text-muted">
                                                         Dirección:
@@ -276,29 +356,50 @@ function AddWarehouseSeller(props) {
                                                     <hr/>
                                                 </Col>
                                                 <Col md="6">
-                                                    <div className="form-group">
+                                                    <div className={((typeof errors === 'object' && errors.hasOwnProperty('name') ? 'has-error' : '') +' form-group')}>
                                                         <label htmlFor="warehouseName">Región:</label>
                                                         <RegionsSelect value={region} onChange={setregion} value={region} />
+                                                        {(typeof errors === 'object' && errors.hasOwnProperty('region')) &&
+                                                            <div className="help-block text-danger font-weight-bold">
+                                                                <small>
+                                                                    {errors.region}
+                                                                </small>
+                                                            </div>
+                                                        }
                                                     </div>
                                                 </Col>
                                                 <Col md="6">
-                                                    <div className="form-group">
+                                                    <div className={((typeof errors === 'object' && errors.hasOwnProperty('name') ? 'has-error' : '') +' form-group')}>
                                                         <label htmlFor="warehouseName">Provincia:</label>
                                                         <ProvincesSelect 
                                                             value={province}
                                                             onChange={setprovince}
                                                             idRegion={(region !== null && typeof region === 'object' && region.hasOwnProperty('value') ? region.value : null)} 
                                                         />
+                                                        {(typeof errors === 'object' && errors.hasOwnProperty('province')) &&
+                                                            <div className="help-block text-danger font-weight-bold">
+                                                                <small>
+                                                                    {errors.province}
+                                                                </small>
+                                                            </div>
+                                                        }
                                                     </div>
                                                 </Col>
                                                 <Col md="6">
-                                                    <div className="form-group">
+                                                    <div className={((typeof errors === 'object' && errors.hasOwnProperty('name') ? 'has-error' : '') +' form-group')}>
                                                         <label htmlFor="warehouseName">Comuna:</label>
                                                         <ComunasSelect 
                                                             value={comuna}
                                                             onChange={setcomuna}
                                                             idProvince={(province !== null && typeof province === 'object' && province.hasOwnProperty('value') ? province.value : null)} 
                                                         />
+                                                        {(typeof errors === 'object' && errors.hasOwnProperty('comuna')) &&
+                                                            <div className="help-block text-danger font-weight-bold">
+                                                                <small>
+                                                                    {errors.comuna}
+                                                                </small>
+                                                            </div>
+                                                        }
                                                     </div>
                                                 </Col>
                                                 <Col md="6">
@@ -311,8 +412,15 @@ function AddWarehouseSeller(props) {
                                                             value={street}
                                                             onChange={(e) => setstreet(e.target.value)}
                                                             placeholder="Dirección de calle" 
-                                                            className="form-control"
+                                                            className={((typeof errors === 'object' && errors.hasOwnProperty('street') ? 'is-invalid' : '') +' form-control')}
                                                         />
+                                                        {(typeof errors === 'object' && errors.hasOwnProperty('street')) &&
+                                                            <div className="help-block text-danger font-weight-bold">
+                                                                <small>
+                                                                    {errors.street}
+                                                                </small>
+                                                            </div>
+                                                        }
                                                     </div>
                                                 </Col>
                                                 <Col md="6">
@@ -325,8 +433,15 @@ function AddWarehouseSeller(props) {
                                                             value={number}
                                                             onChange={(e) => setnumber(e.target.value)}
                                                             placeholder="Número de departamento" 
-                                                            className="form-control"
+                                                            className={((typeof errors === 'object' && errors.hasOwnProperty('number') ? 'is-invalid' : '') +' form-control')}
                                                         />
+                                                        {(typeof errors === 'object' && errors.hasOwnProperty('number')) &&
+                                                            <div className="help-block text-danger font-weight-bold">
+                                                                <small>
+                                                                    {errors.number}
+                                                                </small>
+                                                            </div>
+                                                        }
                                                     </div>
                                                 </Col>
                                                 <Col md="6">
@@ -339,8 +454,15 @@ function AddWarehouseSeller(props) {
                                                             value={local}
                                                             onChange={(e) => setlocal(e.target.value)}
                                                             placeholder="Local del almacen" 
-                                                            className="form-control"
+                                                            className={((typeof errors === 'object' && errors.hasOwnProperty('local') ? 'is-invalid' : '') +' form-control')}
                                                         />
+                                                        {(typeof errors === 'object' && errors.hasOwnProperty('local')) &&
+                                                            <div className="help-block text-danger font-weight-bold">
+                                                                <small>
+                                                                    {errors.local}
+                                                                </small>
+                                                            </div>
+                                                        }
                                                     </div>
                                                 </Col>
                                             </Row>
@@ -360,6 +482,13 @@ function AddWarehouseSeller(props) {
                                                     <div className="form-group">
                                                         <label htmlFor="warehouseName">Teléfono:</label>
                                                         <PhoneMultiple loadValue={editphonesNumber} value={phonesNumber} onChange={setPhonesNumber} />
+                                                        {(typeof errors === 'object' && errors.hasOwnProperty('phone')) &&
+                                                            <div className="help-block text-danger font-weight-bold">
+                                                                <small>
+                                                                    {errors.phone}
+                                                                </small>
+                                                            </div>
+                                                        }
                                                     </div>
                                                 </Col>
                                             </Row>

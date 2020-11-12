@@ -1,5 +1,4 @@
 import React, {useState, useEffect, useRef, Fragment} from 'react'
-import {useSelector} from 'react-redux'
 import {
     Row,
     Col,
@@ -12,9 +11,7 @@ import {
     Input
 } from 'reactstrap';
 import axios from 'axios'
-import {Link} from 'react-router-dom'
 import InlineSpinner from '../../spinner/InlineSpinner';
-import ServicesSelect from '../../../components/selects/servicesSelect';
 import ProductsSelect from '../../../components/selects/productsSelect';
 
 function AddProduct(props) {
@@ -23,6 +20,8 @@ function AddProduct(props) {
     const [sending, setsending] = useState(false);
     const [successmessage, setsuccessmessage] = useState('');
     const [errormessage, seterrormessage] = useState('');
+
+    const [errors, seterrors] = useState({});
 
     const [name,     setname]     = useState('');
     const [product, setproduct] = useState(null);
@@ -58,65 +57,96 @@ function AddProduct(props) {
         });
     }
 
+    const validate = () => {
+        let errorsCount = 0;
+        let thiserrors = {};
+
+        //name
+        if(name.trim() === ''){
+            thiserrors.name = 'Debe ingresar un nombre para el producto';
+            errorsCount++;
+        }else if(name.trim().length < 6){
+            thiserrors.name = 'El nombre del producto ingresado es demasiado corto';
+            errorsCount++;
+        }else if(name.trim().length > 40){
+            thiserrors.name = 'El nombre del producto ingresado es demasiado largo';
+            errorsCount++;
+        }
+
+        if(errorsCount > 0){
+            seterrors(thiserrors);
+            return false;
+        }
+
+        return true;
+    }
+
     const addWarehouse = (e) => {
         e.preventDefault();
         e.stopPropagation();
+
+        seterrors({});
         setsuccessmessage('');
         seterrormessage('');
 
-        setsending(true);
+        let validation = validate();
 
-        if(props.Edit){
+        if(validation){
+            setsending(true);
 
-            let url = '/sku/edit';
-            let data = {
-                id: product.value,
-                name,
+            if(props.Edit){
+
+                let url = '/sku/edit';
+                let data = {
+                    id: product.value,
+                    name,
+                }
+
+                axios({
+                    url,
+                    method: 'put',
+                    data
+                }).then((res) => {
+                    console.log(res);
+                    setsending(false);
+                    if(res.data.data.result){
+                        setsuccessmessage('¡Producto editado satisfactoriamente!')
+                        reset();
+                    }else{
+                        seterrormessage(res.data.data.message);
+                        reset();
+                    }
+                }).catch((err) => {
+                    console.error(err);
+                    setsending(false);
+                })
+            }else{
+                
+                let url = '/sku/add';
+                let data = {
+                    name
+                }
+
+                axios({
+                    url,
+                    method: 'post',
+                    data
+                }).then((res) => {
+                    console.log(res);
+                    setsending(false);
+                    if(res.data.data.result){
+                        setsuccessmessage('¡Producto creado satisfactoriamente!');
+                        reset();
+                    }else{
+                        seterrormessage(res.data.data.message);
+                        reset();
+                    }
+                }).catch((err) => {
+                    console.error(err);
+                    setsending(false);
+                })
             }
 
-            axios({
-                url,
-                method: 'put',
-                data
-            }).then((res) => {
-                console.log(res);
-                setsending(false);
-                if(res.data.data.result){
-                    setsuccessmessage('¡Producto editado satisfactoriamente!')
-                    reset();
-                }else{
-                    seterrormessage(res.data.data.message);
-                    reset();
-                }
-            }).catch((err) => {
-                console.error(err);
-                setsending(false);
-            })
-        }else{
-            
-            let url = '/sku/add';
-            let data = {
-                name
-            }
-
-            axios({
-                url,
-                method: 'post',
-                data
-            }).then((res) => {
-                console.log(res);
-                setsending(false);
-                if(res.data.data.result){
-                    setsuccessmessage('¡Producto creado satisfactoriamente!');
-                    reset();
-                }else{
-                    seterrormessage(res.data.data.message);
-                    reset();
-                }
-            }).catch((err) => {
-                console.error(err);
-                setsending(false);
-            })
         }
     }
 
@@ -181,8 +211,15 @@ function AddProduct(props) {
                                                             value={name}
                                                             onChange={(e) => setname(e.target.value)}
                                                             placeholder="Ingrese el nombre del producto" 
-                                                            className="form-control"
+                                                            className={((typeof errors === 'object' && errors.hasOwnProperty('name') ? 'is-invalid' : '') +' form-control')}
                                                         />
+                                                        {(typeof errors === 'object' && errors.hasOwnProperty('name')) &&
+                                                            <div className="help-block text-danger font-weight-bold">
+                                                                <small>
+                                                                    {errors.name}
+                                                                </small>
+                                                            </div>
+                                                        }
                                                     </div>
                                                 </Col>
                                             </Row>
