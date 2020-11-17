@@ -147,7 +147,7 @@ const ProcessRequest = () => {
                                         </tbody>
                                     </Table>
                                     {(data.length === 0) &&
-                                        <p colSpan="5">
+                                        <p className="text-center">
                                             Sin solicitudes pendientes por aprobar
                                         </p>
                                     }

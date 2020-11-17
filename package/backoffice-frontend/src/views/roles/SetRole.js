@@ -8,6 +8,7 @@ import { AuthenticationService } from '../../jwt/_services';
 
 function SetRole(props) {
 
+    console.log('ok');
     const session = useSelector(state => state.session);
     const backoffice = useSelector(state => state.backoffice);
     const [setting, setsetting] = useState(false);

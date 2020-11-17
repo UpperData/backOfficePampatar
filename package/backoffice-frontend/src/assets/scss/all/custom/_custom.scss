@@ -81,3 +81,12 @@
         border-color: $danger !important;
     }
 }
+
+.img-circle{
+    width: 230px;
+    height: 230px;
+    border-radius: 50%;
+    box-shadow: $box-shadow;
+    background-size: cover;
+    background-repeat: no-repeat;
+}

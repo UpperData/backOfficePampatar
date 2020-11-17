@@ -4,8 +4,12 @@ import { lazy } from "react";
 const Home = lazy(() => import("../views/dashboards/Home"));
 const Profile = lazy(() => import("../views/sample-pages/Profile"));
 
-const ProcessRequest = lazy(() => import("../views/administrador/postulaciones/procesar/ProcessRequest"));
-const CreateContract = lazy(() => import("../views/administrador/contratos/CreateContrat"));
+const ProcessRequest        = lazy(()     => import("../views/administrador/postulaciones/procesar/ProcessRequest"));
+const CreateContract        = lazy(()     => import("../views/administrador/contratos/CreateContrat"));
+const FindContract          = lazy(()     => import("../views/administrador/contratos/FindContract"));
+const FindContractByShop    = lazy(()     => import("../views/administrador/contratos/FindContractByShop"));
+
+//vendedor
 
 const ViewWarehouseSeller = lazy(() => import("../views/vendedor/mis-almacenes/ViewWarehouseSeller"));
 const AddWarehouseSeller = lazy(() => import("../views/vendedor/mis-almacenes/AddWarehouseSeller"));
@@ -19,8 +23,10 @@ const ViewProducts = lazy(() => import("../views/vendedor/mis-productos/ViewProd
 const AddProduct = lazy(() => import("../views/vendedor/mis-productos/AddProduct"));
 const EditProduct = lazy(() => import("../views/vendedor/mis-productos/EditProduct"));
 
+const AddProductSeller = lazy(() => import("../views/vendedor/inventario/AddProductSeller"));
 
 const UpdateSeller = lazy(() => import("../views/vendedor/configuraciones/UpdateSeller"));
+const AttachmentLogo = lazy(() => import("../views/vendedor/configuraciones/AttachmentLogo"));
 
 //const auths = [].concat(AuthRoutes);
 
@@ -107,6 +113,19 @@ var ThemeRoutesByRole = [
     component: UpdateSeller,
     onlyRoute:true
   },
+  {
+    path: "/attachmentLogo",
+    name: "Añadir logo",
+    component: AttachmentLogo,
+    onlyRoute:true
+  },
+   //inventario
+   {
+    path: "/addProductSeller",
+    name: "Incorporar lote",
+    component: AddProductSeller,
+    onlyRoute:true
+  },
   //Administrador
   {
     path: "/processRequest",
@@ -116,8 +135,20 @@ var ThemeRoutesByRole = [
   },
   {
     path: "/createContrat",
-    name: "Procesar postulacion",
+    name: "Crear contratos",
     component: CreateContract,
+    onlyRoute:true
+  },
+  {
+    path: "/findContract",
+    name: "Buscar contratos",
+    component: FindContract,
+    onlyRoute:true
+  },
+  {
+    path: "/findContract/shop/:id",
+    name: "Buscar contratos por tienda",
+    component: FindContractByShop,
     onlyRoute:true
   },
   {

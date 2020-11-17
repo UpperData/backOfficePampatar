@@ -1,12 +1,14 @@
 import {
     LOGIN,
-    LOGOUT
+    LOGOUT,
+    SET_STORE_LOGO
   } from "../constants/";
   
   const INIT_STATE = {
     auth: false,
     token: '',
-    userData : null
+    userData : null,
+    storeLogo: null
   };
   
   export default (state = INIT_STATE, action) => {
@@ -22,7 +24,13 @@ import {
             ...state,
             auth: false,
             token: '',
-            userData : null
+            userData : null,
+            storeLogo: null
+        };
+      case SET_STORE_LOGO:
+        return {
+            ...state,
+            storeLogo: action.payload,
         };
       default:
         return state;

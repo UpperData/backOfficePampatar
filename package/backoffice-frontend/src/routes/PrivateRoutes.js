@@ -7,14 +7,17 @@ import Spinner from '../views/spinner/Spinner'
 export const PrivateRoute = ({ component: Component, ...rest }) => {
   const session = useSelector(state => state.session);
   const backoffice = useSelector(state => state.backoffice);
+
   let sinMenu = session.auth && backoffice.hasOwnProperty('role') && !backoffice.role.hasOwnProperty('id') && backoffice.menu === null;
+  let RoleInLocalStorage = localStorage.getItem('role');
+  let validRole = RoleInLocalStorage !== undefined && Number(RoleInLocalStorage) > -1 && RoleInLocalStorage !== null;
   
   return (
     <Route
       {...rest}
       render={(props) => {
         //const currentUser = AuthenticationService.currentUserValue;
-        console.log(sinMenu);
+        //console.log(sinMenu);
 
         if (!session.auth) {
           // Si no esta logueado envia al login
@@ -26,9 +29,13 @@ export const PrivateRoute = ({ component: Component, ...rest }) => {
               }}
             />
           );
-        }else if (session.auth && backoffice.hasOwnProperty('role') && !backoffice.role.hasOwnProperty('id')) {
+        }else if (session.auth && backoffice.hasOwnProperty('role') && !backoffice.role.hasOwnProperty('id') && !validRole) {
           // si no tiene un rol envia a seleccionar el rol
+          console.log(session.auth);
+          console.log(validRole);
+          console.log(RoleInLocalStorage);
           console.log('redireccionando al select de roles');
+          
           return (
             <Redirect
               to={{
@@ -37,6 +44,10 @@ export const PrivateRoute = ({ component: Component, ...rest }) => {
               }}
             />
           );
+        }else if(session.auth && backoffice.hasOwnProperty('role') && !backoffice.role.hasOwnProperty('id') && backoffice.menu === null && validRole){
+          return (
+            <Spinner />
+          )
         }else if(session.auth && backoffice.hasOwnProperty('role') && backoffice.role.hasOwnProperty('id') && backoffice.menu === null){
           return (
             <Spinner />

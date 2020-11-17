@@ -115,7 +115,7 @@ export default (props) => {
                 } else if (prop.onlyRoute) {
                   //console.log('renderizando ruta unica:', prop);
                   return (
-                    <Route path={prop.path}component={prop.component} key={key} />
+                    <Route exact path={prop.path} component={prop.component} key={key} />
                   );
                 }else {
                   return (

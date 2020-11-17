@@ -1,6 +1,7 @@
 // SESSION CONSTANTS
 export const LOGIN = "LOGIN";
 export const LOGOUT = "LOGOUT";
+export const SET_STORE_LOGO = "SET_STORE_LOGO";
 
 // BACKOFFICE CONSTANTS
 export const SET_ROLE = "SET_ROLE";

@@ -10,7 +10,7 @@ import {PublicRoute} from "./routes/PublicRoute";
 import { AuthenticationService } from "./jwt/_services";
 
 import {useSelector, useDispatch} from 'react-redux'
-import {handleLogin} from './redux/session/Actions'
+import {handleLogin, set_store_logo} from './redux/session/Actions'
 import { 
   set_backoffice_menu, 
   set_role, 
@@ -29,6 +29,7 @@ from "./redux/backoffice/Actions";
 
 //components
 import SetRole from "./views/roles/SetRole";
+import Spinner from "./views/spinner/Spinner";
 
 let urls = {
   development: process.env.REACT_APP_DEV_API_URL,
@@ -79,7 +80,7 @@ const AppRouter = (props) => {
         let result = AuthenticationService.getMenuItems(roleUrl);
         result.then((res) => {
           //console.log(res);
-          props.history.push('/');
+          //props.history.push('/');
           dispatch(set_backoffice_menu(res.data));
         }).catch((err) => {
           console.error(err);
@@ -167,9 +168,11 @@ const AppRouter = (props) => {
           if(backoffice.addressTypes === null){
             dispatch(set_address_types());
           }
-        }
 
-        console.log('Render Router');
+          if(session.storeLogo === null){
+            dispatch(set_store_logo());
+          }
+        }
 
         if(backoffice.role.hasOwnProperty('id')){
           let roleUrl = `/admin-panel/${backoffice.role.id}`;
@@ -182,6 +185,8 @@ const AppRouter = (props) => {
           let getRoleByUser = roles.find(item => item.id === Number(RoleInLocalStorage));
           dispatch(set_role(getRoleByUser));
         }
+
+        console.log('Render Router');
       }
     }
   });
@@ -190,7 +195,6 @@ const AppRouter = (props) => {
     return (
         
           <Switch>
-
             <Route exact path='/account/set-role' component={SetRole} />
               
             {AuthRoutes.map((prop, key) => {
@@ -211,21 +215,13 @@ const AppRouter = (props) => {
                   component={prop.component}
                 />
               );
-            })}
-
-
-            {/*(!session.auth) &&
-              <Fragment>
-                <Redirect from="/account/set-role" to='/authentication/Login' />
-              </Fragment>
-            */}
-            
+            })}            
           </Switch>
   
     );
   }else{
     return (
-      ''
+      <Spinner />
     )
   }
 };

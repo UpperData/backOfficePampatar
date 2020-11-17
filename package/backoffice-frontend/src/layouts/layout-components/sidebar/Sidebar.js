@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Nav, Collapse } from "reactstrap";
+import { Nav, Collapse, UncontrolledTooltip } from "reactstrap";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { useSelector, useDispatch } from "react-redux";
 import FeatherIcon from "feather-icons-react";
@@ -90,7 +90,7 @@ const Sidebar = (props) => {
       return str;
   }
 
-  console.log(backoffice.menu);
+  //console.log(backoffice.menu);
 
   const formatRoutesByRoleToSidebar = (routes) => {
     let formattedRoutes = [];
@@ -99,7 +99,7 @@ const Sidebar = (props) => {
       const thisRoute = routes[i];
       const thisRouteData = thisRoute;
 
-      //console.log(thisRouteData.module);
+      //console.log(thisRouteData);
       //console.log(slugify(thisRouteData.module));
 
       let thisRouteFormatted        = {};
@@ -118,6 +118,9 @@ const Sidebar = (props) => {
           let thisSubPageData     = {};
           thisSubPageData.icon    = '';
           thisSubPageData.name    =  thisSubPage.name;
+          //277
+          thisSubPageData.desc    =  thisSubPage.desc;
+          thisSubPageData.subkey  =  thisSubPage.id;
           thisSubPageData.path    =  thisSubPage.route;
 
           subpages.push(thisSubPageData);
@@ -138,6 +141,12 @@ const Sidebar = (props) => {
   if(backoffice.menu !== null){
     routesByRole = formatRoutesByRoleToSidebar(backoffice.menu);
     renderRoutes = renderRoutes.concat(routesByRole);
+  }
+
+  let logoshop = '';
+
+  if(role === 'Vendedor' && session.storeLogo !== null){
+    logoshop = String.fromCharCode.apply(null, session.storeLogo);
   }
 
   return (
@@ -163,7 +172,23 @@ const Sidebar = (props) => {
                 className="sidebar-link has-arrow"
                 aria-expanded="false"
               >
-                <img src={profile} alt="user" />
+                {
+                (role === 'Vendedor') 
+                  ?
+                    <img
+                      src={`data:image/png;base64,${logoshop}`}
+                      alt="user"
+                      className="rounded-circle"
+                      width="60"
+                    />
+                  :
+                    <img
+                      src={profile}
+                      alt="user"
+                      className="rounded-circle"
+                      width="60"
+                    />
+                }
                 <span className="hide-menu">
                   {(role === 'Vendedor') ? shopName : role}
                 </span>
@@ -222,9 +247,6 @@ const Sidebar = (props) => {
                       aria-expanded={state[prop.state]}
                       onClick={() => setState(firstdd)}
                     >
-                      {/*
-                        <FeatherIcon icon={prop.icon} />
-                      */}
                       <i className={prop.icon} />
                       <span className="hide-menu">{prop.name}</span>
                     </span>
@@ -288,24 +310,29 @@ const Sidebar = (props) => {
                             );
                           } else {
                             return (
-                              <li
-                                onClick={showMobilemenu && scrollTop}
-                                className={
-                                  activeRoute(prop.path) +
-                                  (prop.pro ? " active active-pro" : "") +
-                                  " sidebar-item"
-                                }
-                                key={key}
-                              >
-                                <NavLink
-                                  to={prop.path}
-                                  className="sidebar-link"
-                                  activeClassName="active"
+                              <Fragment key={key}>
+                                <UncontrolledTooltip placement="top" target={`tooltip-nav-${prop.subkey}`}>
+                                  {prop.desc}
+                                </UncontrolledTooltip>
+                                <li
+                                  onClick={showMobilemenu && scrollTop}
+                                  className={
+                                    activeRoute(prop.path) +
+                                    (prop.pro ? " active active-pro" : "") +
+                                    " sidebar-item"
+                                  }
+                                  id={`tooltip-nav-${prop.subkey}`}
                                 >
-                                  <i className={prop.icon} />
-                                  <span className="hide-menu">{prop.name}</span>
-                                </NavLink>
-                              </li>
+                                  <NavLink
+                                    to={prop.path}
+                                    className="sidebar-link"
+                                    activeClassName="active"
+                                  >
+                                      <i className={prop.icon} />
+                                      <span className="hide-menu">{prop.name}</span>
+                                  </NavLink>
+                                </li>
+                              </Fragment>
                             );
                           }
                         })}

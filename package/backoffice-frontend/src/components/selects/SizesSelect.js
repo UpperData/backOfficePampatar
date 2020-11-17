@@ -2,32 +2,31 @@ import React, {useState, useEffect} from 'react'
 import Select from 'react-select'
 import axios from 'axios'
 
-function WarehouseSelect(props) {
+function SizesSelect(props) {
 
     const [list, setList]       = useState([]);
     const [loading, setLoading] = useState(true);
     const [search,  setsearch]  = useState(true);
-    let url = '/myWarehouse';
+    let url = 'getSize/all/generals/';
 
     useEffect(() => {
         if(loading){
             if(search){
                 setsearch(false);
                 axios.get(url).then((res) => {
-                    let warehouses = res.data.data.values;
+                    console.log(res.data);
+                    let product = res.data.data.rows;
                     let newList = [];
 
-                    for(var i=0; i < warehouses.length; i++){
+                    for(var i=0; i < product.length; i++){
                         
-                        let thisElement = warehouses[i];
+                        let thisElement = product[i];
 
                         let formattedElement = {};
                         formattedElement.label = thisElement.name;
                         formattedElement.value = thisElement.id;
 
-                        if(formattedElement.label !== 'Pampatar'){
-                            newList.push(formattedElement);
-                        }
+                        newList.push(formattedElement);
                     }            
 
                     setList(newList);
@@ -48,7 +47,7 @@ function WarehouseSelect(props) {
     if(loading){
         return (
             <Select 
-                placeholder="Cargando lista de almacenes"  
+                placeholder="Cargando"  
                 options={[]} 
             />
         )
@@ -56,7 +55,7 @@ function WarehouseSelect(props) {
         return (
             <Select 
                 isSearchable={true}
-                placeholder="Almacen" 
+                placeholder="Tamaño" 
                 value={(props.value !== undefined && props.value !== null) ? props.value :null} 
                 onChange={handleSelect} 
                 options={list} 
@@ -65,4 +64,4 @@ function WarehouseSelect(props) {
     }
 }
 
-export default WarehouseSelect
+export default SizesSelect

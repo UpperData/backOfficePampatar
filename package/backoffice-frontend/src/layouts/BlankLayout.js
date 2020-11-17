@@ -10,7 +10,7 @@ const BlankLayout = () => {
           if (prop.redirect)
             return <Redirect from={prop.path} to={prop.pathTo} key={key} />;
           return (
-            <Route path={prop.path} component={prop.component} key={key} />
+            <Route exact path={prop.path} component={prop.component} key={key} />
           );
         })}
       </Switch>

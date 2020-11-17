@@ -48,6 +48,11 @@ export default () => {
   let shopName = session.userData.shop.name;
   let role = backoffice.role.name;
   let account = session.userData.account;
+  let logoshop = '';
+
+  if(role === 'Vendedor' && session.storeLogo !== null){
+    logoshop = String.fromCharCode.apply(null, session.storeLogo);
+  }
 
   const toggle = () => {
     setIsOpen(!isOpen);
@@ -222,22 +227,42 @@ export default () => {
             {/*--------------------------------------------------------------------------------*/}
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav caret className="pro-pic">
-                <img
-                  src={profilephoto}
-                  alt="user"
-                  className="rounded-circle"
-                  width="31"
-                />
+                  {(role === 'Vendedor') 
+                    ?
+                      <img
+                        src={`data:image/png;base64,${logoshop}`}
+                        alt="user"
+                        className="rounded-circle"
+                        width="31"
+                      />
+                    :
+                      <img
+                        src={profilephoto}
+                        alt="user"
+                        className="rounded-circle"
+                        width="31"
+                      />
+                  }
               </DropdownToggle>
               <DropdownMenu right className="user-dd">
                 <div className="d-flex no-block align-items-center p-3 bg-white mb-2">
                   <div className="">
-                    <img
-                      src={profilephoto}
-                      alt="user"
-                      className="rounded-circle"
-                      width="60"
-                    />
+                    {(role === 'Vendedor') 
+                    ?
+                      <img
+                        src={`data:image/png;base64,${logoshop}`}
+                        alt="user"
+                        className="rounded-circle"
+                        width="60"
+                      />
+                    :
+                      <img
+                        src={profilephoto}
+                        alt="user"
+                        className="rounded-circle"
+                        width="60"
+                      />
+                    }
                   </div>
                   <div className="ml-2">
                     <h4 className="mb-0 font-weight-bold">
