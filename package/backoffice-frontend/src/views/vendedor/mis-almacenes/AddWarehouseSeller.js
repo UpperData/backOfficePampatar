@@ -1,29 +1,23 @@
-import React, {useState, useEffect, useRef, Fragment} from 'react'
-import {useSelector} from 'react-redux'
+import React, {useState} from 'react'
+//import {useSelector} from 'react-redux'
 import {
     Row,
     Col,
     Card,
     CardBody,
-    CardTitle,
-    Breadcrumb, 
-    BreadcrumbItem,
-    FormGroup,
-    Input
+    CardTitle
 } from 'reactstrap';
 import axios from 'axios'
 import RegionsSelect from '../../../components/selects/RegionsSelect';
 import ProvincesSelect from '../../../components/selects/ProvincesSelect';
 import ComunasSelect from '../../../components/selects/ComunasSelect';
-import MultipleSelect from '../../../components/selects/MultipleSelect';
 import PhoneMultiple from '../../../components/phones/phoneMultiple';
-import { send } from 'process';
 import WarehouseSelect from '../../../components/selects/WarehouseSelect';
 import InlineSpinner from '../../spinner/InlineSpinner';
 
 function AddWarehouseSeller(props) {
 
-    const [loading, setloading] = useState(false);
+    //const [loading, setloading] = useState(false);
     const [sending, setsending] = useState(false);
     const [successmessage, setsuccessmessage] = useState('');
     const [errormessage, seterrormessage] = useState('');
@@ -197,7 +191,7 @@ function AddWarehouseSeller(props) {
                 const element = phonesNumber[i];
                 let newElement = {};
     
-                newElement.number = new Number(element.number);
+                newElement.number = Number(element.number);
                 newElement.phoneType = {id:element.phoneType.value, name:element.phoneType.label}
     
                 newPhonesNumber.push(newElement);
@@ -358,7 +352,7 @@ function AddWarehouseSeller(props) {
                                                 <Col md="6">
                                                     <div className={((typeof errors === 'object' && errors.hasOwnProperty('name') ? 'has-error' : '') +' form-group')}>
                                                         <label htmlFor="warehouseName">Región:</label>
-                                                        <RegionsSelect value={region} onChange={setregion} value={region} />
+                                                        <RegionsSelect value={region} onChange={setregion} />
                                                         {(typeof errors === 'object' && errors.hasOwnProperty('region')) &&
                                                             <div className="help-block text-danger font-weight-bold">
                                                                 <small>

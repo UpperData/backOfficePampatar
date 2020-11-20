@@ -1,21 +1,15 @@
-import React, {useState, useEffect, useRef, Fragment} from 'react'
-import {useSelector, useDispatch} from 'react-redux'
+import React, {useState, useEffect} from 'react'
+import {useDispatch} from 'react-redux'
 import {
     Row,
     Col,
     Card,
     CardBody,
     CardTitle,
-    Breadcrumb, 
-    BreadcrumbItem,
-    FormGroup,
-    CustomInput,
-    Input
 } from 'reactstrap';
 import axios from 'axios';
 import CustomFileInput from '../../../components/files/CustomFileInput';
 import DefaultLogo64 from '../../../components/files/DefaultLogo';
-import { send } from 'process';
 import InlineSpinner from '../../spinner/InlineSpinner';
 import { set_store_logo } from '../../../redux/session/Actions';
 
@@ -30,10 +24,10 @@ function AttachmentLogo() {
 
     const [logo, setlogo] = useState(null);
     const [binarylogo, setbinarylogo] = useState(null);
-    const [preview, setpreview] = useState(null);
     const [sending, setsending] = useState(false);
     const [successmessage, setsuccessmessage] = useState('');
 
+    /*
     function _arrayBufferToBase64( buffer ) {
         var binary = '';
         var bytes = new Uint8Array( buffer );
@@ -43,20 +37,31 @@ function AttachmentLogo() {
         }
         return window.btoa( binary );
     }
+    */
+
+    const getData = () => {
+        setSearch(false);
+        axios.get(urlGet)
+        .then((res) => {
+            //let decode = String.fromCharCode.apply(null, res.data.data.rsShop.logo.data);
+            let logoshop = res.data.data.rsShop.logo.data.reduce(
+                function (data, byte) {
+                    return data + String.fromCharCode(byte);
+                },
+                ''
+            );
+            setData(logoshop);
+            setloading(false);
+        }).catch((err) => {
+            console.error(err);
+            setloading(false);
+        });
+    }
 
     useEffect(() => {
         if(loading){
             if(search){
-                setSearch(false);
-                axios.get(urlGet)
-                .then((res) => {
-                    let decode = String.fromCharCode.apply(null, res.data.data.rsShop.logo.data);
-                    setData(decode);
-                    setloading(false);
-                }).catch((err) => {
-                    console.error(err);
-                    setloading(false);
-                });
+                getData();
             }
         }
     });
@@ -124,7 +129,7 @@ function AttachmentLogo() {
                                                 <div className="img-circle mx-auto" style={{backgroundImage: 'url("data:image/png;base64,'+((data !== null && binarylogo === null) ? data : showImg)+'")'}}></div>
                                             </Col>
                                             <Col sm="5">
-                                                <CustomFileInput returnFileType='base64' handlePreview={setpreview} showPreview={true} value={logo} setBinary={setbinarylogo} onChange={setlogo} />
+                                                <CustomFileInput returnFileType='base64' showPreview={true} value={logo} setBinary={setbinarylogo} onChange={setlogo} />
                                                 <small><strong>Nota:</strong> solo puede subir archivos png/jpg/jpeg</small>
                                             </Col>
                                         </Row>

@@ -4,28 +4,37 @@ import {useSelector} from 'react-redux'
 
 function BankSelect(props) {
 
-    const banks = useSelector(state => state.backoffice.banks.rows);
+    const backoffice = useSelector(state => state.backoffice);
+    let banks = [];
+    if(backoffice.banks !== null) {
+        banks = backoffice.banks.rows;
+    }
     const [list, setList] = useState([]);
     const [loading, setLoading] = useState(true);
+    
+    const formatData = () => {
+        let newList = [];
+
+        for(var i=0; i < banks.length; i++){
+            
+            let thisElement = banks[i];
+
+            let formattedElement = {};
+            formattedElement.label = thisElement.name;
+            formattedElement.value = thisElement.id;
+
+            newList.push(formattedElement);
+        }            
+
+        setList(newList);
+        setLoading(false);
+    }
 
     useEffect(() => {
         if(loading){
-
-            let newList = [];
-
-            for(var i=0; i < banks.length; i++){
-                
-                let thisElement = banks[i];
-
-                let formattedElement = {};
-                formattedElement.label = thisElement.name;
-                formattedElement.value = thisElement.id;
-
-                newList.push(formattedElement);
-            }            
-
-            setList(newList);
-            setLoading(false);
+            if(backoffice.banks !== null) {
+                formatData();
+            }
         }
     });
 
@@ -33,7 +42,7 @@ function BankSelect(props) {
         //console.log(selectedOption);
         //props.setRegion({});
         //props.setCity({});
-        console.log(selectedOption);
+        //console.log(selectedOption);
         props.onChange(selectedOption); 
     };
 

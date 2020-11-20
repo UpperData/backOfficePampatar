@@ -4,33 +4,43 @@ import {useSelector} from 'react-redux'
 
 function NationalitySelect(props) {
 
-    const nationalities = useSelector(state => state.backoffice.nationalities.rows);
+    const backoffice = useSelector(state => state.backoffice);
+    let nationalities = [];
+    if(backoffice.nationalities !== null){
+        nationalities = backoffice.nationalities.rows;
+    }
+
     const [list, setList] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const formatData = () => {
+        let newList = [];
+
+        for(var i=0; i < nationalities.length; i++){
+            
+            let thisElement = nationalities[i];
+
+            let formattedElement = {};
+            formattedElement.label = thisElement.name;
+            formattedElement.value = thisElement.id;
+
+            newList.push(formattedElement);
+        }            
+
+        setList(newList);
+        setLoading(false);
+    }
+
     useEffect(() => {
         if(loading){
-
-            let newList = [];
-
-            for(var i=0; i < nationalities.length; i++){
-                
-                let thisElement = nationalities[i];
-
-                let formattedElement = {};
-                formattedElement.label = thisElement.name;
-                formattedElement.value = thisElement.id;
-
-                newList.push(formattedElement);
-            }            
-
-            setList(newList);
-            setLoading(false);
+            if(backoffice.nationalities !== null){
+                formatData();
+            }
         }
     });
 
     const handleSelect = async (selectedOption) => {
-        //console.log(selectedOption);
+        console.log(selectedOption);
         //props.setRegion({});
         //props.setCity({});
         console.log(selectedOption);

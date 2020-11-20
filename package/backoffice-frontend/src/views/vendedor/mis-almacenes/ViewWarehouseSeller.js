@@ -1,5 +1,4 @@
-import React, {useState, useEffect, useRef, Fragment} from 'react'
-import {useSelector} from 'react-redux'
+import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 import {
     Row,
@@ -8,10 +7,6 @@ import {
     CardBody,
     CardTitle,
     UncontrolledTooltip,
-    Breadcrumb, 
-    BreadcrumbItem,
-    FormGroup,
-    Input,
     Table
 } from 'reactstrap';
 import InlineSpinner from '../../spinner/InlineSpinner';
@@ -20,12 +15,12 @@ import {Link} from 'react-router-dom'
 function ViewWarehouseSeller() {
 
     const [loading, setloading] = useState(true)
-    const [search, setsearch] = useState(true);
-    const [sending, setsending] = useState(false);
-    const [data, setdata] = useState(null);
+    const [search, setsearch]   = useState(true);
+    const [data, setdata]       = useState(null);
+    //const [sending, setsending] = useState(false);
 
-    const [errormessage, seterrormessage] = useState('');
-    const [successmessage, setsuccessmessage] = useState('');
+    const errormessage      = '';
+    const successmessage    = '';
 
     let url = '/myWarehouse';
 

@@ -9,36 +9,40 @@ function ProductionTypeSelect(props) {
     const [search,  setsearch]  = useState(true);
     let url = '/getTypeProduction';
 
+    const getData = () => {
+        axios.get(url).then((res) => {
+            let productionTypes = res.data.data.rows;
+            console.log(productionTypes);
+            let newList = [];
+
+            for(var i=0; i < productionTypes.length; i++){
+                
+                let thisElement = productionTypes[i];
+
+                let formattedElement = {};
+                formattedElement.label = thisElement.name;
+                formattedElement.value = thisElement.id;
+
+                newList.push(formattedElement);
+            }            
+
+            console.log(newList);
+            setList(newList);
+            setLoading(false);
+        });
+    }
+
     useEffect(() => {
         if(loading){
             if(search){
                 setsearch(false);
-                axios.get(url).then((res) => {
-                    let productionTypes = res.data.data.rows;
-                    //console.log(productionTypes);
-                    let newList = [];
-
-                    for(var i=0; i < productionTypes.length; i++){
-                        
-                        let thisElement = productionTypes[i];
-
-                        let formattedElement = {};
-                        formattedElement.label = thisElement.name;
-                        formattedElement.value = thisElement.id;
-
-                        newList.push(formattedElement);
-                    }            
-
-                    //console.log(newList);
-                    setList(newList);
-                    setLoading(false);
-                });
+                getData();
             }
         }
-    });
+    }, []);
 
     const handleSelect = async (selectedOption) => {
-        //console.log(selectedOption);
+        console.log(selectedOption);
         //props.setRegion({});
         //props.setCity({});
         console.log(selectedOption);

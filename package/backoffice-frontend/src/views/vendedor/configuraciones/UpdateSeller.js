@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, Fragment} from 'react'
+import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 import moment from 'moment'
 import {useSelector} from 'react-redux'
@@ -9,11 +9,7 @@ import {
     Card,
     CardBody,
     CardTitle,
-    Breadcrumb, 
-    BreadcrumbItem,
-    FormGroup,
     CustomInput,
-    Input
 } from 'reactstrap';
 import GenderSelect from '../../../components/selects/GenderSelect';
 import NationalitySelect from '../../../components/selects/NationalitySelect';
@@ -24,7 +20,6 @@ import PhoneMultiple from '../../../components/phones/phoneMultiple';
 import UserIndentityDocument from '../../../components/helpers/userIndentityDocument'
 import BankSelect from '../../../components/selects/BankSelect';
 import AccountBankSelect from '../../../components/selects/AccountBankSelect';
-import { update } from 'lodash';
 import PartnerPanel from '../../../components/helpers/PartnerPanel';
 import AddressPanel from '../../../components/helpers/AddressPanel';
 import CustomFileInput from '../../../components/files/CustomFileInput';
@@ -34,14 +29,14 @@ import ProductionTypeSelect from '../../../components/selects/TypeProductionSele
 function UpdateSeller() {
 
     let urlUpdate = '/shop/config';
-    let urlValidate = '/getValidShopUpdate';
+    //let urlValidate = '/getValidShopUpdate';
 
     const session = useSelector(state => state.session);
 
     const [loading, setloading]     = useState(true);
     const [search, setsearch]       = useState(true);
     const [sending, setsending]     = useState(false);
-    const [isvald, setisvald]       = useState(false);
+    //const [isvald, setisvald]       = useState(false);
     const [errors, seterrors]       = useState({});
 
     //data
@@ -79,14 +74,14 @@ function UpdateSeller() {
         if(loading){
             if(search){
                 setsearch(false);
-                
+                    /*
                     axios.get(urlValidate)
                     .then((res) => {
                         console.log(res.data);
                     }).catch((err) => {
                         console.error(err);
                     });
-                
+                    */
             }
         } 
     });

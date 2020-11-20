@@ -1,15 +1,10 @@
-import React, {useState, useEffect, useRef, Fragment} from 'react'
-import {useSelector} from 'react-redux'
+import React, {useState} from 'react'
 import {
     Row,
     Col,
     Card,
     CardBody,
     CardTitle,
-    Breadcrumb, 
-    BreadcrumbItem,
-    FormGroup,
-    Input
 } from 'reactstrap';
 import axios from 'axios'
 import InlineSpinner from '../../spinner/InlineSpinner';
@@ -17,7 +12,7 @@ import ServicesSelect from '../../../components/selects/servicesSelect';
 
 function AddService(props) {
 
-    const [loading, setloading] = useState(false);
+    //const [loading, setloading] = useState(false);
     const [sending, setsending] = useState(false);
     const [successmessage, setsuccessmessage] = useState('');
     const [errormessage, seterrormessage] = useState('');

@@ -1,25 +1,13 @@
-import React, {useState, useEffect, useRef, Fragment} from 'react'
-import {useSelector} from 'react-redux'
-import { SketchPicker } from 'react-color';
+import React, {useState} from 'react'
 import {
     Row,
     Col,
     Card,
     CardBody,
     CardTitle,
-    Breadcrumb, 
     CustomInput,
-    BreadcrumbItem,
-    FormGroup,
-    Input
 } from 'reactstrap';
 import axios from 'axios'
-import RegionsSelect from '../../../components/selects/RegionsSelect';
-import ProvincesSelect from '../../../components/selects/ProvincesSelect';
-import ComunasSelect from '../../../components/selects/ComunasSelect';
-import MultipleSelect from '../../../components/selects/MultipleSelect';
-import PhoneMultiple from '../../../components/phones/phoneMultiple';
-import { send } from 'process';
 import WarehouseSelect from '../../../components/selects/WarehouseSelect';
 import InlineSpinner from '../../spinner/InlineSpinner';
 import ProductSelect from '../../../components/selects/ProductSelect';
@@ -28,7 +16,7 @@ import SizesSelect from '../../../components/selects/SizesSelect';
 
 function AddProductSeller(props) {
 
-    const [loading, setloading] = useState(false);
+    //const [loading, setloading] = useState(false);
     const [sending, setsending] = useState(false);
     const [successmessage, setsuccessmessage] = useState('');
     const [errormessage, seterrormessage] = useState('');
@@ -178,15 +166,15 @@ function AddProductSeller(props) {
         setcountvariation(countvariation + 5);
     }
 
-    //console.log(variation);
-    //console.log(variation.length);
+    console.log(variation);
+    console.log(variation.length);
 
     const changeVariationData = (id, keyName, value) => {
         let variationList = variation;
         for (let i = 0; i < variationList.length; i++) {
             const element = variationList[i];
             if(element.id === id){
-                //console.log('Cambiando:'+keyName+' a:'+value);
+                console.log('Cambiando:'+keyName+' a:'+value);
                 element[keyName] = value;
             }
         }
@@ -200,7 +188,7 @@ function AddProductSeller(props) {
         let variationList = variation;
         variationList.splice(id - 1, 1);
         let newVariationList = [];
-        //console.log(variationList);
+        console.log(variationList);
 
         for (let i = 0; i < variationList.length; i++) {
             let format = variationList[i];
@@ -429,8 +417,6 @@ function AddProductSeller(props) {
                                         {variation.length > 0 && variation.length && variation.map((item, key) => {
                                             let search = variation.filter(data => data.id === item.id);
                                             let activeForm = search.length > 0;
-                                            //console.log(isActive[0]);
-                                            //console.log(document);
                                             
                                             return (
                                                 <div className="content-variation" key={key}>

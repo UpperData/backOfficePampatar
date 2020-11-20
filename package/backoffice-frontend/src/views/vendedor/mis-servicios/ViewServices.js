@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useRef, Fragment} from 'react'
-import {useSelector} from 'react-redux'
+import React, {useState, useEffect} from 'react'
+//import {useSelector} from 'react-redux'
 import axios from 'axios'
 import {
     Row,
@@ -7,11 +7,6 @@ import {
     Card,
     CardBody,
     CardTitle,
-    UncontrolledTooltip,
-    Breadcrumb, 
-    BreadcrumbItem,
-    FormGroup,
-    Input,
     Table
 } from 'reactstrap';
 import InlineSpinner from '../../spinner/InlineSpinner';
@@ -21,29 +16,33 @@ function ViewServices() {
 
     const [loading, setloading] = useState(true)
     const [search, setsearch] = useState(true);
-    const [sending, setsending] = useState(false);
+    //const [sending, setsending] = useState(false);
     const [data, setdata] = useState(null);
 
-    const [errormessage, seterrormessage] = useState('');
-    const [successmessage, setsuccessmessage] = useState('');
+    const errormessage = '';
+    const successmessage = '';
 
     let url = '/services/myList';
+
+    const getData = () => {
+        setsearch(false);
+
+        axios.get(url).then((res) => {
+            console.log(res.data.data);
+            if(res.data.data.result){
+                setdata(res.data.data);
+                setloading(false);
+            }
+        }).catch((err) => {
+            console.error(err);
+            setloading(false);
+        });
+    }
 
     useEffect(() => {
         if(loading){
             if(search){
-                setsearch(false);
-
-                axios.get(url).then((res) => {
-                    console.log(res.data.data);
-                    if(res.data.data.result){
-                        setdata(res.data.data);
-                        setloading(false);
-                    }
-                }).catch((err) => {
-                    console.error(err);
-                    setloading(false);
-                });
+                getData();
             }
         }
     }, []);

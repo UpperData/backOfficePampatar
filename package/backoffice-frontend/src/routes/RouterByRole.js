@@ -5,9 +5,12 @@ const Home = lazy(() => import("../views/dashboards/Home"));
 const Profile = lazy(() => import("../views/sample-pages/Profile"));
 
 const ProcessRequest        = lazy(()     => import("../views/administrador/postulaciones/procesar/ProcessRequest"));
+
 const CreateContract        = lazy(()     => import("../views/administrador/contratos/CreateContrat"));
 const FindContract          = lazy(()     => import("../views/administrador/contratos/FindContract"));
 const FindContractByShop    = lazy(()     => import("../views/administrador/contratos/FindContractByShop"));
+
+const BidsSellerAd    = lazy(()     => import("../views/vendedor/publicaciones/BidsSellerAd"));
 
 //vendedor
 
@@ -24,6 +27,7 @@ const AddProduct = lazy(() => import("../views/vendedor/mis-productos/AddProduct
 const EditProduct = lazy(() => import("../views/vendedor/mis-productos/EditProduct"));
 
 const AddProductSeller = lazy(() => import("../views/vendedor/inventario/AddProductSeller"));
+const InventoryService = lazy(() => import("../views/vendedor/inventario/InventoryService"));
 
 const UpdateSeller = lazy(() => import("../views/vendedor/configuraciones/UpdateSeller"));
 const AttachmentLogo = lazy(() => import("../views/vendedor/configuraciones/AttachmentLogo"));
@@ -120,19 +124,28 @@ var ThemeRoutesByRole = [
     onlyRoute:true
   },
    //inventario
-   {
+  {
     path: "/addProductSeller",
     name: "Incorporar lote",
     component: AddProductSeller,
     onlyRoute:true
   },
+  {
+    path: "/service/inventory",
+    name: "Inventariar servicio",
+    component: InventoryService,
+    onlyRoute:true
+  },
   //Administrador
+
+  //postulaciones
   {
     path: "/processRequest",
     name: "Procesar postulacion",
     component: ProcessRequest,
     onlyRoute:true
   },
+  //contratos
   {
     path: "/createContrat",
     name: "Crear contratos",
@@ -149,6 +162,13 @@ var ThemeRoutesByRole = [
     path: "/findContract/shop/:id",
     name: "Buscar contratos por tienda",
     component: FindContractByShop,
+    onlyRoute:true
+  },
+  //publicaciones
+  {
+    path: "/bidsSellerAdd",
+    name: "Crear publicacion",
+    component: BidsSellerAd,
     onlyRoute:true
   },
   {

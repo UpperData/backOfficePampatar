@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, Fragment} from 'react'
+import React, {useState, useEffect, Fragment} from 'react'
 import {
     Col,
 } from 'reactstrap';
@@ -12,7 +12,7 @@ function AddressPanel(props) {
 
     const [address,        setaddress]          = useState([]);
     const [count,          setcount]            = useState(0);
-    const maxAddress = 10;
+    //const maxAddress = 10;
 
     const addAddress = () => {
         let list = address;
@@ -81,7 +81,7 @@ function AddressPanel(props) {
                 <Fragment>
                     {address.map((item, key) => {
 
-                        let errors = [];
+                        //let errors = [];
                         let itemKey = iterator;
                         let thisAddress = address.filter(data => data.id === item.id);
                         let exists = thisAddress.length > 0;

@@ -14,7 +14,7 @@ function PhoneMultiple(props) {
     const addPhoneNumber = () => {
         let listOfPhonesNumber = phonesNumber;
         listOfPhonesNumber.push({id: ( phonesNumber.length + 1), number: '', phoneType: null });
-        //console.log(listOfPhonesNumber);
+        console.log(listOfPhonesNumber);
         setPhonesNumber(listOfPhonesNumber);
         setcount(count + 1);
     }
@@ -23,16 +23,16 @@ function PhoneMultiple(props) {
         let listOfPhonesNumber = phonesNumber;
         listOfPhonesNumber[id - 1].phoneType = option;
 
-        //console.log(listOfPhonesNumber[id - 1]);
-        //console.log(option);
-        //console.log(id);
+        console.log(listOfPhonesNumber[id - 1]);
+        console.log(option);
+        console.log(id);
 
         setPhonesNumber(listOfPhonesNumber);
         setcount(count + 1);
     }
 
     const phoneNumberChange = (data, id) => {
-        //console.log(data);
+        console.log(data);
         let listOfPhonesNumber = phonesNumber;
         listOfPhonesNumber[id - 1].number = data;
 
@@ -52,7 +52,7 @@ function PhoneMultiple(props) {
             newPhonesListFormatted.push(format);
         }
 
-        //console.log(newPhonesListFormatted);
+        console.log(newPhonesListFormatted);
         // setPhonesNumberErrors([]);
 
         setPhonesNumber(newPhonesListFormatted);
@@ -98,7 +98,7 @@ function PhoneMultiple(props) {
 
                         let isError = errors.filter(data => data.id === item.id);
                         let activeError = isError.length > 0;
-                        //console.log(isError);
+                        console.log(isError);
                         
 
                         return (

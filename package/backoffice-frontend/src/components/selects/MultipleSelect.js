@@ -22,14 +22,14 @@ function MultipleSelect(props) {
                 newList.push(newItem);
             }            
 
-            //console.log(newList);
+            console.log(newList);
             setList(newList);
             setloading(false);
         }
     });
 
     const handleSelect = async (selectedOption) => {
-        //console.log(selectedOption);
+        console.log(selectedOption);
         props.change(selectedOption);
     };
 

@@ -1,14 +1,10 @@
-import React, {useState, useEffect, useRef, Fragment} from 'react'
+import React, {useState} from 'react'
 import {
     Row,
     Col,
     Card,
     CardBody,
     CardTitle,
-    Breadcrumb, 
-    BreadcrumbItem,
-    FormGroup,
-    Input
 } from 'reactstrap';
 import axios from 'axios'
 import InlineSpinner from '../../spinner/InlineSpinner';
@@ -16,7 +12,7 @@ import ProductsSelect from '../../../components/selects/productsSelect';
 
 function AddProduct(props) {
 
-    const [loading, setloading] = useState(false);
+    //const [loading, setloading] = useState(false);
     const [sending, setsending] = useState(false);
     const [successmessage, setsuccessmessage] = useState('');
     const [errormessage, seterrormessage] = useState('');

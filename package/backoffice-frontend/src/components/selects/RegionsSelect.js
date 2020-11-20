@@ -4,33 +4,39 @@ import {useSelector} from 'react-redux'
 
 function RegionsSelect(props) {
 
+    const backoffice = useSelector(state => state.backoffice);
     const regions = useSelector(state => state.backoffice.regions.rows);
     const [list, setList] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const formatData = () => {
+        let newList = [];
+
+        for(var i=0; i < regions.length; i++){
+            
+            let thisElement = regions[i];
+
+            let formattedElement = {};
+            formattedElement.label = thisElement.name;
+            formattedElement.value = thisElement.id;
+
+            newList.push(formattedElement);
+        }            
+
+        setList(newList);
+        setLoading(false);
+    }
+
     useEffect(() => {
         if(loading){
-
-            let newList = [];
-
-            for(var i=0; i < regions.length; i++){
-                
-                let thisElement = regions[i];
-
-                let formattedElement = {};
-                formattedElement.label = thisElement.name;
-                formattedElement.value = thisElement.id;
-
-                newList.push(formattedElement);
-            }            
-
-            setList(newList);
-            setLoading(false);
+            if(backoffice.regions !== null){
+                formatData();
+            }
         }
-    });
+    }, []);
 
     const handleSelect = async (selectedOption) => {
-        //console.log(selectedOption);
+        console.log(selectedOption);
         //props.setRegion({});
         //props.setCity({});
         console.log(selectedOption);

@@ -7,6 +7,7 @@ import FeatherIcon from "feather-icons-react";
 
 import profile from "../../../assets/images/users/user.png";
 import { handleLogout } from "../../../redux/session/Actions";
+import DefaultUser from "../../../components/files/DefaultUser";
 
 const Sidebar = (props) => {
 
@@ -144,9 +145,16 @@ const Sidebar = (props) => {
   }
 
   let logoshop = '';
-
   if(role === 'Vendedor' && session.storeLogo !== null){
-    logoshop = String.fromCharCode.apply(null, session.storeLogo);
+    //logoshop = String.fromCharCode.apply(null, session.storeLogo);
+    logoshop = session.storeLogo.reduce(
+        function (data, byte) {
+            return data + String.fromCharCode(byte);
+        },
+        ''
+    );
+    //console.log(session.storeLogo);
+    //console.log(logoshop);
   }
 
   return (
@@ -183,7 +191,7 @@ const Sidebar = (props) => {
                     />
                   :
                     <img
-                      src={profile}
+                      src={`data:image/png;base64,${DefaultUser}`}
                       alt="user"
                       className="rounded-circle"
                       width="60"

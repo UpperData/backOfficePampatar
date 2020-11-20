@@ -26,7 +26,7 @@ function CustomFileInput(props) {
             s = c + s; } return s;
         }
 
-        //console.log(datEncode);
+        console.log(datEncode);
         //return(binArray);
         return datEncode;
     }
@@ -43,7 +43,7 @@ function CustomFileInput(props) {
 
                 auxreader.onloadend = () => {
                     var result = auxreader.result;
-                    props.handlePreview(result);
+                    //props.handlePreview(result);
                 };
 
                 console.log('mostrando preview');
@@ -63,7 +63,7 @@ function CustomFileInput(props) {
 
             if(returnFileType === 'base64'){
                 console.log('base64');
-                //console.log(fileData);
+                console.log(fileData);
 
                 reader.readAsDataURL(fileData);
                 reader.onloadend = () => {
@@ -77,7 +77,7 @@ function CustomFileInput(props) {
 
             if(returnFileType === 'base64-binary'){
                 console.log('base64 to binary');
-                //console.log(fileData);
+                console.log(fileData);
 
                 reader.readAsDataURL(fileData);
                 reader.onloadend = () => {
@@ -118,9 +118,11 @@ function CustomFileInput(props) {
             props.setBinary(null);
             props.onChange(null);
 
+            /*
             if(props.handlePreview){
                 props.handlePreview(null);
             }
+            */
         }
     }
 

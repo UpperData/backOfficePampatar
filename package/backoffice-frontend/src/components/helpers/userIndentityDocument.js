@@ -26,18 +26,18 @@ function UserIndentityDocument(props) {
     let peopleTypeList = backoffice.peopleTypes.rows;
 
     const handleCheckInDocumentTypes = (dataObject) => {
-        //console.log('Check in tipo de documento');
+        console.log('Check in tipo de documento');
         let dataInArray = document;
         let value = dataInArray.find(data => data.docType.id === dataObject.docType.id);
 
         if(!value){
             dataInArray.push(dataObject);
             setdocument(dataInArray);
-            //console.log('Elementos:', dataInArray);
+            console.log('Elementos:', dataInArray);
         }else{
             let dataInArrayWithoutElement = dataInArray.filter(data => data.docType.id !== dataObject.docType.id);
             setdocument(dataInArrayWithoutElement);
-            //console.log('Elementos:', dataInArrayWithoutElement);
+            console.log('Elementos:', dataInArrayWithoutElement);
         }
 
         setcount(count + 2);
@@ -72,8 +72,8 @@ function UserIndentityDocument(props) {
             newDocumentList.push(thisDocument);
         }
 
-        //console.log(documentList);
-        //console.log(newDocumentList);
+        console.log(documentList);
+        console.log(newDocumentList);
 
         setdocument(newDocumentList);
         setcount(count + 2);
@@ -81,7 +81,7 @@ function UserIndentityDocument(props) {
 
     useEffect(() => {
         if(document !== props.value){
-            //console.log('cambiando data', document);
+            console.log('cambiando data', document);
             props.onChange(document);
         }
     });
@@ -117,8 +117,8 @@ function UserIndentityDocument(props) {
                     {userDocumentIderntity.length > 0 && searchDocumentTypes === false && userDocumentIderntity.map((item, key) => {
                         let isActive = document.filter(data => data.docType.id === item.id);
                         let activeInput = isActive.length > 0;
-                        //console.log(isActive[0]);
-                        //console.log(document);
+                        console.log(isActive[0]);
+                        console.log(document);
                         let sendObject = {docType: {id: item.id, name: item.name}, docNumber: ''};
 
                         return (

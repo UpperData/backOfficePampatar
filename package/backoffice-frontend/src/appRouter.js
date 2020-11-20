@@ -37,7 +37,7 @@ let urls = {
 }
 
 axios.defaults.baseURL = urls[process.env.NODE_ENV];
-console.log('cargando ruta de la API:'+ urls[process.env.NODE_ENV]);
+//console.log('cargando ruta de la API:'+ urls[process.env.NODE_ENV]);
 
 const AppRouter = (props) => {
 
@@ -67,9 +67,9 @@ const AppRouter = (props) => {
       tkn = query.get('tkn');
     }
 
-    console.log(withTkn);
-    console.log(tkn);
-    console.log(props.location.pathname);
+    //console.log(withTkn);
+    //console.log(tkn);
+    //console.log(props.location.pathname);
   }
 
   const getMenuItems = (roleUrl) => {
@@ -104,7 +104,7 @@ const AppRouter = (props) => {
             let token = AuthenticationService.tokenValue;
             let res = AuthenticationService.loginWithTkn(token);
             res.then((res) => {
-              console.log(res.data);
+              //console.log(res.data);
                 if(res.data.data.result){
                   dispatch(handleLogin(res.data.data));
                   setloading(false);
@@ -112,7 +112,7 @@ const AppRouter = (props) => {
                   setloading(false);
                 }
             }).catch((err) => {
-              console.log(err);
+              //console.log(err);
               //AuthenticationService.logout();
               setloading(false);
             });
@@ -180,13 +180,13 @@ const AppRouter = (props) => {
             getMenuItems(roleUrl);
           }
         }else if(RoleInLocalStorage !== undefined && Number(RoleInLocalStorage) > -1 && RoleInLocalStorage !== null){
-          console.log('Rol cargado desde el localstorage', RoleInLocalStorage);
+          //console.log('Rol cargado desde el localstorage', RoleInLocalStorage);
           let roles = session.userData.role;
           let getRoleByUser = roles.find(item => item.id === Number(RoleInLocalStorage));
           dispatch(set_role(getRoleByUser));
         }
 
-        console.log('Render Router');
+        //console.log('Render Router');
       }
     }
   });

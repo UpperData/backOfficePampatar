@@ -4,36 +4,42 @@ import {useSelector} from 'react-redux'
 
 function AddressTypesSelect(props) {
 
+    const backoffice = useSelector(state => state.backoffice);
     const addressTypes = useSelector(state => state.backoffice.addressTypes.rows);
     const [list, setList] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const formatData = () => {
+        let newList = [];
+
+        for(var i=0; i < addressTypes.length; i++){
+            
+            let thisElement = addressTypes[i];
+
+            let formattedElement = {};
+            formattedElement.label = thisElement.name;
+            formattedElement.value = thisElement.id;
+
+            newList.push(formattedElement);
+        }            
+
+        setList(newList);
+        setLoading(false);
+    }
+
     useEffect(() => {
         if(loading){
-
-            let newList = [];
-
-            for(var i=0; i < addressTypes.length; i++){
-                
-                let thisElement = addressTypes[i];
-
-                let formattedElement = {};
-                formattedElement.label = thisElement.name;
-                formattedElement.value = thisElement.id;
-
-                newList.push(formattedElement);
-            }            
-
-            setList(newList);
-            setLoading(false);
+            if(backoffice.addressTypes !== null){
+                formatData();
+            }
         }
-    });
+    }, []);
 
     const handleSelect = async (selectedOption) => {
         //console.log(selectedOption);
         //props.setRegion({});
         //props.setCity({});
-        console.log(selectedOption);
+        //console.log(selectedOption);
         props.onChange(selectedOption); 
     };
 

@@ -13,28 +13,18 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  UncontrolledCarousel,
-  Progress,
-  ListGroup,
-  ListGroupItem,
-  Row,
-  Col,
-  Form,
-  FormGroup,
-  Input,
 } from "reactstrap";
 import * as data from "./Data";
 
 /*--------------------------------------------------------------------------------*/
 /* Import images which are need for the HEADER                                    */
 /*--------------------------------------------------------------------------------*/
-import logolighticon from "../../../assets/images/logo-light-icon.png";
-import logolighttext from "../../../assets/images/logo-light-text.png";
 import profilephoto from "../../../assets/images/users/user.png";
 
 import logo from "../../../assets/images/pampatar/pampatar_color_1.png";
 import logoIcon from "../../../assets/images/pampatar/isotipo_color.png";
 import { handleLogout } from "../../../redux/session/Actions";
+import DefaultUser from "../../../components/files/DefaultUser";
 
 export default () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,7 +41,12 @@ export default () => {
   let logoshop = '';
 
   if(role === 'Vendedor' && session.storeLogo !== null){
-    logoshop = String.fromCharCode.apply(null, session.storeLogo);
+    logoshop = session.storeLogo.reduce(
+      function (data, byte) {
+          return data + String.fromCharCode(byte);
+      },
+      ''
+    );
   }
 
   const toggle = () => {
@@ -257,7 +252,7 @@ export default () => {
                       />
                     :
                       <img
-                        src={profilephoto}
+                        src={`data:image/png;base64,${DefaultUser}`}
                         alt="user"
                         className="rounded-circle"
                         width="60"

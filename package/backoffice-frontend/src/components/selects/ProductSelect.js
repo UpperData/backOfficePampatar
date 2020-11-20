@@ -9,34 +9,38 @@ function ProductSelect(props) {
     const [search,  setsearch]  = useState(true);
     let url = '/sku/myList';
 
+    const getData = () => {
+        axios.get(url).then((res) => {
+            let product = res.data.data.sku;
+            let newList = [];
+
+            for(var i=0; i < product.length; i++){
+                
+                let thisElement = product[i];
+
+                let formattedElement = {};
+                formattedElement.label = thisElement.name;
+                formattedElement.value = thisElement.id;
+
+                newList.push(formattedElement);
+            }            
+
+            setList(newList);
+            setLoading(false);
+        });
+    }
+
     useEffect(() => {
         if(loading){
             if(search){
                 setsearch(false);
-                axios.get(url).then((res) => {
-                    let product = res.data.data.sku;
-                    let newList = [];
-
-                    for(var i=0; i < product.length; i++){
-                        
-                        let thisElement = product[i];
-
-                        let formattedElement = {};
-                        formattedElement.label = thisElement.name;
-                        formattedElement.value = thisElement.id;
-
-                        newList.push(formattedElement);
-                    }            
-
-                    setList(newList);
-                    setLoading(false);
-                });
+                getData();
             }
         }
-    });
+    }, []);
 
     const handleSelect = async (selectedOption) => {
-        //console.log(selectedOption);
+        console.log(selectedOption);
         //props.setRegion({});
         //props.setCity({});
         console.log(selectedOption);

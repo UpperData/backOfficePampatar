@@ -1,4 +1,4 @@
-import React, {useState, useEffect, Fragment} from 'react'
+import React, {useState, useEffect} from 'react'
 import {
     Table,
     Row,
@@ -6,12 +6,8 @@ import {
     Card,
     CardBody,
     CardTitle,
-    Badge,
-    Breadcrumb, 
-    BreadcrumbItem, 
-    UncontrolledTooltip  
 } from 'reactstrap';
-import moment from 'moment'
+//import moment from 'moment'
 import axios from 'axios'
 import InlineSpinner from '../../spinner/InlineSpinner';
 import {Link} from 'react-router-dom'
@@ -19,29 +15,33 @@ import {Link} from 'react-router-dom'
 function FindContract() {
     const [loading, setloading]             = useState(true);
     const [search,  setSearch]              = useState(true);
-    const [sending, setsending]             = useState(false);
+    //const [sending, setsending]             = useState(false);
     const [data,    setData]                = useState([]);
 
-    const [seeItem, setSeeItem]             = useState(null);
-    const [errormessage, seterrormessage]   = useState('');
-    const [successmessage, setsuccessmessage]   = useState('');
+    let url = '/setting/seller/shop/all';
+
+    //const [seeItem, setSeeItem]             = useState(null);
+    //const [errormessage, seterrormessage]   = useState('');
+    //const [successmessage, setsuccessmessage]   = useState('');
+    const getData = () => {
+        axios.get(url)
+        .then((res) => {
+            console.log(res.data);
+            setData(res.data.data.rsShopAll);
+            setloading(false);
+        }).catch((err) => {
+            console.error(err);
+        });
+    }
 
     useEffect(() => {
-        let url = '/setting/seller/shop/all';
         if(loading){
             if(search){
                 setSearch(false);
-                axios.get(url)
-                .then((res) => {
-                    console.log(res.data);
-                    setData(res.data.data.rsShopAll);
-                    setloading(false);
-                }).catch((err) => {
-                    console.error(err);
-                });
+                getData();
             }
         }
-    });
+    }, []);
 
     if(!loading){
         return (
@@ -64,7 +64,7 @@ function FindContract() {
                                     </thead>
                                     <tbody>
                                         {(data.length > 0 && data.map((item, key) => {
-                                            let date = item.createdAt.split(' ');
+                                            //let date = item.createdAt.split(' ');
                                             return (
                                                 <tr key={key}>
                                                     <td>

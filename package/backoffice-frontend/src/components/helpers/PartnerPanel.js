@@ -1,10 +1,10 @@
-import React, {useState, useEffect, useRef, Fragment} from 'react'
+import React, {useState, useEffect, Fragment} from 'react'
 
 function PartnerPanel(props) {
 
     const [partners,       setpartners]          = useState([]);
     const [count,          setcount]            = useState(0);
-    const maxPartners = 10;
+    //const maxPartners = 10;
 
     const addPartner = () => {
         let list = partners;
@@ -70,7 +70,7 @@ function PartnerPanel(props) {
                 <Fragment>
                     {partners.map((item, key) => {
 
-                        let errors = [];
+                        //let errors = [];
                         let partnerKey = iterator;
                         let thisPartner = partners.filter(data => data.id === item.id);
                         let exists = thisPartner.length > 0;

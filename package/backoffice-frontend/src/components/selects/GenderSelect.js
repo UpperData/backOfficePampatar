@@ -4,15 +4,16 @@ import {useSelector} from 'react-redux'
 
 function GenderSelect(props) {
 
-    const genders = useSelector(state => state.backoffice.genders.rows);
+    const backoffice = useSelector(state => state.backoffice);
+    let genders = [];
+    if(backoffice.genders !== null){
+        genders = backoffice.genders.rows;
+    }
     const [list, setList] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        if(loading){
-
-            let newList = [];
-
+    const formatData = () => {
+        let newList = [];
             for(var i=0; i < genders.length; i++){
                 
                 let thisElement = genders[i];
@@ -23,17 +24,23 @@ function GenderSelect(props) {
 
                 newList.push(formattedElement);
             }            
+        setList(newList);
+        setLoading(false);
+    }
 
-            setList(newList);
-            setLoading(false);
+    useEffect(() => {
+        if(loading){
+            if(backoffice.genders !== null){
+                formatData();
+            }
         }
-    });
+    }, []);
 
     const handleSelect = async (selectedOption) => {
         //console.log(selectedOption);
         //props.setRegion({});
         //props.setCity({});
-        console.log(selectedOption);
+        //console.log(selectedOption);
         props.onChange(selectedOption); 
     };
 

@@ -9,36 +9,40 @@ function WarehouseSelect(props) {
     const [search,  setsearch]  = useState(true);
     let url = '/myWarehouse';
 
+    const getData = () => {
+        axios.get(url).then((res) => {
+            let warehouses = res.data.data.values;
+            let newList = [];
+
+            for(var i=0; i < warehouses.length; i++){
+                
+                let thisElement = warehouses[i];
+
+                let formattedElement = {};
+                formattedElement.label = thisElement.name;
+                formattedElement.value = thisElement.id;
+
+                if(formattedElement.label !== 'Pampatar'){
+                    newList.push(formattedElement);
+                }
+            }            
+
+            setList(newList);
+            setLoading(false);
+        });
+    }
+
     useEffect(() => {
         if(loading){
             if(search){
                 setsearch(false);
-                axios.get(url).then((res) => {
-                    let warehouses = res.data.data.values;
-                    let newList = [];
-
-                    for(var i=0; i < warehouses.length; i++){
-                        
-                        let thisElement = warehouses[i];
-
-                        let formattedElement = {};
-                        formattedElement.label = thisElement.name;
-                        formattedElement.value = thisElement.id;
-
-                        if(formattedElement.label !== 'Pampatar'){
-                            newList.push(formattedElement);
-                        }
-                    }            
-
-                    setList(newList);
-                    setLoading(false);
-                });
+                getData();
             }
         }
-    });
+    }, []);
 
     const handleSelect = async (selectedOption) => {
-        //console.log(selectedOption);
+        console.log(selectedOption);
         //props.setRegion({});
         //props.setCity({});
         console.log(selectedOption);

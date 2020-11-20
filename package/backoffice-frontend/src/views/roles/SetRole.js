@@ -8,7 +8,7 @@ import { AuthenticationService } from '../../jwt/_services';
 
 function SetRole(props) {
 
-    console.log('ok');
+    //console.log('ok');
     const session = useSelector(state => state.session);
     const backoffice = useSelector(state => state.backoffice);
     const [setting, setsetting] = useState(false);
@@ -26,7 +26,7 @@ function SetRole(props) {
         let roleUrl = `/admin-panel/${role.id}`;
         let result = AuthenticationService.getMenuItems(roleUrl);
         result.then((res) => {
-          console.log(res);
+          //console.log(res);
           props.history.push('/');
           dispatch(set_backoffice_menu(res.data));
         }).catch((err) => {
@@ -38,8 +38,8 @@ function SetRole(props) {
         if(loading){
             let validate = RoleInLocalStorage === undefined  || RoleInLocalStorage === 'undefined' || RoleInLocalStorage === null;
             console.log('cargando select de roles');
-            console.log(RoleInLocalStorage);
-            console.log(validate);
+            //console.log(RoleInLocalStorage);
+            //console.log(validate);
             //console.log(backoffice.role.hasOwnProperty('id'));
             //console.log(backoffice.menu);
             if(validate){

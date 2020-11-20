@@ -1,20 +1,16 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, {useState, useEffect} from 'react'
 import {
     Row,
     Col,
     Card,
     CardBody,
     CardTitle,
-    Breadcrumb, 
-    BreadcrumbItem,
     FormGroup,
-    Input
 } from 'reactstrap';
 import TagsInput from "react-tagsinput";
 import Datetime from "react-datetime";
 import axios from 'axios'
 import InlineSpinner from '../../spinner/InlineSpinner';
-import Select from 'react-select'
 import moment from 'moment'
 
 //styles
@@ -26,14 +22,17 @@ import CustomFileInput from '../../../components/files/CustomFileInput';
 //lang
 require("moment/locale/es");
 
+/*
 var yesterday = Datetime.moment().subtract(1, "day");
 var valid = function (current) {
   return current.isAfter(yesterday);
 };
+*/
 
 function CreateContrat() {
 
     const [loading, setloading]                     = useState(true);
+    const [search, setsearch]                     = useState(true);
     const [sending, setsending]                     = useState(false);
     const [success, setsuccess]                     = useState(false);
     const [errors, seterrors]                       = useState({});
@@ -162,27 +161,30 @@ function CreateContrat() {
         }
     }
 
-    useEffect(() => {
-        const getShopsRequests = () => {
-            axios.get(urlGet)
-            .then((res) => {
-                console.log(res.data);
-                if(res.data && res.data.data.hasOwnProperty('message')){
-                    console.log('error');
-                    seterrorMessage(res.data.data.message);
-                }else{
-                    setData(res.data);
-                    setloading(false);
-                }
-            }).catch((err) => {
-                console.log(err);
-            });
-        }
+    const getShopsRequests = () => {
+        setsearch(false);
+        axios.get(urlGet)
+        .then((res) => {
+            console.log(res.data);
+            if(res.data && res.data.data.hasOwnProperty('message')){
+                console.log('error');
+                seterrorMessage(res.data.data.message);
+            }else{
+                setData(res.data);
+                setloading(false);
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
 
+    useEffect(() => {
         if(loading){
-            getShopsRequests();
+            if(search){
+                getShopsRequests();
+            }
         }
-    }, []);
+    });
 
     if(!loading){
         if(!success){

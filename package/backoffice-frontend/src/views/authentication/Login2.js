@@ -33,7 +33,7 @@ const Login2 = (props) => {
   const [sending,             setSending]             = useState(false);
   const [email, setEmail]                             = useState("");
   const [password, setPassword]                       = useState("");
-  const [loading,             setLoading]             = useState(true);
+  const loading = true;
 
   const dispatch = useDispatch();
 
@@ -186,7 +186,7 @@ const login = (e) => {
             setSending(false);
 
             if(res.data.data.result === false){
-                //console.log('Datos erroneos');
+                console.log('Datos erroneos');
                 setErrorMessage(res.data.data.message);
             }else{
                 //usuario logeado
@@ -205,7 +205,6 @@ const login = (e) => {
   console.log('------------------------------------')
   //console.log('AUTH', auth);
   //console.log('USUARIO', user);
-
 
   useEffect(() => {
     if(tkn !== null){
@@ -227,7 +226,7 @@ const login = (e) => {
         }).catch((err) => {
           //props.history.push('/');
           if(err.response.data !== null && err.response.data !== undefined){
-            //console.log(err.response.data.data.message);
+            console.log(err.response.data.data.message);
             let location = {
               path: '/',
               state: {errorMessage : err.response.data.data.message}
@@ -250,6 +249,13 @@ const login = (e) => {
         {/*Login2 Cards*/}
         {/*--------------------------------------------------------------------------------*/}
         <div className="container">
+
+          {(errorMessage !== '') && 
+            <div className="alert alert-danger">
+              {errorMessage}
+            </div>
+          }
+
           {state !== null && state !== undefined && typeof state === 'object' && state.hasOwnProperty('errorMessage') && 
             <div className="alert alert-danger">
               {state.errorMessage}

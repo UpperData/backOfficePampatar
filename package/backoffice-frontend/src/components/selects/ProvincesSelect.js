@@ -76,7 +76,7 @@ function ProvincesSelect(props) {
         return (
             <Select 
                 isSearchable={true}
-                placeholder="Seleccione una provincia" 
+                placeholder="Provincia" 
                 value={searchData} 
                 onChange={handleSelect} 
                 options={list} 

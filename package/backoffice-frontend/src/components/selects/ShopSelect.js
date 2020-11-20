@@ -3,32 +3,45 @@ import Select from 'react-select'
 
 function ShopSelect(props) {
     
-    //console.log(props);
+    console.log(props);
     let values = props.list;
     let allValues = [];
+
+    const list = allValues;
+    const [loading, setLoading] = useState(true);
+    const [search, setsearch] = useState(true);
+
+    const getData = () => {
+        if(values.length > 0){
+            for (let i = 0; i < values.length; i++) {
+                const element = values[i];
     
-    if(values.length > 0){
-        for (let i = 0; i < values.length; i++) {
-            const element = values[i];
+                let thisValue = {};
+                thisValue.label = element.marca+' - '+element.Account.Person.firstName+' '+element.Account.Person.lastName;
+                thisValue.value = element.id;
+    
+                allValues.push(thisValue);
+            }
 
-            let thisValue = {};
-            thisValue.label = element.marca+' - '+element.Account.Person.firstName+' '+element.Account.Person.lastName;
-            thisValue.value = element.id;
-
-            allValues.push(thisValue);
+            setLoading(false);
         }
     }
-
-    const [list, setList] = useState(allValues);
-    const [loading, setLoading] = useState(false);
-    const [search, setSearch] = useState(true);
-
+    
+    useEffect(() => {
+        if(loading){
+            if(search){
+                setsearch(false);
+                getData();
+            }
+        }
+    }, []);
+    
     const handleSelect = async (selectedOption) => {
         props.onChange(selectedOption); 
     };
 
-    //console.log(list);
-    //console.log(props.value);
+    console.log(list);
+    console.log(props.value);
 
     let searchData = (props.value !== null) ? list.filter(option => option.value === props.value.value)[0] : null;
 

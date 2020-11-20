@@ -25,20 +25,25 @@ const ProcessRequest = () => {
     const [errormessage, seterrormessage]   = useState('');
     const [successmessage, setsuccessmessage]   = useState('');
 
+    let url = '/setting/seller/shoptRequest';
+
+    const getData = () => {
+        if(search){
+            setSearch(false);
+            axios.get(url)
+            .then((res) => {
+                console.log(res.data);
+                setData(res.data.rsShopRequestByStatus);
+                setloading(false);
+            }).catch((err) => {
+                console.error(err);
+            });
+        }
+    }
+
     useEffect(() => {
-        let url = '/setting/seller/shoptRequest';
         if(loading){
-            if(search){
-                setSearch(false);
-                axios.get(url)
-                .then((res) => {
-                    console.log(res.data);
-                    setData(res.data.rsShopRequestByStatus);
-                    setloading(false);
-                }).catch((err) => {
-                    console.error(err);
-                });
-            }
+            getData();
         }
     });
 
@@ -159,6 +164,9 @@ const ProcessRequest = () => {
             )
         }else{
             let item = seeItem;
+            let preference = item.Account.preference;
+            let affirmations = item.affirmations;
+            
             return (
                 <div>
                     <Breadcrumb listClassName="px-0">
@@ -193,27 +201,25 @@ const ProcessRequest = () => {
                                         <span>Email: {item.Account.email}</span>
                                     </h6>
                                     <h6>
-                                        {typeof item.Account.preference === 'object' &&
-                                            <Fragment>
-                                                <h6 className="font-weight-bold">
-                                                    Preferencia:
-                                                </h6>
-                                                <Badge color="info" className="mx-r">
-                                                    {item.Account.preference.name}
-                                                </Badge>
-                                            </Fragment>
-                                        }
-
-                                        {typeof item.Account.preference === 'array' &&
+                                        {(typeof preference === 'array') ?
                                             <Fragment>
                                                 <h6 className="font-weight-bold">Preferencias:</h6>
-                                                {item.Account.preference.length > 0 && item.Account.preference.map((subitem, subkey) => {
+                                                {preference.length > 0 && preference.map((subitem, subkey) => {
                                                     return (
                                                         <Badge key={subkey} color="info" className="mx-r">
                                                             {subitem.name}
                                                         </Badge>
                                                     )
                                                 })}
+                                            </Fragment>
+                                            :
+                                            <Fragment>
+                                                <h6 className="font-weight-bold">
+                                                    Preferencia:
+                                                </h6>
+                                                <Badge color="info" className="mx-r">
+                                                    {preference.name}
+                                                </Badge>
                                             </Fragment>
                                         }
                                     </h6>
@@ -231,27 +237,26 @@ const ProcessRequest = () => {
                                         Descripción: {item.descShop}
                                     </p>
                                     <hr/>
-                                    {typeof item.affirmations === 'object' &&
-                                        <Fragment>
-                                            <h6 className="font-weight-bold">
-                                                Afirmación:
-                                            </h6>
-                                            <p>
-                                                {item.affirmations.name}
-                                            </p>
-                                        </Fragment>
-                                    }
 
-                                    {typeof item.affirmations === 'array' &&
+                                    {(typeof affirmations === 'array') ?
                                         <Fragment>
                                             <h6 className="font-weight-bold">Afirmaciones:</h6>
-                                            {item.affirmations.length > 0 && item.affirmations.map((subitem, subkey) => {
+                                            {affirmations.length > 0 && affirmations.map((subitem, subkey) => {
                                                 return (
                                                     <p key={subkey} className="mx-1">
                                                         {subitem.name}
                                                     </p>
                                                 )
                                             })}
+                                        </Fragment>
+                                        :
+                                        <Fragment>
+                                            <h6 className="font-weight-bold">
+                                                Afirmación:
+                                            </h6>
+                                            <p>
+                                                {affirmations.name}
+                                            </p>
                                         </Fragment>
                                     }
 
