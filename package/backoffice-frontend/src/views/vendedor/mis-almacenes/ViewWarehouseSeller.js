@@ -87,12 +87,38 @@ function ViewWarehouseSeller() {
                                                             <th>
                                                                 Nombre del almacen
                                                             </th>
+                                                            <th>
+                                                                Dirección
+                                                            </th>
+                                                            <th>
+                                                                Teléfono
+                                                            </th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         {(data.values.length > 0 && data.values.map((item, key) => {
 
                                                             let phone = ((item.phone !== null) ? item.phone[0] : null);
+
+                                                            let dir = '';
+                                                            if(typeof item.address.comuna === 'object' && item.address.comuna.hasOwnProperty('name')){
+                                                                dir = dir+''+item.address.comuna.name+' ';
+                                                            }
+                                                            if(typeof item.address.calle !== null && item.address.calle !== undefined){
+                                                                dir = dir+''+item.address.calle+' ';
+                                                            }
+                                                            if(typeof item.address.numero !== null && item.address.numero !== undefined){
+                                                                dir = dir+''+item.address.numero+' ';
+                                                            }
+                                                            if(typeof item.address.local !== null && item.address.local !== undefined){
+                                                                dir = dir+''+item.address.local+' ';
+                                                            }
+                                                            if(typeof item.address.province === 'object' && item.address.province.hasOwnProperty('name')){
+                                                                dir = dir+''+item.address.province.name+' ';
+                                                            }
+                                                            if(typeof item.address.region === 'object' && item.address.region.hasOwnProperty('name')){
+                                                                dir = dir+''+item.address.region.name+' ';
+                                                            }
 
                                                             return (
                                                                 <tr key={key}>
@@ -105,6 +131,12 @@ function ViewWarehouseSeller() {
                                                                                 {phone.number}
                                                                             </UncontrolledTooltip>
                                                                         }
+                                                                    </td>
+                                                                    <td>
+                                                                        {dir}
+                                                                    </td>
+                                                                    <td>
+                                                                        {phone.number}
                                                                     </td>
                                                                 </tr>
                                                             )

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import {useSelector} from 'react-redux'
 import Iframe from "react-iframe";
 import axios from 'axios'
@@ -85,11 +85,12 @@ const Profile = () => {
     console.log(session);
     console.log(data);
 
-    let logoshop = '';
-
-    if(backoffice.role.name === 'Vendedor' && session.storeLogo !== null){
-      logoshop = String.fromCharCode.apply(null, session.storeLogo);
-    }
+    let logoshop = session.storeLogo.reduce(
+      function (data, byte) {
+          return data + String.fromCharCode(byte);
+      },
+      ''
+  );
 
     return (
       <div>
@@ -98,7 +99,7 @@ const Profile = () => {
           <Card>
           <CardBody>
           <Row>
-          <Col xs="12" md="12" lg="12">
+          <Col xs="12" md="4" lg="4">
             <Card>
               <CardBody>
                 <div className="text-center mt-4">
@@ -111,81 +112,78 @@ const Profile = () => {
                   <CardTitle className="mt-2">
                     <h2><strong>{shopData.name}</strong></h2>
                     <h5 className="text-muted">{data.name}</h5>
+
+                    {Array.isArray(shopData.partner) && shopData.partner.length > 0 &&
+                      <Fragment>
+                          <h4 className="mt-4"><span className="font-weight-bold">Colaboradores:</span></h4>
+                          {(shopData.partner.map((item, key) => {
+                            return (
+                              <div className="my-1" key={key}>
+                                <p className="mb-0">
+                                  {item.firstName+' '+item.lastName}
+                                </p>
+                                <span className="text-muted">
+                                  {item.relationship}
+                                </span>
+                              </div>
+                            )
+                          }))}
+                      </Fragment>
+                    }
                   </CardTitle>
-                  <div className="d-none">
-                    <CardSubtitle>Tienda operativa</CardSubtitle>
-                  </div>
-                  <Row className="text-center d-none justify-content-md-center">
-                    <Col xs="4">
-                      <span className="font-weight-bold text-primary">
-                        <i className="icon-people"></i>
-                          <span className="font-medium ml-2">{shopData.employees}</span>
-                      </span>
-                    </Col>
-                  </Row>
                 </div>
               </CardBody>
             </Card>
           </Col>
-          <Col xs="12" md="12" lg="12">
-            <Card>
-              <Nav tabs>
-                <NavItem>
-                  <NavLink
-                    className={classnames({ active: activeTab === "2" })}
-                    onClick={() => {
-                      toggle("2");
-                    }}
-                  >
-                    Datos de la tienda
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink
-                    className={classnames({ active: activeTab === "3" })}
-                    onClick={() => {
-                      toggle("3");
-                    }}
-                  >
-                    Actualizar datos de la tienda
-                  </NavLink>
-                </NavItem>
-              </Nav>
-              <TabContent activeTab={activeTab}>
-                <TabPane tabId="2">
+          <Col xs="12" md="8" lg="8">
                   <Row>
                     <Col sm="12">
                       <Card>
                         <CardBody>
                           <Row>
-                            <Col md="3" xs="6" className="border-right">
-                              <strong>Nombre</strong>
+                            <Col md="4" xs="6" className="border-right">
+                              <strong className="text-info">Nombre</strong>
                               <br />
                               <p className="text-muted">{shopData.name}</p>
                             </Col>
-                            <Col md="3" xs="6" className="border-right">
-                              <strong>Teléfono</strong>
+                            <Col md="4" xs="6" className="border-right">
+                              <strong className="text-info">Teléfono</strong>
                               <br />
                               <p className="text-muted">{shopData.phone[0].number}</p>
                             </Col>
-                            <Col md="3" xs="6" className="border-right">
-                              <strong>Correo electrónico</strong>
+                            <Col md="4" xs="12" className="border-right">
+                              <strong className="text-info">Correo electrónico</strong>
                               <br />
                               <p className="text-muted">{data.email}</p>
                             </Col>
-                            <Col md="3" xs="6" className="border-right">
-                              <strong>Dirección</strong>
-                              <br />
-                              <p className="text-muted">{address[0].comuna.name} {address[0].calle} {address[0].numero} {address[0].local}, {address[0].province.name}, {address[0].region.name}</p>
-                            </Col>
                           </Row>
-                          <h4 className="mt-4"><span className="font-medium">Número de empleados:</span> {shopData.employees}</h4>
-                          <h4 className="font-medium mt-4">Descripción de la tienda</h4>
+                          <h4 className="font-weight-bold mt-4">Descripción de la tienda</h4>
                           <p className="mt-2">
                             {shopData.shopDescription}
                           </p>
+
+                          <h4 className="mt-4"><span className="font-weight-bold">Número de empleados:</span></h4>
+                          <p className="mt-2">{shopData.employees}</p>
+
+                          <h4 className="mt-4"><span className="font-weight-bold">¿Tiene inicio de actividades?:</span></h4>
+                          <p className="mt-2">{shopData.startActivity ? 'Si' : 'No'}</p>
+
+                          <h4 className="mt-4"><span className="font-weight-bold">¿Posee tienda física?:</span></h4>
+                          <p className="mt-2">{shopData.isLocal ? 'Si' : 'No'}</p>
+                    
+                          <h4 className="font-weight-bold mt-4">Dirección</h4>
+                          <p className="mt-2">
+                            {address[0].comuna.name} {address[0].calle} {address[0].numero} {address[0].local}, {address[0].province.name}, {address[0].region.name}
+                          </p>
+
+                          <h4 className="font-weight-bold mt-4">Proceso de manufactura</h4>
+                          <p className="mt-2">
+                            {shopData.processId.name}
+                          </p>
+
                           <hr/>
-                          <h4 className="font-medium mt-4">Datos bancarios</h4>
+
+                          <h4 className="font-weight-bold mt-4">Datos bancarios</h4>
                           <div className="row mt-4">
                             <div className="col-md-12">
                                 <h6><span className="font-medium">Número de cuenta:</span> {dataBank.number}</h6>
@@ -207,53 +205,6 @@ const Profile = () => {
                       </Card>
                     </Col>
                   </Row>
-                </TabPane>
-                <TabPane tabId="3">
-                  <Row>
-                    <Col sm="12">
-                      <Card>
-                        <CardBody>
-                          <Form>
-                            <FormGroup>
-                              <Label>Full Name</Label>
-                              <Input type="text" placeholder="Shaina Agrawal" />
-                            </FormGroup>
-                            <FormGroup>
-                              <Label>Email</Label>
-                              <Input
-                                type="email"
-                                placeholder="Jognsmith@cool.com"
-                              />
-                            </FormGroup>
-                            <FormGroup>
-                              <Label>Password</Label>
-                              <Input type="password" placeholder="Password" />
-                            </FormGroup>
-                            <FormGroup>
-                              <Label>Phone No</Label>
-                              <Input type="text" placeholder="123 456 1020" />
-                            </FormGroup>
-                            <FormGroup>
-                              <Label>Message</Label>
-                              <Input type="textarea" />
-                            </FormGroup>
-                            <FormGroup>
-                              <Label>Select Country</Label>
-                              <Input type="select">
-                                <option>USA</option>
-                                <option>India</option>
-                                <option>America</option>
-                              </Input>
-                            </FormGroup>
-                            <Button color="primary">Update Profile</Button>
-                          </Form>
-                        </CardBody>
-                      </Card>
-                    </Col>
-                  </Row>
-                </TabPane>
-              </TabContent>
-            </Card>
           </Col>
         </Row>
         

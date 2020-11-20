@@ -274,11 +274,6 @@ export default () => {
                     <i className="ti-user mr-1 ml-1" /> Mi Perfil
                   </Link>
                 </DropdownItem>
-                <DropdownItem>
-                  <Link to="/perfil" className="text-secondary">
-                    <i className="ti-settings mr-1 ml-1" /> Configuración
-                  </Link>
-                </DropdownItem>
                 <DropdownItem onClick={() => goToChangeRol()}>
                     <i className="mdi mdi-shape-plus mr-1 ml-1" /> Cambiar Rol
                 </DropdownItem>

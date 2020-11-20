@@ -158,6 +158,25 @@ const Sidebar = (props) => {
   }
 
   return (
+    <Fragment>
+      {/*renderRoutes.map((prop, key) => {
+        if (prop.collapse) {
+            {prop.child.map((subprop, subkey) => {
+              //console.log(subprop);
+              if (!subprop.collapse) {
+                  console.log(`tooltip-nav-${subprop.subkey}`);
+                  return  <UncontrolledTooltip 
+                            key={subkey} 
+                            placement="top" 
+                            target={`tooltip-nav-${subprop.subkey}`}
+                          >
+                            {subprop.desc}
+                          </UncontrolledTooltip>
+              }
+          })}
+        }
+      })*/}
+
     <aside
       className="left-sidebar"
       id="sidebarbg"
@@ -175,55 +194,32 @@ const Sidebar = (props) => {
               <i className=""></i><span className="hide-menu">Mi tienda</span>
             </li>
             <li className="sidebar-item user-profile">
-              <span
-                onClick={toggle}
-                className="sidebar-link has-arrow"
-                aria-expanded="false"
-              >
+                <NavLink
+                  to="/perfil"
+                  activeClassName="active"
+                  className="sidebar-link p-0"
+                >
                 {
                 (role === 'Vendedor') 
                   ?
                     <img
                       src={`data:image/png;base64,${logoshop}`}
                       alt="user"
-                      className="rounded-circle"
-                      width="60"
+                      className="rounded-circle mr-3 ml-2"
+                      width="30"
                     />
                   :
                     <img
                       src={`data:image/png;base64,${DefaultUser}`}
                       alt="user"
-                      className="rounded-circle"
-                      width="60"
+                      className="rounded-circle mr-3 ml-2"
+                      width="30"
                     />
                 }
                 <span className="hide-menu">
                   {(role === 'Vendedor') ? shopName : role}
                 </span>
-              </span>
-              <Collapse isOpen={state.collapse}>
-                <ul>
-                  <li>
-                    <NavLink
-                      to="/perfil"
-                      activeClassName="active"
-                      className="sidebar-link p-0"
-                    >
-                        Mi perfil
-                    </NavLink>
-                  </li>
-                  <li>
-                    <a href="/email" className="sidebar-link p-0">
-                      Configuración
-                    </a>
-                  </li>
-                  <li>
-                    <button onClick={() => dispatch(handleLogout())} className="btn-unstyled sidebar-btn">
-                      Cerrar sesión
-                    </button>
-                  </li>
-                </ul>
-              </Collapse>
+              </NavLink>
             </li>
             {renderRoutes.map((prop, key) => {
               if (prop.redirect) {
@@ -319,9 +315,11 @@ const Sidebar = (props) => {
                           } else {
                             return (
                               <Fragment key={key}>
-                                <UncontrolledTooltip placement="top" target={`tooltip-nav-${prop.subkey}`}>
+                                {
+                                <UncontrolledTooltip className="fixed-tooltip" placement="top" target={`tooltip-nav-${prop.subkey}`}>
                                   {prop.desc}
                                 </UncontrolledTooltip>
+                                }
                                 <li
                                   onClick={showMobilemenu && scrollTop}
                                   className={
@@ -379,6 +377,7 @@ const Sidebar = (props) => {
         </PerfectScrollbar>
       </div>
     </aside>
+    </Fragment>
   );
 };
 
