@@ -2,8 +2,10 @@ import React, {useState, useEffect, Fragment} from 'react'
 
 function PartnerPanel(props) {
 
-    const [partners,       setpartners]          = useState([]);
-    const [count,          setcount]            = useState(0);
+    const [loading,        setloading]           = useState(true);
+    const [search,         setsearch]            = useState(true);
+    const [partners,       setpartners]          = useState((props.value !== null && Array.isArray(props.value)) ? props.value : []);
+    const [count,          setcount]             = useState(0);
     //const maxPartners = 10;
 
     const addPartner = () => {

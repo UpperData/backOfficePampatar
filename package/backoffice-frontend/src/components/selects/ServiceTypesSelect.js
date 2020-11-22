@@ -2,18 +2,18 @@ import React, {useState, useEffect} from 'react'
 import Select from 'react-select'
 import axios from 'axios';
 
-function AccountBankSelect(props) {
+function ServiceTypesSelect(props) {
 
     const [list, setList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState(true);
 
     const getList = () => {
-        let url = `/getTypeBankAccount`;
+        let url = `/getService/type/generals/`;
 
         axios.get(url)
         .then((res) => {
-            console.log('LISTA DE TIPO DE CUENTA BANCARIA');
+            console.log('LISTA DE TIPO DE SERVICIO');
             console.log(res.data);
 
             let newList = [];
@@ -60,25 +60,16 @@ function AccountBankSelect(props) {
     if(loading){
         return (
             <Select 
-                placeholder="Tipo de cuenta"  
+                placeholder="Tipo de servicio"  
                 options={[]} 
             />
         )
     }else{
-        let elementSelected = null;
-
-        if(props.value !== undefined && props.value !== null && list.length > 0){
-            let findElement = list.find(item => item.value === props.value.value);
-            elementSelected = findElement;
-            //console.log(findElement);
-            //console.log(props.value);
-        }
-        
         return (
             <Select 
                 isSearchable={true}
-                placeholder="Tipo de cuenta" 
-                value={(props.value !== undefined && props.value !== null && list.length > 0) ? elementSelected : null}  
+                placeholder="Tipo de servicio" 
+                value={searchData} 
                 onChange={handleSelect} 
                 options={list} 
             />
@@ -86,4 +77,4 @@ function AccountBankSelect(props) {
     }
 }
 
-export default AccountBankSelect
+export default ServiceTypesSelect

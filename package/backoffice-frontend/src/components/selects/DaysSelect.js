@@ -1,24 +1,27 @@
 import React, {useState, useEffect} from 'react'
 import Select from 'react-select'
-import {useSelector} from 'react-redux'
 
-function NationalitySelect(props) {
-
-    const backoffice = useSelector(state => state.backoffice);
-    let nationalities = [];
-    if(backoffice.nationalities !== null){
-        nationalities = backoffice.nationalities.rows;
-    }
+function DaysSelect(props) {
+    //const backoffice = useSelector(state => state.backoffice);
+    let days = [
+        {id:1,name:"Lunes"},
+        {id:2,name:"Martes"},
+        {id:3,name:"MIercoles"},
+        {id:4,name:"Jueves"},
+        {id:5,name:"Viernes"},
+        {id:6,name:"Sabado"},
+        {id:7,name:"Domingo"}
+    ];
 
     const [list, setList] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const formatData = () => {
+        
         let newList = [];
-
-        for(var i=0; i < nationalities.length; i++){
+        for(var i=0; i < days.length; i++){
             
-            let thisElement = nationalities[i];
+            let thisElement = days[i];
 
             let formattedElement = {};
             formattedElement.label = thisElement.name;
@@ -26,6 +29,7 @@ function NationalitySelect(props) {
 
             newList.push(formattedElement);
         }            
+        
 
         setList(newList);
         setLoading(false);
@@ -33,9 +37,7 @@ function NationalitySelect(props) {
 
     useEffect(() => {
         if(loading){
-            if(backoffice.nationalities !== null){
-                formatData();
-            }
+            formatData();
         }
     });
 
@@ -50,26 +52,16 @@ function NationalitySelect(props) {
     if(loading){
         return (
             <Select 
-                placeholder="Cargando nacionalidades"  
+                placeholder="Cargando días"  
                 options={[]} 
             />
         )
     }else{
-
-        let elementSelected = null;
-
-        if(props.value !== undefined && props.value !== null && list.length > 0){
-            let findElement = list.find(item => item.value === props.value.value);
-            elementSelected = findElement;
-            //console.log(findElement);
-            //console.log(props.value);
-        }
-        
         return (
             <Select 
                 isSearchable={true}
-                placeholder="Nacionalidad" 
-                value={(props.value !== undefined && props.value !== null && list.length > 0) ? elementSelected : null}  
+                placeholder="Día" 
+                value={(props.value !== undefined && props.value !== null) ? props.value :null} 
                 onChange={handleSelect} 
                 options={list} 
             />
@@ -77,4 +69,4 @@ function NationalitySelect(props) {
     }
 }
 
-export default NationalitySelect
+export default DaysSelect;

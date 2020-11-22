@@ -26,6 +26,7 @@ const ViewProducts = lazy(() => import("../views/vendedor/mis-productos/ViewProd
 const AddProduct = lazy(() => import("../views/vendedor/mis-productos/AddProduct"));
 const EditProduct = lazy(() => import("../views/vendedor/mis-productos/EditProduct"));
 
+const StockMonitorSeller = lazy(() => import("../views/vendedor/inventario/StockMonitorSeller"));
 const AddProductSeller = lazy(() => import("../views/vendedor/inventario/AddProductSeller"));
 const InventoryService = lazy(() => import("../views/vendedor/inventario/InventoryService"));
 
@@ -134,6 +135,12 @@ var ThemeRoutesByRole = [
     path: "/service/inventory",
     name: "Inventariar servicio",
     component: InventoryService,
+    onlyRoute:true
+  },
+  {
+    path: "/stockMonitorSeller",
+    name: "Monitor de stock",
+    component: StockMonitorSeller,
     onlyRoute:true
   },
   //Administrador

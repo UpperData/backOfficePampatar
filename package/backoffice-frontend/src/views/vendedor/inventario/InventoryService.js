@@ -10,9 +10,15 @@ import {
     CustomInput,
 } from 'reactstrap';
 import ServicesSelect from '../../../components/selects/servicesSelect';
+import moment from 'moment'
 
 //styles
 import "react-datetime/css/react-datetime.css";
+import ServiceTypesSelect from '../../../components/selects/ServiceTypesSelect';
+import TimePanel from '../../../components/time/TimePanel';
+
+//lang
+require("moment/locale/es");
 
 function InventoryService() {
 
@@ -21,6 +27,7 @@ function InventoryService() {
     const [successmessage,      setsuccessmessage]  = useState('');
     const [errormessage,        seterrormessage]    = useState('');
 
+    const [days,                setdays]            = useState(null);
     const [serviceId,           setserviceId]       = useState(null);
     const [serviceTypeId,       setserviceTypeId]   = useState(null);
     const [dateStart,           setdateStart]       = useState(null);
@@ -29,6 +36,21 @@ function InventoryService() {
     const [price,               setprice]           = useState('');
     const [quantity,            setquantity]        = useState('');
     const type                  = 'in';
+
+    const reset = () => {
+        setsending(false);
+        seterrors({});
+        setsuccessmessage('');
+        seterrormessage('');
+        setdays(null);
+        setserviceId(null);
+        setserviceTypeId(null);
+        setdateStart(null);
+        setdateEnd(null);
+        setnote('');
+        setprice('');
+        setquantity('');
+    }
 
     const validate = () => {
         let errorsCount = 0;
@@ -88,19 +110,53 @@ function InventoryService() {
             setsending(true);
             let urlsend = '/seller/inventory/serviceProcess/';
 
+            let formatDays = [];
+
+            for (let i = 0; i < days.length; i++) {
+                const element = days[i];
+                let formatElement = {};
+                formatElement.id        = element.day.value;
+                formatElement.name      = element.day.label;
+                formatElement.hours     = {};
+
+                formatElement.hours.start   = moment(element.hours.start).format('HH:mm');
+                formatElement.hours.end     = moment(element.hours.end).format('HH:mm');
+
+                formatDays.push(formatElement);
+            }
+
             let data = {
+                serviceTypeId: serviceTypeId.value,
                 serviceId: serviceId.value,
                 note,
                 price: Number(price),
                 type,
                 timetable: {
-                    dateStart,
-                    dateEnd
+                    days: formatDays,
+                    dateStart: moment(dateStart).format('DD/MM/YYYY'),
+                    dateEnd: moment(dateEnd).format('DD/MM/YYYY')
                 },
                 quantity:Number(quantity)
             }
 
             console.log(data);
+
+            axios({
+                method: 'post',
+                url:urlsend,
+                data
+            }).then((res) => {
+                console.log(res.data);
+                setsending(false);
+                if(res.data.data.result){
+                    setsuccessmessage('¡Almacen creado satisfactoriamente!')
+                }else{
+                    seterrormessage(res.data.data.message);
+                }
+            }).catch((err) => {
+                console.error(err);
+                setsending(false);
+            });
         }
     }
 
@@ -141,6 +197,19 @@ function InventoryService() {
                                                 <div className="help-block text-danger font-weight-bold">
                                                     <small>
                                                         {errors.serviceId}
+                                                    </small>
+                                                </div>
+                                            }
+                                        </div>
+                                    </Col>
+                                    <Col md="6">
+                                        <div className={((typeof errors === 'object' && errors.hasOwnProperty('serviceTypeId') ? 'has-error' : '') +' form-group')}>
+                                            <label htmlFor="">Tipo de servicio</label>
+                                            <ServiceTypesSelect value={serviceTypeId} onChange={setserviceTypeId} />
+                                            {(typeof errors === 'object' && errors.hasOwnProperty('serviceTypeId')) &&
+                                                <div className="help-block text-danger font-weight-bold">
+                                                    <small>
+                                                        {errors.serviceTypeId}
                                                     </small>
                                                 </div>
                                             }
@@ -194,7 +263,7 @@ function InventoryService() {
                                     </Col>
                                     <Col md="6">
                                         <div className="form-group">
-                                            <label htmlFor="">Cantidad:</label>
+                                            <label htmlFor="">Número de personas:</label>
                                             <input 
                                                 type="number" 
                                                 value={quantity}
@@ -214,7 +283,7 @@ function InventoryService() {
                                     </Col>
                                     <Col md="6">
                                         <div className="form-group">
-                                            <label htmlFor="">Precio:</label>
+                                            <label htmlFor="">Precio del servicio:</label>
                                             <input 
                                                 type="number" 
                                                 value={price}
@@ -254,12 +323,18 @@ function InventoryService() {
                                             }
                                         </div>
                                     </Col>
+                                    <Col md="12">
+                                        <div className="form-group">
+                                            <label htmlFor="">Horario:</label>
+                                            <TimePanel value={days} onChange={setdays} />
+                                        </div>
+                                    </Col>
                                 </Row>
                             </CardBody>
                         </Card>
                         <p className="my-2 text-right">
-                            <button type="submit" className="btn btn-primary">
-                                Incorporar inventario
+                            <button disabled={sending} type="submit" className="btn btn-primary">
+                                {(sending) ? <span>Enviando</span> : 'Incorporar servicio'}
                             </button>
                         </p>
                     </Col>

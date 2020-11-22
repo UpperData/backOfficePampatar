@@ -56,29 +56,34 @@ function AddWarehouseSeller(props) {
             console.log(res.data.data);
             if(res.data.data.result){
                 let data = res.data.data.values[0];
-                setname(data.name);
+                console.log(data);
 
+                setname(data.name);
+                
+                console.log(data.address.region);
+                
                 let formatRegion        = {};
-                formatRegion.value      = data.address[0].region.id;
-                formatRegion.label      = data.address[0].region.name;
+                formatRegion.value      = data.address.region.id;
+                formatRegion.label      = data.address.region.name;
 
                 let formatProvince      = {};
-                formatProvince.value    = data.address[0].province.id;
-                formatProvince.label    = data.address[0].province.name;
+                formatProvince.value    = data.address.province.id;
+                formatProvince.label    = data.address.province.name;
 
                 let formatComuna        = {};
-                formatComuna.value      = data.address[0].comuna.id;
-                formatComuna.label      = data.address[0].comuna.name;
+                formatComuna.value      = data.address.comuna.id;
+                formatComuna.label      = data.address.comuna.name;
 
                 setregion(formatRegion);
                 setprovince(formatProvince);
                 setcomuna(formatComuna);
-                setlocal(data.address[0].local);
-                setnumber(data.address[0].number);
-                setstreet(data.address[0].street);
+                setlocal(data.address.local);
+                setnumber(data.address.number);
+                setstreet(data.address.street);
 
                 let newPhonesNumber = [];
                 for (let i = 0; i < data.phone.length; i++) {
+                    console.log(data.phone[i]);
                     const element = data.phone[i];
                     let newElement = {};
 

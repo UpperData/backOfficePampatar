@@ -52,11 +52,20 @@ function GenderSelect(props) {
             />
         )
     }else{
+        let elementSelected = null;
+
+        if(props.value !== undefined && props.value !== null && list.length > 0){
+            let findElement = list.find(item => item.value === props.value.value);
+            elementSelected = findElement;
+            //console.log(findElement);
+            //console.log(props.value);
+        }
+
         return (
             <Select 
                 isSearchable={true}
                 placeholder="Género" 
-                value={(props.value !== undefined && props.value !== null) ? props.value :null} 
+                value={(props.value !== undefined && props.value !== null && list.length > 0) ? elementSelected : null} 
                 onChange={handleSelect} 
                 options={list} 
             />

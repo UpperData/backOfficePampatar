@@ -10,7 +10,7 @@ import RegionsSelect from '../selects/RegionsSelect';
 
 function AddressPanel(props) {
 
-    const [address,        setaddress]          = useState([]);
+    const [address,        setaddress]          = useState((props.value !== null && Array.isArray(props.value)) ? props.value : []);
     const [count,          setcount]            = useState(0);
     //const maxAddress = 10;
 

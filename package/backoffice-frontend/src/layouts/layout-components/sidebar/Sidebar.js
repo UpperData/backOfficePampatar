@@ -205,14 +205,14 @@ const Sidebar = (props) => {
                     <img
                       src={`data:image/png;base64,${logoshop}`}
                       alt="user"
-                      className="rounded-circle mr-3 ml-2"
+                      className="rounded-circle mr-3"
                       width="30"
                     />
                   :
                     <img
                       src={`data:image/png;base64,${DefaultUser}`}
                       alt="user"
-                      className="rounded-circle mr-3 ml-2"
+                      className="rounded-circle mr-3"
                       width="30"
                     />
                 }

@@ -16,11 +16,11 @@ import {
 
 function UserIndentityDocument(props) {
 
-    const [document, setdocument]                           = useState([]);
-    const [listDocumentTypes,     setListDocumentTypes]       = useState([]);
-    const [searchDocumentTypes,   setSearchDocumentTypes]   = useState(false);
-    const [personTypeId,          setPersonTypeId]            = useState(0);
-    const [count,    setcount]                              = useState(0);
+    const [document, setdocument]                               = useState((props.value !== null && Array.isArray(props.value)) ? props.value : []);
+    const [listDocumentTypes,     setListDocumentTypes]         = useState([]);
+    const [searchDocumentTypes,   setSearchDocumentTypes]       = useState(false);
+    const [personTypeId,          setPersonTypeId]              = useState(0);
+    const [count,    setcount]                                  = useState(0);
 
     const backoffice = useSelector(state => state.backoffice);
     let peopleTypeList = backoffice.peopleTypes.rows;
