@@ -16,10 +16,12 @@ import {
 
 function UserIndentityDocument(props) {
 
+    const [loading,  setloading]                                = useState(true);
+    const [search,   setsearch]                                 = useState(true);
     const [document, setdocument]                               = useState((props.value !== null && Array.isArray(props.value)) ? props.value : []);
     const [listDocumentTypes,     setListDocumentTypes]         = useState([]);
     const [searchDocumentTypes,   setSearchDocumentTypes]       = useState(false);
-    const [personTypeId,          setPersonTypeId]              = useState(0);
+    const [personTypeId,          setPersonTypeId]              = useState((props.personType !== null && props.personType !== undefined && (Number(props.personType) >= 0)) ? props.personType : null);
     const [count,    setcount]                                  = useState(0);
 
     const backoffice = useSelector(state => state.backoffice);
@@ -50,12 +52,25 @@ function UserIndentityDocument(props) {
         setSearchDocumentTypes(true);
 
         axios.get(docsByNaturalUrl).then((res) => {
-            console.log(res.data.data.rows);
+            console.log('person type:'+id);
             setdocument([]);
             setListDocumentTypes(res.data.data.rows);
             setSearchDocumentTypes(false);
         });
+    }
 
+    const changePersonTypeInLoad = (id) => {
+        setPersonTypeId(id);
+
+        let docsByNaturalUrl = '/docByPeopleType/'+id;
+        setSearchDocumentTypes(true);
+
+        axios.get(docsByNaturalUrl).then((res) => {
+            console.log('person type:'+id);
+            console.log(document);
+            setListDocumentTypes(res.data.data.rows);
+            setSearchDocumentTypes(false);
+        });
     }
 
     const handleDocumentTypeInputChange = (e, id) => {
@@ -80,9 +95,19 @@ function UserIndentityDocument(props) {
     }
 
     useEffect(() => {
-        if(document !== props.value){
-            console.log('cambiando data', document);
-            props.onChange(document);
+        if(loading){
+            if(search){
+                setsearch(false);
+                if(personTypeId !== null){
+                    changePersonTypeInLoad(personTypeId);
+                }
+                setloading(false);
+            }
+        }else{
+            if(document !== props.value){
+                console.log('cambiando data', document);
+                props.onChange(document);
+            }
         }
     });
 
@@ -117,8 +142,8 @@ function UserIndentityDocument(props) {
                     {userDocumentIderntity.length > 0 && searchDocumentTypes === false && userDocumentIderntity.map((item, key) => {
                         let isActive = document.filter(data => data.docType.id === item.id);
                         let activeInput = isActive.length > 0;
-                        console.log(isActive[0]);
-                        console.log(document);
+                        //console.log(isActive[0]);
+                        //console.log(document);
                         let sendObject = {docType: {id: item.id, name: item.name}, docNumber: ''};
 
                         return (
@@ -126,6 +151,7 @@ function UserIndentityDocument(props) {
                                 <div className="col-md-4 my-2">
                                     <CustomInput 
                                         onChange={() => handleCheckInDocumentTypes(sendObject)}
+                                        checked={activeInput}
                                         type="checkbox" 
                                         id={`document-type-${item.id}`} 
                                         name={`document-type`} 

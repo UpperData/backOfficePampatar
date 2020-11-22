@@ -19,7 +19,8 @@ function ViewWarehouseSeller() {
     const [data, setdata]       = useState(null);
     //const [sending, setsending] = useState(false);
 
-    const errormessage      = '';
+    const [errormessage, seterrormessage]  = useState('');
+
     const successmessage    = '';
 
     let url = '/myWarehouse';
@@ -33,6 +34,13 @@ function ViewWarehouseSeller() {
                     console.log(res.data.data);
                     if(res.data.data.result){
                         setdata(res.data.data);
+                        setloading(false);
+                        if(res.data.data.hasOwnProperty('values') && res.data.data.values !== undefined && Array.isArray(res.data.data.values)){
+
+                        }else{
+                            seterrormessage(res.data.data.message);
+                        }
+                    }else{
                         setloading(false);
                     }
                 }).catch((err) => {
@@ -53,7 +61,7 @@ function ViewWarehouseSeller() {
                         </div>
                         <div className="col-md-6">
                             <div className="text-md-right">
-                                <Link to="/addService" className="btn btn-info btn-sm">
+                                <Link to="/addWarehouseSeller" className="btn btn-info btn-sm">
                                     Nuevo almacen
                                 </Link>
                             </div>
@@ -61,7 +69,7 @@ function ViewWarehouseSeller() {
                     </div>
     
                     {(errormessage !== '') &&
-                        <div className="alert alert-danger">
+                        <div className="alert d-none alert-danger">
                             {errormessage}
                         </div>
                     }
@@ -96,28 +104,28 @@ function ViewWarehouseSeller() {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {(data.values.length > 0 && data.values.map((item, key) => {
+                                                        {(errormessage === '' && data !== null && data.hasOwnProperty('values') && data.values.length > 0 && data.values.map((item, key) => {
 
                                                             let phone = ((item.phone !== null) ? item.phone[0] : null);
 
                                                             let dir = '';
-                                                            if(typeof item.address.comuna === 'object' && item.address.comuna.hasOwnProperty('name')){
-                                                                dir = dir+''+item.address.comuna.name+' ';
+                                                            if(typeof item.address[0].comuna === 'object' && item.address[0].comuna.hasOwnProperty('name')){
+                                                                dir = dir+''+item.address[0].comuna.name+' ';
                                                             }
-                                                            if(typeof item.address.calle !== null && item.address.calle !== undefined){
-                                                                dir = dir+''+item.address.calle+' ';
+                                                            if(typeof item.address[0].calle !== null && item.address[0].calle !== undefined){
+                                                                dir = dir+''+item.address[0].calle+' ';
                                                             }
-                                                            if(typeof item.address.numero !== null && item.address.numero !== undefined){
-                                                                dir = dir+''+item.address.numero+' ';
+                                                            if(typeof item.address[0].numero !== null && item.address[0].numero !== undefined){
+                                                                dir = dir+''+item.address[0].numero+' ';
                                                             }
-                                                            if(typeof item.address.local !== null && item.address.local !== undefined){
-                                                                dir = dir+''+item.address.local+' ';
+                                                            if(typeof item.address[0].local !== null && item.address[0].local !== undefined){
+                                                                dir = dir+''+item.address[0].local+' ';
                                                             }
-                                                            if(typeof item.address.province === 'object' && item.address.province.hasOwnProperty('name')){
-                                                                dir = dir+''+item.address.province.name+' ';
+                                                            if(typeof item.address[0].province === 'object' && item.address[0].province.hasOwnProperty('name')){
+                                                                dir = dir+''+item.address[0].province.name+' ';
                                                             }
-                                                            if(typeof item.address.region === 'object' && item.address.region.hasOwnProperty('name')){
-                                                                dir = dir+''+item.address.region.name+' ';
+                                                            if(typeof item.address[0].region === 'object' && item.address[0].region.hasOwnProperty('name')){
+                                                                dir = dir+''+item.address[0].region.name+' ';
                                                             }
 
                                                             return (
@@ -143,6 +151,9 @@ function ViewWarehouseSeller() {
                                                         }))}
                                                     </tbody>
                                                 </Table>
+                                                {(errormessage !== '') &&
+                                                    <p className="mb-3 text-center">{errormessage}</p>
+                                                }
                                             </Col>
                                         </Row>
                                 </CardBody>

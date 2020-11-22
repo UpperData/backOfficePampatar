@@ -74,6 +74,8 @@ function UpdateSeller() {
 
     const [defaultPhone, setdefaultPhone]            = useState(null);
 
+    const [personType,   setpersonType ]             = useState(null);
+
     let urlget = '/seller/profile';
 
     useEffect(() => {
@@ -86,6 +88,7 @@ function UpdateSeller() {
                     let shops = res.data.data.rsAccount[0].shopRequests;
                     let idshop = session.userData.shop.postulacionId;
 
+                    console.log(session);
                     console.log(idshop);
                     console.log(data);
 
@@ -112,17 +115,6 @@ function UpdateSeller() {
                         setprocessId({label: shop.processId.name, value: shop.processId.id});
                         setpartner(shop.partner);
 
-                        let newDocuments = [];
-                        for (let i = 0; i < person.document.length; i++) {
-                            const element = person.document[i];
-                            let newElement = {};
-
-                            newElement.docType       = {label: element.docType.name, value: element.docType.id};
-                            newElement.number        = element.docNumber;
-
-                            newDocuments.push(newElement);
-                        }
-
                         let newPhonesNumber = [];
                         for (let i = 0; i < shop.phone.length; i++) {
                             const element = shop.phone[i];
@@ -146,9 +138,32 @@ function UpdateSeller() {
 
                             newAddressList.push(element);
                         }
-                        //console.log(newAddressList);
 
-                        //setdocument(newDocuments);
+                        let newDocuments = [];
+                        let ptype = null;
+                        for (let i = 0; i < person.document.length; i++) {
+
+                            const element = person.document[i];
+                            let newElement = {};
+                            //newElement.id          = i+1;
+                            newElement.docType       = {name: element.docType.name, id: element.docType.id};
+                            newElement.docNumber     = element.number;
+
+                            if(ptype === null){
+                                if(element.docType.name === 'DNI' || element.docType.name === 'PASAPORTE' || element.docType.name === 'RUN'){
+                                    ptype = 1;
+                                }else{
+                                    ptype = 2;
+                                }
+                            }
+
+                            newDocuments.push(newElement);
+                        }
+
+                        console.log(person.document);
+                        //SET DOCUMENTS______________________________________________________________________
+                        setdocument(newDocuments);
+                        setpersonType(ptype);
                         
                         setdefaultPhone(newPhonesNumber);
                         setaddress(newPhonesNumber);
@@ -480,7 +495,7 @@ function UpdateSeller() {
                                             </div>
                                         </Col>
                                         <Col md="12">     
-                                            <UserIndentityDocument value={document} onChange={setdocument} />
+                                            <UserIndentityDocument personType={personType} value={document} onChange={setdocument} />
                                         </Col>
                                         <Col md="12">
                                             <div className="form-group">

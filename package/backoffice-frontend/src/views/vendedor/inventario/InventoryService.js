@@ -23,6 +23,7 @@ require("moment/locale/es");
 function InventoryService() {
 
     const [sending,             setsending]         = useState(false);
+    const [sended,              setsended]          = useState(false);
     const [errors,              seterrors]          = useState({});
     const [successmessage,      setsuccessmessage]  = useState('');
     const [errormessage,        seterrormessage]    = useState('');
@@ -149,8 +150,11 @@ function InventoryService() {
                 console.log(res.data);
                 setsending(false);
                 if(res.data.data.result){
+                    reset();
+                    setsended(true);
                     setsuccessmessage('¡Almacen creado satisfactoriamente!')
                 }else{
+                    reset();
                     seterrormessage(res.data.data.message);
                 }
             }).catch((err) => {
@@ -178,6 +182,13 @@ function InventoryService() {
                 </div>
             }
 
+            {(sended) &&
+                <button onClick={() => setsended(false)} className="btn mt-2 btn-primary">
+                    Incorporar nuevo servicio
+                </button>
+            }
+
+            {(!sended) &&
             <form onSubmit={(e) => send(e)} action="">
                 <Row>
                     <Col md="12">
@@ -340,6 +351,7 @@ function InventoryService() {
                     </Col>
                 </Row>
             </form>
+            }
         </div>
     )
 }
