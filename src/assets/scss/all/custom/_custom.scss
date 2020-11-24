@@ -1,0 +1,134 @@
+/*******************************/
+// Bootstrap overrides
+/*******************************/
+@import 'variables.scss';
+@import 'mixins/background-variant';
+@import 'utilities/backgrounds';
+@import 'utilities/floating';
+@import 'text.scss';
+@import 'card.scss';
+@import 'type.scss';
+@import 'badge.scss';
+@import 'reboot.scss';
+@import 'perfect-scrollbar.scss';
+@import 'spinner.scss';
+@import 'buttons.scss';
+@import 'topbar-dd.scss';
+@import 'chat-widget.scss';
+@import 'comments.scss';
+@import 'feeds.scss';
+@import 'to-do-list.scss';
+@import 'activity-timeline.scss';
+@import 'activity.scss';
+@import 'navs.scss';
+@import 'progress.scss';
+@import 'globle.scss';
+@import 'input-group.scss';
+
+
+//Theme core files
+@import 'core/theme-colors/theme-colors';
+@import 'core/theme-colors/dark-theme';
+@import 'core/layout/layout';
+@import 'core/topbar/topbar';
+@import 'core/sidebar/sidebar';
+@import 'core/customizer/customizer';
+
+// Theme pages
+@import 'pages/authentication/authentication';
+@import 'pages/inbox/emails';
+@import 'pages/forms/typeahead';
+@import 'pages/gallery-usercard/gal-card';
+@import 'pages/timeline/timeline';
+@import 'pages/calendar/calendar';
+@import 'pages/dashboards/dashboard3';
+
+// rtl style
+@import 'rtl/rtl';
+
+.btn-unstyled{
+    border:none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+.react-tagsinput{
+    &.my-tags-input{
+        border: 1px solid #e9ecef;
+        padding: 0px 5px;
+        border-radius: 2px;
+        
+        .react-tagsinput-input{
+            margin: 0px;
+            padding: 6.2px;
+            width: auto;
+            color: $primary;
+            font-size: 14px;
+        }
+
+        .react-tagsinput-tag{
+            background-color: $primary !important;
+            color: #fff !important;
+            border: 1px solid transparent;
+            padding: 3px 6px;
+        }
+    }
+}
+
+.has-error{
+    .css-bg1rzq-control{
+        border-color: $danger !important;
+    }
+}
+
+.img-circle{
+    width: 230px;
+    height: 230px;
+    border-radius: 50%;
+    box-shadow: $box-shadow;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.content-sidebar-tooltip-faded{
+    position: relative;
+    .sidebar-tooltip-faded{
+        z-index: 100;
+        position: absolute;
+        transform: translateX(120px);
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        display: block;
+
+        .content-tooltip{
+            width: 140px;
+            position: relative;
+            color: #fff;
+            background-color: $primary !important;
+            font-size: .8em;
+            padding: 8px;
+            border-radius: 5px;
+        }
+    }
+}
+
+/*
+.super-tooltip{
+    .tooltip.show{
+        .tooltip-inner{
+            margin-left: 500px;
+        }
+    }
+}
+*/
+
+.tippy-box[data-theme~='pampatar'] {
+    background-color: $primary;
+    color: #fff;
+}
+
+.tippy-box[data-theme~='pampatar'][data-placement^='right'] > .tippy-arrow::before {
+    border-right-color: $primary;
+  }
