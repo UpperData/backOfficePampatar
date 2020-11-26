@@ -103,6 +103,9 @@ function StockMonitorSeller() {
                                                 <th>
                                                     Teléfono
                                                 </th>
+                                                <th>
+                                                    Precio de venta
+                                                </th>
                                                 <th className="text-right">
                                                     Existencias
                                                 </th>
@@ -146,6 +149,9 @@ function StockMonitorSeller() {
                                                         <td>
                                                             {phone.number}
                                                         </td>
+                                                        <td>
+                                                            {(items.avgPrice === null) ? 'Sin especificar' : items.avgPrice}
+                                                        </td>
                                                         <td className="text-right">
                                                             {items.total}
                                                         </td>
@@ -155,7 +161,7 @@ function StockMonitorSeller() {
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <td colSpan="4" className="text-right">
+                                                <td colSpan="5" className="text-right">
                                                     <strong>Total de existencias:</strong> <span className="ml-2">{finaltotal}</span>
                                                 </td>
                                             </tr>

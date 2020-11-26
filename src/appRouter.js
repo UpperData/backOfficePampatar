@@ -31,6 +31,8 @@ from "./redux/backoffice/Actions";
 import SetRole from "./views/roles/SetRole";
 import Spinner from "./views/spinner/Spinner";
 
+import TokenExpired from "./views/token/TokenExpired";
+
 let urls = {
   development: process.env.REACT_APP_DEV_API_URL,
   production:  process.env.REACT_APP_PRODUCTION_API_URL
@@ -109,8 +111,15 @@ const AppRouter = (props) => {
               failRequestByToken = true;
               //let STORAGE_ISLOGED = localStorage.getItem('is_loged');
               //let validate = window.appData.mpt !== '' && STORAGE_ISLOGED === 'true' && state.is_loged;
+              
+              if(!session.auth){
+                let urlTkn = '/session/token-expired';
+                console.log('El token ha caducado, logout');
 
-              alert('El token ha caducado, logout');
+                props.history.push(urlTkn);
+              }else{
+                console.log('El token ha caducado, logout');
+              }
 
               //console.log('storage: '+STORAGE_ISLOGED);
               //console.log('is loged: '+state.is_loged);
@@ -247,7 +256,8 @@ const AppRouter = (props) => {
     return (
         
           <Switch>
-            <Route exact path='/account/set-role' component={SetRole} />
+            <Route exact path='/account/set-role'       component={SetRole} />
+            <Route exact path='/session/token-expired'  component={TokenExpired} />
               
             {AuthRoutes.map((prop, key) => {
                 return (

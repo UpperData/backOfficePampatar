@@ -21,6 +21,7 @@ export const PrivateRoute = ({ component: Component, ...rest }) => {
 
         if (!session.auth) {
           // Si no esta logueado envia al login
+          console.log('No esta logueado');
           return (
             <Redirect
               to={{

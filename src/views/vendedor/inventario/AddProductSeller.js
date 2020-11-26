@@ -21,6 +21,8 @@ function AddProductSeller(props) {
     const [successmessage, setsuccessmessage] = useState('');
     const [errormessage, seterrormessage] = useState('');
 
+    const isEdit = (props.Edit !== undefined && props.Edit !== null) ? true : false;
+
     const [errors, seterrors] = useState({});
 
     const [warehouse,   setwarehouse]   = useState(null);
@@ -225,7 +227,7 @@ function AddProductSeller(props) {
                                 <Card>
                                     <div className="p-3">
                                         <CardTitle>
-                                            <i className="mdi mdi-border-all mr-2"></i>Seleccione un almacen
+                                            <i className="mdi mdi-border-all mr-2"></i>Seleccione un lote
                                         </CardTitle>
                                     </div>
                                     <CardBody className="border-top">

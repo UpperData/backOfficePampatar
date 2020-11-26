@@ -1,4 +1,5 @@
 import { lazy } from "react";
+
 //import AuthRoutes from "./AuthRoutes";
 
 const Home = lazy(() => import("../views/dashboards/Home"));
@@ -29,6 +30,8 @@ const EditProduct = lazy(() => import("../views/vendedor/mis-productos/EditProdu
 const StockMonitorSeller = lazy(() => import("../views/vendedor/inventario/StockMonitorSeller"));
 const AddProductSeller = lazy(() => import("../views/vendedor/inventario/AddProductSeller"));
 const InventoryService = lazy(() => import("../views/vendedor/inventario/InventoryService"));
+const ActualizarLote = lazy(() => import("../views/vendedor/inventario/ActualizarLote"));
+const PriceUpdate = lazy(() => import("../views/vendedor/inventario/PriceUpdate"));
 
 const UpdateSeller = lazy(() => import("../views/vendedor/configuraciones/UpdateSeller"));
 const AttachmentLogo = lazy(() => import("../views/vendedor/configuraciones/AttachmentLogo"));
@@ -138,9 +141,21 @@ var ThemeRoutesByRole = [
     onlyRoute:true
   },
   {
+    path: "/Inventory/product/lote/out",
+    name: "Actualizar lote",
+    component: ActualizarLote,
+    onlyRoute:true
+  },
+  {
     path: "/stockMonitorSeller",
     name: "Monitor de stock",
     component: StockMonitorSeller,
+    onlyRoute:true
+  },
+  {
+    path: "/seller/InvEntory/priCe/uPdate",
+    name: "Actualizar precios",
+    component: PriceUpdate,
     onlyRoute:true
   },
   //Administrador

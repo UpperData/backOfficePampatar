@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {useDispatch} from 'react-redux'
 import axios from 'axios';
 import {handleLogin} from '../../redux/session/Actions';
-import {withRouter} from 'react-router-dom'
+import {withRouter, Link} from 'react-router-dom'
 
 import {
   InputGroup,
@@ -343,6 +343,9 @@ const login = (e) => {
                         </Button>
                       </Col>
                     </Row>
+                    <Link className="d-none" to="/session/token-expired">
+                        token expirado
+                    </Link>
                   </Form>
                 </div>
               </Col>
