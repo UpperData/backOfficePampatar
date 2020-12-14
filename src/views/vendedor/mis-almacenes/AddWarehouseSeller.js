@@ -424,7 +424,7 @@ function AddWarehouseSeller(props) {
                                                 </Col>
                                                 <Col md="6">
                                                     <div className="form-group">
-                                                        <label htmlFor="warehouseNDpto"># de dpto:</label>
+                                                        <label htmlFor="warehouseNDpto">Número:</label>
                                                         <input 
                                                             type="text"
                                                             id="warehouseNDpto"

@@ -13,8 +13,11 @@ function TimePanel(props) {
 
     const [search,          setsearch]     = useState(true);
     const [loading,         setloading]    = useState(true);
+    const [daysSelected,    setdaysSelected]      = useState([]);
     const [times,           settimes]      = useState([]);
     const [count,           setcount]      = useState(0);
+
+    //let daysSelected = [];
 
     const addTime = () => {
         let list = times;
@@ -45,8 +48,16 @@ function TimePanel(props) {
     const changeday = (id, data) => {
         let list = times;
         list[id - 1].day = data;
+
+        //let changeDaysSelected = daysSelected;
+        //daysSelected.push(data.value);
+        
+        //setdaysSelected(changeDaysSelected);
         settimes(list);
         setcount(count + 3);
+
+        console.log(list);
+        //console.log(changeDaysSelected);
     }
 
     //time
@@ -59,46 +70,6 @@ function TimePanel(props) {
         console.log(listOfPhonesNumber);
         setPhonesNumber(listOfPhonesNumber);
         setcount(count + 1);
-    }
-
-    const typeNumberChange = (option, id) => {
-        let listOfPhonesNumber = phonesNumber;
-        listOfPhonesNumber[id - 1].phoneType = option;
-
-        console.log(listOfPhonesNumber[id - 1]);
-        console.log(option);
-        console.log(id);
-
-        setPhonesNumber(listOfPhonesNumber);
-        setcount(count + 1);
-    }
-
-    const phoneNumberChange = (data, id) => {
-        console.log(data);
-        let listOfPhonesNumber = phonesNumber;
-        listOfPhonesNumber[id - 1].number = data;
-
-        setPhonesNumber(listOfPhonesNumber);
-        setcount(count + 1);
-    }
-
-    const deletePhone = (phoneNumber) => {
-        //alert(phoneNumber);
-        let newPhonesList = phonesNumber;
-        newPhonesList.splice(phoneNumber - 1, 1);
-        let newPhonesListFormatted = [];
-
-        for (let i = 0; i < newPhonesList.length; i++) {
-            let format = newPhonesList[i];
-            format.id = i + 1
-            newPhonesListFormatted.push(format);
-        }
-
-        console.log(newPhonesListFormatted);
-        // setPhonesNumberErrors([]);
-
-        setPhonesNumber(newPhonesListFormatted);
-        setcount(count + 3);
     }
 
     useEffect(() => {
@@ -150,8 +121,8 @@ function TimePanel(props) {
                                         <div className="row">
                                             <div className="col-md-4">
                                                 <div className="form-group">
-                                                    <label htmlFor="">Día #{itemkey}:</label>
-                                                    <DaysSelect value={(activeInput) ? isActive[0].day : '' } onChange={(data) => changeday(item.id, data)} />
+                                                    <label htmlFor="">Día:</label>
+                                                    <DaysSelect timesSelected={times} value={(activeInput) ? isActive[0].day : '' } onChange={(data) => changeday(item.id, data)} />
                                                 </div>
                                             </div>
                                             <div className="col-md-4">
@@ -219,7 +190,7 @@ function TimePanel(props) {
 
             {times.length <= 2 &&
                 <button type="button" onClick={() => addTime()} className="btn mb-2 btn-block rounded shadow font-weight-bold btn-primary">
-                    <i className="fa fa-plus mr-2"></i>Añadir horario
+                    <i className="fa fa-plus mr-2"></i>Añadir día al horario
                 </button>
             }
         </div>

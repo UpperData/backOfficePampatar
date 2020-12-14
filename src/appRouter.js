@@ -23,7 +23,8 @@ import {
   set_genders,
   set_nationalities,
   set_banks,
-  set_address_types
+  set_address_types,
+  set_general_days
 } 
 from "./redux/backoffice/Actions";
 
@@ -33,6 +34,9 @@ import Spinner from "./views/spinner/Spinner";
 
 import TokenExpired from "./views/token/TokenExpired";
 
+//REACT_APP_DEV_API_URL
+//REACT_APP_SECONDARY_API_URL
+
 let urls = {
   development: process.env.REACT_APP_DEV_API_URL,
   production:  process.env.REACT_APP_PRODUCTION_API_URL
@@ -40,6 +44,12 @@ let urls = {
 
 axios.defaults.baseURL = urls[process.env.NODE_ENV];
 //console.log('cargando ruta de la API:'+ urls[process.env.NODE_ENV]);
+
+const NotFound = () => {
+  return  <div>
+            404
+          </div>
+}
 
 const AppRouter = (props) => {
 
@@ -210,6 +220,10 @@ const AppRouter = (props) => {
             dispatch(set_people_types());
           }
 
+          if(backoffice.generalsDays === null){
+            dispatch(set_general_days());
+          }
+
           if(backoffice.regions === null){
             dispatch(set_regions());
           }
@@ -253,34 +267,45 @@ const AppRouter = (props) => {
   });
 
   if(!loading){
-    return (
-        
+    if(!session.auth){
+        return  (
           <Switch>
             <Route exact path='/account/set-role'       component={SetRole} />
             <Route exact path='/session/token-expired'  component={TokenExpired} />
               
-            {AuthRoutes.map((prop, key) => {
+            {
+              AuthRoutes.map((prop, key) => {
+                  return (
+                    <PublicRoute
+                      path={prop.path}
+                      key={key}
+                      component={prop.component}
+                    />
+                  );
+              })
+            }
+          </Switch>
+      );
+    }else{
+        return (
+          <Switch>
+            <Route exact path='/account/set-role'       component={SetRole} />
+            <Route exact path='/session/token-expired'  component={TokenExpired} />
+
+            {
+              publicRoutes.map((prop, key) => {
                 return (
-                  <PublicRoute
+                  <PrivateRoute
                     path={prop.path}
                     key={key}
                     component={prop.component}
                   />
                 );
-            })}
-
-            {publicRoutes.map((prop, key) => {
-              return (
-                <PrivateRoute
-                  path={prop.path}
-                  key={key}
-                  component={prop.component}
-                />
-              );
-            })}            
+              })
+            }       
           </Switch>
-  
-    );
+        );
+    }
   }else{
     return (
       <Spinner />

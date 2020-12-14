@@ -168,8 +168,8 @@ function AddProductSeller(props) {
         setcountvariation(countvariation + 5);
     }
 
-    console.log(variation);
-    console.log(variation.length);
+    //console.log(variation);
+    //console.log(variation.length);
 
     const changeVariationData = (id, keyName, value) => {
         let variationList = variation;
@@ -277,7 +277,9 @@ function AddProductSeller(props) {
                                                         }
                                                     </div>
                                                 </Col>
+                                                {/* 
                                                 <Col md="12">
+                                                    
                                                     <div className="form-group">
                                                         <label htmlFor="">¿Incluir en el precio promedio?</label>
                                                         <div className="my-2">
@@ -308,7 +310,9 @@ function AddProductSeller(props) {
                                                             </div>
                                                         }
                                                     </div>
+                                                    
                                                 </Col>
+                                                */}
                                                 <Col className="d-none" md="6">
                                                     <div className="form-group">
                                                         <label htmlFor="">¿Tipo de lote?</label>

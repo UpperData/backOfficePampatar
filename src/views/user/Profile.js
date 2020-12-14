@@ -154,7 +154,7 @@ const Profile = () => {
                           <h6>{shopData.isLocal ? 'Si' : 'No'}</h6>
 
                           <small className="text-muted pt-4 db"><i className="mdi mdi-map-marker mr-2"></i>Dirección</small>
-                          <h6>{address[0].comuna.name} {address[0].calle} {address[0].numero} {address[0].local}, {address[0].province.name}, {address[0].region.name}</h6>
+                          <h6>{address[0].calle} {address[0].numero}, {address[0].local}, {address[0].comuna.name}, {address[0].province.name}, {address[0].region.name}</h6>
                           
                           <div className="d-none">
                             <small className="text-muted pt-4 db"><i className="mdi mdi-account-hard-hat mr-2"></i>¿Tiene inicio de actividades?</small>

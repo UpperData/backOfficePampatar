@@ -10,7 +10,8 @@ import {
     SET_GENDERS,
     SET_NATIONALITIES,
     SET_BANKS,
-    SET_ADDRESS_TYPES
+    SET_ADDRESS_TYPES,
+    SET_GENERAL_DAYS
   } from "../constants";
   
   const INIT_STATE = {
@@ -25,7 +26,8 @@ import {
     nationalities:  null,
     genders:        null,
     banks:          null,
-    addressTypes:    null
+    addressTypes:    null,
+    generalsDays:    null
   };
   
   export default (state = INIT_STATE, action) => {
@@ -49,6 +51,11 @@ import {
         return {
             ...state,
             storeTypes: action.payload
+        };
+      case SET_GENERAL_DAYS:
+        return {
+            ...state,
+            generalsDays: action.payload
         };
       case SET_SALES_CHANNELS:
         return {

@@ -10,7 +10,8 @@ import {
     SET_NATIONALITIES,
     SET_GENDERS,
     SET_BANKS,
-    SET_ADDRESS_TYPES
+    SET_ADDRESS_TYPES,
+    SET_GENERAL_DAYS
 } from '../constants';
 import axios from 'axios'
 
@@ -28,6 +29,24 @@ export const set_role = (payload) => {
         payload
     }
 }
+
+export const set_general_days = () => {
+    let url = '/getWeek/generalsDays/';
+    return dispatch => {
+        axios
+          .get(url)
+          .then(res => {
+            if(res.data.data.result){
+                dispatch({
+                    type: SET_GENERAL_DAYS,
+                    payload: res.data.data
+                })
+            }
+          })
+          .catch(err => console.log(err + "action"))
+    }
+}
+
 
 export const set_phone_types = () => {
     let urlPhoneType = '/phoneType';

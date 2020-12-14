@@ -1,3 +1,4 @@
+/*
 import SalesSummary from "./web-visits/WebVisits";
 import Activity from "./activity/Activity";
 import Stats from "./stats/Stats";
@@ -41,3 +42,4 @@ export {
   ProductSales,
   TotalVisits,
 };
+*/

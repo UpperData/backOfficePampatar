@@ -3,17 +3,22 @@ import { lazy } from "react";
 //import AuthRoutes from "./AuthRoutes";
 
 const Home = lazy(() => import("../views/dashboards/Home"));
-const Profile = lazy(() => import("../views/sample-pages/Profile"));
+const Profile = lazy(() => import("../views/user/Profile"));
 
+
+//administrador
 const ProcessRequest        = lazy(()     => import("../views/administrador/postulaciones/procesar/ProcessRequest"));
 
 const CreateContract        = lazy(()     => import("../views/administrador/contratos/CreateContrat"));
 const FindContract          = lazy(()     => import("../views/administrador/contratos/FindContract"));
 const FindContractByShop    = lazy(()     => import("../views/administrador/contratos/FindContractByShop"));
 
-const BidsSellerAd    = lazy(()     => import("../views/vendedor/publicaciones/BidsSellerAd"));
+const MisTiendas    = lazy(()     => import("../views/administrador/tiendas/MisTiendas"));
+const MiTienda      = lazy(()     => import("../views/administrador/tiendas/MiTienda"));
 
 //vendedor
+
+const BidsSellerAd    = lazy(()     => import("../views/vendedor/publicaciones/BidsSellerAd"));
 
 const ViewWarehouseSeller = lazy(() => import("../views/vendedor/mis-almacenes/ViewWarehouseSeller"));
 const AddWarehouseSeller = lazy(() => import("../views/vendedor/mis-almacenes/AddWarehouseSeller"));
@@ -193,6 +198,20 @@ var ThemeRoutesByRole = [
     component: BidsSellerAd,
     onlyRoute:true
   },
+  //tiendas
+  {
+    path: "/admin/shop/all",
+    name: "Mis Tiendas",
+    component: MisTiendas,
+    onlyRoute:true
+  },
+  {
+    path: "/admin/shop/:id",
+    name: "Mis Tiendas",
+    component: MiTienda,
+    onlyRoute:true
+  },
+  //redirect
   {
     path: "/",
     pathTo: "/dashboard/",

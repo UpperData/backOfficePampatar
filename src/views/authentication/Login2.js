@@ -60,6 +60,7 @@ const Login2 = (props) => {
     console.log(tkn);
   }
 
+  
   const formValidators = (fieldName, value) => {
     validators[fieldName].errors = [];
     validators[fieldName].state = value;
@@ -96,6 +97,7 @@ const Login2 = (props) => {
   const showErrors = (fieldName) => {
     const validator = validators[fieldName];
     const result = "";
+    /*
     if (validator && !validator.valid) {
       const errors = validator.errors.map((info, index) => {
         return (
@@ -107,6 +109,7 @@ const Login2 = (props) => {
       });
       return <div className="error mb-2">{errors}</div>;
     }
+    */
     return result;
   };
 
@@ -275,7 +278,7 @@ const login = (e) => {
                   <p className="mt-5">Ingrese con su cuenta de Pampatar.cl</p>
                 </div>
               </Col>
-              <Col md="6" lg="4" className="bg-white">
+              <Col md="6" lg="5" className="bg-white">
                 <div className="p-4">
                   <h3 className="font-medium mb-3 font-weight-bold">Ingresar al administrador</h3>
                   <Form onSubmit={(e) => login(e)} className="mt-3" action="/dashbaord">
@@ -297,7 +300,7 @@ const login = (e) => {
                           setEmail(e.target.value);
                           onInputChange(e);
                         }}
-                        placeholder="Email"
+                        placeholder="Correo Electrónico"
                       />
                     </InputGroup>
                     {showErrors("email")}
@@ -319,7 +322,7 @@ const login = (e) => {
                           setPassword(e.target.value);
                           onInputChange(e);
                         }}
-                        placeholder="Password"
+                        placeholder="Contraseña"
                       />
                     </InputGroup>
                     {showErrors("password")}
@@ -339,7 +342,7 @@ const login = (e) => {
                           type="submit"
                           block
                         >
-                          {(sending) ? 'cargando..' : 'Ingresar'}
+                          {(sending) ? <span>cargando<i className="fa fa-spin fa-spinner ml-3"></i></span> : 'Ingresar'}
                         </Button>
                       </Col>
                     </Row>

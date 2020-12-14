@@ -4,7 +4,7 @@ import AuthRoutes from "../routes/AuthRoutes.js";
 
 const BlankLayout = () => {
   return (
-    <div className="authentications">
+    <div className="authentications public-components">
       <Switch>
         {AuthRoutes.map((prop, key) => {
           console.log(prop);

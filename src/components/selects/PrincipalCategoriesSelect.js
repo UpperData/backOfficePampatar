@@ -2,22 +2,22 @@ import React, {useState, useEffect} from 'react'
 import Select from 'react-select'
 import axios from 'axios'
 
-function SizesSelect(props) {
+function PrincipalCategoriesSelect(props) {
 
     const [list, setList]       = useState([]);
     const [loading, setLoading] = useState(true);
     const [search,  setsearch]  = useState(true);
-    let url = '/getSize/all/generals/';
+    let url = '/menu/cat1';
 
     const getData = () => {
         axios.get(url).then((res) => {
             console.log(res.data);
-            let product = res.data.data.rows;
+            let items = res.data.data.menu;
             let newList = [];
 
-            for(var i=0; i < product.length; i++){
+            for(var i=0; i < items.length; i++){
                 
-                let thisElement = product[i];
+                let thisElement = items[i];
 
                 let formattedElement = {};
                 formattedElement.label = thisElement.name;
@@ -51,16 +51,26 @@ function SizesSelect(props) {
     if(loading){
         return (
             <Select 
-                placeholder="Cargando"  
+                placeholder="Cargando categorías"  
                 options={[]} 
             />
         )
     }else{
+
+        let elementSelected = null;
+
+        if(props.value !== undefined && props.value !== null && list.length > 0){
+            let findElement = list.find(item => item.value === props.value.value);
+            elementSelected = findElement;
+            //console.log(findElement);
+            //console.log(props.value);
+        }
+
         return (
             <Select 
                 isSearchable={true}
-                placeholder="Tamaño" 
-                value={(props.value !== undefined && props.value !== null) ? props.value :null} 
+                placeholder="Categorías" 
+                value={(props.value !== undefined && props.value !== null && list.length > 0) ? elementSelected : null}  
                 onChange={handleSelect} 
                 options={list} 
             />
@@ -68,4 +78,4 @@ function SizesSelect(props) {
     }
 }
 
-export default SizesSelect
+export default PrincipalCategoriesSelect

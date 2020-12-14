@@ -114,26 +114,32 @@ function StockMonitorSeller() {
                                         <tbody>
                                             {(stock.length > 0 && stock.map((items, key) => {
                                                 let item = items.Warehouse;
-                                                finaltotal =+ items.total;
+                                                finaltotal += Number(items.total);
 
                                                 let phone = ((item.phone !== null) ? item.phone[0] : null);
 
                                                 let dir = '';
+
+                                                if(typeof item.address[0].street !== null && item.address[0].street !== undefined){
+                                                    dir = dir+''+item.address[0].street+', ';
+                                                }
+
+                                                if(typeof item.address[0].number !== null && item.address[0].number !== undefined){
+                                                    dir = dir+''+item.address[0].number+', ';
+                                                }
+
+                                                if(typeof item.address[0].local !== null && item.address[0].local !== undefined){
+                                                    dir = dir+''+item.address[0].local+', ';
+                                                }
+
                                                 if(typeof item.address[0].comuna === 'object' && item.address[0].comuna.hasOwnProperty('name')){
                                                     dir = dir+''+item.address[0].comuna.name+' ';
                                                 }
-                                                if(typeof item.address[0].calle !== null && item.address[0].calle !== undefined){
-                                                    dir = dir+''+item.address[0].calle+' ';
-                                                }
-                                                if(typeof item.address[0].numero !== null && item.address[0].numero !== undefined){
-                                                    dir = dir+''+item.address[0].numero+' ';
-                                                }
-                                                if(typeof item.address[0].local !== null && item.address[0].local !== undefined){
-                                                    dir = dir+''+item.address[0].local+' ';
-                                                }
+
                                                 if(typeof item.address[0].province === 'object' && item.address[0].province.hasOwnProperty('name')){
                                                     dir = dir+''+item.address[0].province.name+' ';
                                                 }
+
                                                 if(typeof item.address[0].region === 'object' && item.address[0].region.hasOwnProperty('name')){
                                                     dir = dir+''+item.address[0].region.name+' ';
                                                 }

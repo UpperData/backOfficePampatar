@@ -145,7 +145,7 @@ function AddressPanel(props) {
                                         </Col>   
                                         <Col md="6">
                                             <div className="form-group">
-                                                <label htmlFor=""># de dpto:</label>
+                                                <label htmlFor="">Número:</label>
                                                 <input 
                                                     type="text"
                                                     id=""

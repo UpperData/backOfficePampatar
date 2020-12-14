@@ -16,6 +16,7 @@ export const SET_GENDERS = "SET_GENDERS";
 export const SET_NATIONALITIES = "SET_NATIONALITIES";
 export const SET_BANKS = "SET_BANKS";
 export const SET_ADDRESS_TYPES = "ADDRESS_TYPES";
+export const SET_GENERAL_DAYS = "GENERAL_DAYS";
 
 // SETTINGS CONSTANTS
 export const LOGO_BG = "LOGO_BG";
