@@ -16,6 +16,10 @@ const FindContractByShop    = lazy(()     => import("../views/administrador/cont
 const MisTiendas    = lazy(()     => import("../views/administrador/tiendas/MisTiendas"));
 const MiTienda      = lazy(()     => import("../views/administrador/tiendas/MiTienda"));
 
+const CurrentTaxes  = lazy(()     => import("../views/administrador/impuestos/CurrentTaxes"));
+const ShowTax       = lazy(()     => import("../views/administrador/impuestos/ShowTax"));
+const UpdateTax     = lazy(()     => import("../views/administrador/impuestos/UpdateTax"));
+
 //vendedor
 
 const BidsSellerAd    = lazy(()     => import("../views/vendedor/publicaciones/BidsSellerAd"));
@@ -163,7 +167,7 @@ var ThemeRoutesByRole = [
     component: PriceUpdate,
     onlyRoute:true
   },
-  //Administrador
+  //Administrador______________________________________________________________________
 
   //postulaciones
   {
@@ -196,6 +200,25 @@ var ThemeRoutesByRole = [
     path: "/bidsSellerAdd",
     name: "Crear publicacion",
     component: BidsSellerAd,
+    onlyRoute:true
+  },
+  //impuestos
+  {
+    path: "/tax/LIST/admin",
+    name: "Impuestos actuales",
+    component: CurrentTaxes,
+    onlyRoute:true
+  },
+  {
+    path: "/tax/show/:id",
+    name: "Ver impuesto",
+    component: ShowTax,
+    onlyRoute:true
+  },
+  {
+    path: "/Update/tAxVale/adMIN/one",
+    name: "Actualizar impuesto",
+    component: UpdateTax,
     onlyRoute:true
   },
   //tiendas
