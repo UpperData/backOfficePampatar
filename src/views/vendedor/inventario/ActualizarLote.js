@@ -14,6 +14,7 @@ import {
 } from 'reactstrap';
 import ProductSelect from '../../../components/selects/ProductSelect';
 import WarehouseSelect from '../../../components/selects/WarehouseSelect';
+import LotStatusSelect from '../../../components/selects/LotStatusSelect';
 
 function ActualizarLote() {
 
@@ -31,6 +32,7 @@ function ActualizarLote() {
 
     const [sending,         setsending]         = useState(false);
     const [price,           setprice]           = useState(null);
+    const [statusId,        setstatusId]           = useState(null);
     const [quantity,        setquantity]        = useState('');
     const [warehouse,       setwarehouse]       = useState('');
 
@@ -44,7 +46,7 @@ function ActualizarLote() {
         axios(urlGetUpdate+data.value)
         .then((res) => {
             console.log(res.data);
-            setlotes(res.data);
+            setlotes(res.data.items);
             setsearchLotes(false);
         }).catch((err) => {
             console.error(err);
@@ -62,7 +64,8 @@ function ActualizarLote() {
             setlote(res.data);
 
             setquantity(res.data.quantity);
-            setprice(Number(res.data.price));
+            //setprice(Number(res.data.price));
+            setstatusId({value: res.data.Status.id});
             setwarehouse({label: res.data.Warehouse.name, value: res.data.Warehouse.id});
 
             setsearchLote(false);
@@ -76,12 +79,15 @@ function ActualizarLote() {
         e.stopPropagation();
         e.preventDefault();
         setsending(true);
+        setsuccessmessage('');
+        seterrormessage('');
 
         let data = {
-            id:lote.id,
-            price:price,
+            inventoryId:lote.id,
+            //price:price,
             quantity:quantity,
-            warehouseId:warehouse.value 	
+            warehouseId:warehouse.value,
+            StatusId: statusId.value 	
         }
 
         let urlEdit = '/seller/inventory/lot/edit/';
@@ -94,6 +100,8 @@ function ActualizarLote() {
             console.log(res.data);
             if(res.data.data.result){
                 setsuccessmessage(res.data.data.message);
+            }else{
+                seterrormessage(res.data.data.message);
             }
             setsending(false);
         }).catch((err) => {
@@ -158,10 +166,7 @@ function ActualizarLote() {
                                                     Nota
                                                 </th>
                                                 <th>
-                                                    Precio de venta
-                                                </th>
-                                                <th>
-                                                    Existencias
+                                                    Stock
                                                 </th>
                                                 <th>
                                                     Acción
@@ -180,9 +185,6 @@ function ActualizarLote() {
                                                         </td>
                                                         <td>
                                                             {item.note}
-                                                        </td>
-                                                        <td>
-                                                            {(item.avgPrice === null) ? 'Sin especificar' : item.avgPrice}
                                                         </td>
                                                         <td>
                                                             {item.quantity}
@@ -229,15 +231,8 @@ function ActualizarLote() {
                                                 </Col>
                                                 <Col md="6">
                                                     <div className="form-group">
-                                                        <label htmlFor="">Precio</label>
-                                                        <input 
-                                                            type="number" 
-                                                            value={price}
-                                                            onChange={(e) => setprice(e.target.value)}
-                                                            min="0"
-                                                            placeholder="Precio"
-                                                            className="form-control"
-                                                        />
+                                                        <label htmlFor="">Estatus</label>
+                                                        <LotStatusSelect value={statusId} onChange={setstatusId} />
                                                     </div>
                                                 </Col>
                                                 <Col md="6">

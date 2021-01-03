@@ -176,3 +176,37 @@
         }
     }
 }
+
+.role-label{
+    transform: translateY(-10px);
+
+    img{
+        border: 8px solid $secondary;
+        box-shadow: $box-shadow;
+        transition: all .3s ease;
+    }
+
+    &:hover{
+        img{
+            transform: translateY(-10px);
+            border: 8px solid $dark;
+        }
+
+        .role-text{
+            color: $primary !important;
+        }
+    }
+}
+
+.stock-circle{
+    width: 120px;
+    height: 120px;
+    border: 8px solid $light;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 3em;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}

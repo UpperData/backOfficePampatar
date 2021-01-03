@@ -6,6 +6,9 @@ import { set_role, set_backoffice_menu } from '../../redux/backoffice/Actions';
 import Spinner from '../spinner/Spinner';
 import { AuthenticationService } from '../../jwt/_services';
 
+import StoreImg from '../../assets/images/store.png';
+import AdminImg from '../../assets/images/admin.png';
+
 function SetRole(props) {
 
     //console.log('ok');
@@ -69,21 +72,27 @@ function SetRole(props) {
                             <div className="row justify-content-center py-4">
                                 {(roles.length > 0 && roles.map((item, key) => {
                                     if(item.name !== 'Comprador'){
+
+                                        let imgUrl = StoreImg;
+                                        if(item.name === 'Administrador'){
+                                            imgUrl = AdminImg;
+                                        }
+
                                         return (
-                                            <a onClick={(e) => setThisRole(e, item)} href="##" key={key} className="col-md-auto col-12">
-                                                <div className="card shadow w-100">
-                                                    <div className="card-body py-4">
-                                                        <h2 className="text-primary py-3 mb-0 text-center font-weight-bold">
-                                                            {item.name}
-                                                        </h2>
-                                                    </div>
-                                                </div>
+                                            <a onClick={(e) => setThisRole(e, item)} href="##" key={key} className="col-md-auto role-label col-12">
+                                                <img src={imgUrl} width="220" height="220" alt={item.name} />
+                                                
+                                                <h2 className="text-secondary role-text h5 py-3 mb-0 text-center font-weight-bold">
+                                                    {item.name}
+                                                </h2>
+                                                    
                                             </a>
                                         )
                                     }
                                 }))}
                             </div>
                         }
+                        <h5 className="h6 text-muted"><i className="mdi mdi-account-switch mr-2"></i> <strong>Clickea</strong> para cambiar al rol seleccionado</h5>
                         {(setting) &&
                             <Spinner />
                         }
