@@ -8,6 +8,8 @@ import { AuthenticationService } from '../../jwt/_services';
 
 import StoreImg from '../../assets/images/store.png';
 import AdminImg from '../../assets/images/admin.png';
+import { handleLogout } from '../../redux/session/Actions';
+import logo from "../../assets/images/pampatar/pampatar_color_1.png";
 
 function SetRole(props) {
 
@@ -52,6 +54,11 @@ function SetRole(props) {
         }
     });
 
+    const logout = () => {
+        dispatch(handleLogout());
+        props.history.push('/');
+    }
+
     if(loading){
         if(backoffice.menu !== null){
             return <Spinner />
@@ -63,13 +70,19 @@ function SetRole(props) {
     }else{
         if(backoffice.menu === null && !backoffice.role.hasOwnProperty('id')){
             return (
-                <div className="bg-light d-flex min-vh-100 align-items-center">
+                <div className="d-flex min-vh-100 align-items-center">
                     <div className="container text-center">
+                        <div className="row justify-content-center">
+                            <div className="col col-md-2">
+                                <img src={logo} className="w-75 d-block" alt=""/>
+                            </div>
+                        </div>
+                        <hr className="d-block mx-auto w-50" />
                         <h1 className="font-weight-bold">
                             ¿Que rol deseas visualizar?
                         </h1>
                         {(!setting) &&
-                            <div className="row justify-content-center py-4">
+                            <div className="row justify-content-center py-5">
                                 {(roles.length > 0 && roles.map((item, key) => {
                                     if(item.name !== 'Comprador'){
 
@@ -80,19 +93,32 @@ function SetRole(props) {
 
                                         return (
                                             <a onClick={(e) => setThisRole(e, item)} href="##" key={key} className="col-md-auto role-label col-12">
-                                                <img src={imgUrl} width="220" height="220" alt={item.name} />
+                                                <div className="role-icon ">
+                                                    <img src={imgUrl} width="205" height="205" alt={item.name} />
+                                                </div>
                                                 
-                                                <h2 className="text-secondary role-text h5 py-3 mb-0 text-center font-weight-bold">
+                                                <h2 className="text-secondary role-text h5 py-4 mb-0 text-center font-weight-bold">
                                                     {item.name}
-                                                </h2>
-                                                    
+                                                </h2>      
                                             </a>
                                         )
                                     }
                                 }))}
+
+                                <a onClick={() => logout()} href="##" className="col-md-auto role-label col-12">
+                                    <div className="role-icon d-inline-flex bg-white align-items-center justify-content-center" style={{ width: '220px', height: '220px' }}>
+                                        <i className="fa fa-7x fa-sign-out-alt"></i>
+                                    </div>
+                                    <h2 className="text-secondary role-text h5 py-4 mb-0 text-center font-weight-bold">
+                                        Cerrar sesión
+                                    </h2>
+                                </a>
+
                             </div>
                         }
-                        <h5 className="h6 text-muted"><i className="mdi mdi-account-switch mr-2"></i> <strong>Clickea</strong> para cambiar al rol seleccionado</h5>
+                        <h5 className="h6 text-muted">
+                            <i className="mdi mdi-account-switch mr-2"></i> <strong>Clickea</strong> para cambiar al rol - <strong>Pampatar - {new Date().getFullYear()} todos los derechos reservados</strong>
+                        </h5>
                         {(setting) &&
                             <Spinner />
                         }

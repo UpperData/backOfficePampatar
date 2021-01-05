@@ -156,7 +156,7 @@ export default () => {
           </Nav>
           <Nav className="ml-auto float-right" navbar>
             <NavItem>
-              <NavLink href="#" className="">
+              <NavLink href="#" className="d-none">
                 <span onClick={searchtoggle.bind(null)}>
                   <i className="ti-search" />
                 </span>
@@ -179,17 +179,17 @@ export default () => {
             {/*--------------------------------------------------------------------------------*/}
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav caret>
-                <i className="mdi mdi-message font-18" />
+                <i className="mdi mdi-bell font-18" />
               </DropdownToggle>
               <DropdownMenu right className="mailbox">
                 <div className="d-flex no-block align-items-center p-3 border-bottom">
-                  <h4 className="mb-0">4 New Notifications</h4>
+                  <h5 className="mb-0 font-weight-bold">Notificaciones</h5>
                 </div>
                 <div className="message-center notifications">
                   {/*<!-- Message -->*/}
                   {data.notifications.map((notification, index) => {
                     return (
-                      <span href="" className="message-item" key={index}>
+                      <span href="" className="d-none message-item" key={index}>
                         <span
                           className={
                             "btn btn-circle btn-" + notification.iconbg
@@ -207,10 +207,25 @@ export default () => {
                       </span>
                     );
                   })}
+
+                  <span href="" className="message-item">
+                      <span
+                        className={
+                          "btn btn-circle btn-success"
+                        }
+                      >
+                        <i className="fa fa-check-circle" />
+                      </span>
+                      <div className="mail-contnet">
+                        <h5 className="message-title">
+                          Sin notificaciones
+                        </h5>
+                      </div>
+                    </span>
                 </div>
                 <a className="nav-link text-center mb-1 text-dark" href=";">
-                  <strong>Check all notifications</strong>{" "}
-                  <i className="fa fa-angle-right" />
+                  <strong className="text-secondary">Ver más</strong>{" "}
+                  <i className="fa fa-angle-right text-secondary" />
                 </a>
               </DropdownMenu>
             </UncontrolledDropdown>

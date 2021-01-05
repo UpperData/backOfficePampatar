@@ -10,7 +10,12 @@ import {
     CardBody,
     CardTitle,
     CustomInput,
-    Table
+    Table,
+    Button, 
+    Modal, 
+    ModalHeader, 
+    ModalBody, 
+    ModalFooter
 } from 'reactstrap';
 import ProductSelect from '../../../components/selects/ProductSelect';
 import WarehouseSelect from '../../../components/selects/WarehouseSelect';
@@ -35,6 +40,9 @@ function ActualizarLote() {
     const [statusId,        setstatusId]           = useState(null);
     const [quantity,        setquantity]        = useState('');
     const [warehouse,       setwarehouse]       = useState('');
+
+    const [modal, setModal] = useState(false);
+    const toggle = () => setModal(!modal);
 
     let urlGetUpdate = '/seller/inventory/lot/sku/list/all/';
 
@@ -75,6 +83,11 @@ function ActualizarLote() {
         });
     }
 
+    const gotolist = () => {
+        setsearchLote(false);
+        setlote(null);
+    }
+
     const updateLote = (e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -100,8 +113,23 @@ function ActualizarLote() {
             console.log(res.data);
             if(res.data.data.result){
                 setsuccessmessage(res.data.data.message);
+                setModal(false);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+
+                /*
+                    setsearchLote(false);
+                    setsearchLotes(false);
+                    setsearch(true);
+                    seterrormessage('');
+                    setproduct(null);
+                    setlote(null);
+                    setlotes(null);
+                */
+
             }else{
                 seterrormessage(res.data.data.message);
+                setModal(false);
+                window.scrollTo({top: 0, behavior: 'smooth'});
             }
             setsending(false);
         }).catch((err) => {
@@ -218,7 +246,7 @@ function ActualizarLote() {
                                     <Card>
                                         <div className="p-3">
                                             <CardTitle>
-                                                <i className="mdi mdi-border-all mr-2"></i>Datos del lote
+                                                <i className="mdi mdi-border-all mr-2"></i>Datos del lote - <button onClick={() => gotolist()} className="btn btn-sm btn-info">Volver a la lista de lotes</button>
                                             </CardTitle>
                                         </div>
                                         <CardBody className="border-top">
@@ -254,7 +282,7 @@ function ActualizarLote() {
                                 </Col>
                                 <Col md="12">
                                     <div className="py-2 text-right">
-                                        <button disabled={sending} type="submit" className="btn btn-warning px-4 font-weight-bold">
+                                        <button disabled={sending} onClick={() => toggle()} type="button" className="btn btn-warning px-4 font-weight-bold">
                                             {(sending) ? <span><i className="fa fa-spin fa-spinner"></i></span> : 'Actualizar lote'}
                                         </button>
                                     </div>
@@ -263,6 +291,24 @@ function ActualizarLote() {
                         </form>
                     }
                 </div>
+                
+                {(product !== null) &&
+                    <Modal isOpen={modal} toggle={toggle}>
+                        <ModalHeader toggle={toggle}>
+                            <span className="font-weight-bold">¿Actualizar lote?</span>
+                        </ModalHeader>
+                        <ModalBody>
+                            <p>¿Desea actualizar este lote de <strong>{product.label}</strong>?</p>
+                            <p><strong>Nota:</strong> esta acción no se puede deshacer</p>
+                        </ModalBody>
+                        <ModalFooter>
+                        <Button color="primary" disabled={sending} onClick={(e) => updateLote(e)}>
+                            {(sending) ? <span><i className="fa fa-spin fa-spinner"></i></span> : 'Confirmar'}
+                        </Button>{' '}
+                        <Button color="light" onClick={toggle}>Cancelar</Button>
+                        </ModalFooter>
+                    </Modal>
+                }
             </div>
         )
     }else{

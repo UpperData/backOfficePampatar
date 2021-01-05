@@ -61,25 +61,27 @@ function AddWarehouseSeller(props) {
                 setname(data.name);
                 
                 console.log(data.address.region);
+
+                let address = ((Array.isArray(data.address)) ? data.address[0] : data.address);
                 
                 let formatRegion        = {};
-                formatRegion.value      = data.address.region.id;
-                formatRegion.label      = data.address.region.name;
+                formatRegion.value      = address.region.id;
+                formatRegion.label      = address.region.name;
 
                 let formatProvince      = {};
-                formatProvince.value    = data.address.province.id;
-                formatProvince.label    = data.address.province.name;
+                formatProvince.value    = address.province.id;
+                formatProvince.label    = address.province.name;
 
                 let formatComuna        = {};
-                formatComuna.value      = data.address.comuna.id;
-                formatComuna.label      = data.address.comuna.name;
+                formatComuna.value      = address.comuna.id;
+                formatComuna.label      = address.comuna.name;
 
                 setregion(formatRegion);
                 setprovince(formatProvince);
                 setcomuna(formatComuna);
-                setlocal(data.address.local);
-                setnumber(data.address.number);
-                setstreet(data.address.street);
+                setlocal(address.local);
+                setnumber(address.number);
+                setstreet(address.street);
 
                 let newPhonesNumber = [];
                 for (let i = 0; i < data.phone.length; i++) {
@@ -115,13 +117,13 @@ function AddWarehouseSeller(props) {
 
         //name
         if(name.trim() === ''){
-            thiserrors.name = 'Debe ingresar un nombre para el almacen';
+            thiserrors.name = 'Debe ingresar un nombre para el almacén';
             errorsCount++;
         }else if(name.trim().length < 6){
-            thiserrors.name = 'El nombre del almacen ingresado es demasiado corto';
+            thiserrors.name = 'El nombre del almacén ingresado es demasiado corto';
             errorsCount++;
         }else if(name.trim().length > 40){
-            thiserrors.name = 'El nombre del almacen ingresado es demasiado largo';
+            thiserrors.name = 'El nombre del almacén ingresado es demasiado largo';
             errorsCount++;
         }
 
@@ -238,8 +240,10 @@ function AddWarehouseSeller(props) {
                     setsending(false);
                     if(res.data.data.result){
                         setsuccessmessage('¡Almacen Editado satisfactoriamente!')
+                        window.scrollTo({top: 0, behavior: 'smooth'});
                     }else{
                         seterrormessage(res.data.data.message);
+                        window.scrollTo({top: 0, behavior: 'smooth'});
                     }
                 }).catch((err) => {
                     console.error(err);
@@ -270,8 +274,10 @@ function AddWarehouseSeller(props) {
                     setsending(false);
                     if(res.data.data.result){
                         setsuccessmessage('¡Almacen creado satisfactoriamente!')
+                        window.scrollTo({top: 0, behavior: 'smooth'});
                     }else{
                         seterrormessage(res.data.data.message);
+                        window.scrollTo({top: 0, behavior: 'smooth'});
                     }
                 }).catch((err) => {
                     console.error(err);
@@ -284,7 +290,7 @@ function AddWarehouseSeller(props) {
     return (
         <div>
             <h1 className="h4 mb-3 font-weight-bold">
-                {props.Edit ? 'Editar almacen' : 'crear nuevo almacen'}
+                {props.Edit ? 'Editar almacén' : 'crear nuevo almacén'}
             </h1>
                 {(errormessage !== '') &&
                     <div className="alert alert-danger">
@@ -305,7 +311,7 @@ function AddWarehouseSeller(props) {
                                 <Card>
                                     <div className="p-3">
                                         <CardTitle>
-                                            <i className="mdi mdi-border-all mr-2"></i>Seleccione un almacen
+                                            <i className="mdi mdi-border-all mr-2"></i>Seleccione un almacén
                                         </CardTitle>
                                     </div>
                                     <CardBody className="border-top">
@@ -324,21 +330,21 @@ function AddWarehouseSeller(props) {
                                 <Card>
                                     <div className="p-3">
                                         <CardTitle>
-                                            <i className="mdi mdi-border-all mr-2"></i>Datos del almacen
+                                            <i className="mdi mdi-border-all mr-2"></i>Datos del almacén
                                         </CardTitle>
                                     </div>
                                     <CardBody className="border-top">
                                             <Row>
                                                 <Col xs="12">
                                                     <div className="form-group">
-                                                        <label htmlFor="warehouseName">Nombre del almacen:</label>
+                                                        <label htmlFor="warehouseName">Nombre del almacén:</label>
                                                         <input 
                                                             type="text"
                                                             id="warehouseName"
                                                             min="0" 
                                                             value={name}
                                                             onChange={(e) => setname(e.target.value)}
-                                                            placeholder="Ingrese el nombre del almacen" 
+                                                            placeholder="Ingrese el nombre del almacén" 
                                                             className={((typeof errors === 'object' && errors.hasOwnProperty('name') ? 'is-invalid' : '') +' form-control')}
                                                         />
                                                         {(typeof errors === 'object' && errors.hasOwnProperty('name')) &&
@@ -452,7 +458,7 @@ function AddWarehouseSeller(props) {
                                                             min="0" 
                                                             value={local}
                                                             onChange={(e) => setlocal(e.target.value)}
-                                                            placeholder="Local del almacen" 
+                                                            placeholder="Local del almacén" 
                                                             className={((typeof errors === 'object' && errors.hasOwnProperty('local') ? 'is-invalid' : '') +' form-control')}
                                                         />
                                                         {(typeof errors === 'object' && errors.hasOwnProperty('local')) &&
@@ -497,13 +503,13 @@ function AddWarehouseSeller(props) {
                                 ?
                                     <p>
                                         <button disabled={sending} type="submit" className="btn btn-warning">
-                                            {(!sending) ? 'Editar almacen' : <p className="mb-0"><i className="fa fa-spinner fa-spin"></i></p>}
+                                            {(!sending) ? 'Editar almacén' : <p className="mb-0"><i className="fa fa-spinner fa-spin"></i></p>}
                                         </button>
                                     </p>
                                 :
                                     <p>
                                         <button disabled={sending} type="submit" className="btn btn-info">
-                                            {(!sending) ? 'Crear almacen' : <p className="mb-0"><i className="fa fa-spinner fa-spin"></i></p>}
+                                            {(!sending) ? 'Crear almacén' : <p className="mb-0"><i className="fa fa-spinner fa-spin"></i></p>}
                                         </button>
                                     </p>
                                 }

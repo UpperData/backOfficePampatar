@@ -180,16 +180,20 @@
 .role-label{
     transform: translateY(-10px);
 
-    img{
+    .role-icon{
         border: 8px solid $secondary;
+        transition: all .3s ease;
+    }
+
+    img{
         box-shadow: $box-shadow;
         transition: all .3s ease;
     }
 
     &:hover{
-        img{
-            transform: translateY(-10px);
+        .role-icon{
             border: 8px solid $dark;
+            transform: translateY(-10px);
         }
 
         .role-text{

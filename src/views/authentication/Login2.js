@@ -190,6 +190,7 @@ const login = (e) => {
 
             if(res.data.data.result === false){
                 console.log('Datos erroneos');
+                window.scrollTo({top: 0, behavior: 'smooth'});
                 setErrorMessage(res.data.data.message);
             }else{
                 //usuario logeado
@@ -199,6 +200,7 @@ const login = (e) => {
             }
 
         }).catch((err) => {
+            window.scrollTo({top: 0, behavior: 'smooth'});
             console.error(err);
             setSending(false);
         });
@@ -252,21 +254,23 @@ const login = (e) => {
         {/*Login2 Cards*/}
         {/*--------------------------------------------------------------------------------*/}
         <div className="container">
-
-          {(errorMessage !== '') && 
-            <div className="alert alert-danger">
-              {errorMessage}
-            </div>
-          }
-
-          {state !== null && state !== undefined && typeof state === 'object' && state.hasOwnProperty('errorMessage') && 
-            <div className="alert alert-danger">
-              {state.errorMessage}
-            </div>
-          }
           <div>
             <Row className="no-gutters justify-content-center">
-              <Col md="6" lg="4" className="bg-dark text-white">
+              {state !== null && state !== undefined && typeof state === 'object' && state.hasOwnProperty('errorMessage') && 
+                <div className="col-12 col-lg-9">
+                  <div className="alert alert-danger">
+                    {state.errorMessage}
+                  </div>
+                </div>
+              }
+              {(errorMessage !== '') && 
+                <div className="col-12 col-lg-9">
+                  <div className="alert alert-danger">
+                    {errorMessage}
+                  </div>
+                </div>
+              }
+              <Col md="6" lg="4" className="bg-dark d-none d-md-flex text-white">
                 <div className="p-4">
                   <h3 className="display-5">
                     Bienvenido,

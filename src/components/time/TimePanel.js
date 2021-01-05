@@ -188,7 +188,7 @@ function TimePanel(props) {
                 </Fragment>
             }
 
-            {times.length <= 2 &&
+            {times.length < 7 &&
                 <button type="button" onClick={() => addTime()} className="btn mb-2 btn-block rounded shadow font-weight-bold btn-primary">
                     <i className="fa fa-plus mr-2"></i>Añadir día al horario
                 </button>

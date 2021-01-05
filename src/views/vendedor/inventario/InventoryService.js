@@ -152,9 +152,11 @@ function InventoryService() {
                 if(res.data.data.result){
                     reset();
                     setsended(true);
-                    setsuccessmessage('¡Almacen creado satisfactoriamente!')
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                    setsuccessmessage('¡Servicio añadido satisfactoriamente!')
                 }else{
                     reset();
+                    window.scrollTo({top: 0, behavior: 'smooth'});
                     seterrormessage(res.data.data.message);
                 }
             }).catch((err) => {
