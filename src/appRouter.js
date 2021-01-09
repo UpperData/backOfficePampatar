@@ -124,11 +124,11 @@ const AppRouter = (props) => {
               
               if(!session.auth){
                 let urlTkn = '/session/token-expired';
-                console.log('El token ha caducado, logout');
+                //console.log('El token ha caducado, logout');
 
                 props.history.push(urlTkn);
               }else{
-                console.log('El token ha caducado, logout');
+                //console.log('El token ha caducado, logout');
               }
 
               //console.log('storage: '+STORAGE_ISLOGED);
@@ -171,7 +171,7 @@ const AppRouter = (props) => {
             setloading(false);
           }else{
             //console.log(AuthenticationService.currentUserValue);
-            console.log('logueando por token');
+            //console.log('logueando por token');
             let token = AuthenticationService.tokenValue;
             let res = AuthenticationService.loginWithTkn(token);
             res.then((res) => {
@@ -198,7 +198,7 @@ const AppRouter = (props) => {
         //si esta logueado entonces buscar maestros
         if(searchMasters){
           setSearchMasters(false);
-          console.log('Seteando maestros');
+          //console.log('Seteando maestros');
 
           if(backoffice.phoneTypes === null){
             dispatch(set_phone_types());

@@ -7,7 +7,7 @@ import {
     CardTitle,
     CustomInput
 } from 'reactstrap';
-import StepZilla from 'react-stepzilla';
+
 import PrincipalCategoriesSelect from '../../../components/selects/PrincipalCategoriesSelect';
 import MultipleFileInput from '../../../components/files/MultipleFileInput';
 

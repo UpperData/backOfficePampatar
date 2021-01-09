@@ -1,5 +1,5 @@
 import React, {Fragment, useState, useEffect} from 'react'
-import {withRouter, Link} from 'react-router-dom'
+import {withRouter} from 'react-router-dom'
 import axios from 'axios'
 import {
     Row,
@@ -18,8 +18,8 @@ function MiTienda(props) {
     const [shop,    setshop]                    = useState({});
 
     let id = props.match.params.id;
-    let dataBank = {};
-    let address  = {};
+    //let dataBank = {};
+    //let address  = {};
 
     /*
         if(id !== null && id !== undefined){

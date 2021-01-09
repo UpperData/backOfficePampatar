@@ -1,7 +1,7 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {Input} from 'reactstrap';
 
-function MultipleFileInput(props) {
+function MultipleFileInput() {
     return (
         <div>
             <div className="custom-file">

@@ -1,6 +1,4 @@
-import React, {useState, useEffect, useRef, Fragment} from 'react'
-import {useSelector} from 'react-redux'
-import MultipleSelect from '../selects/MultipleSelect';
+import React, {useState, useEffect, Fragment} from 'react'
 import "react-datetime/css/react-datetime.css";
 import DaysSelect from '../selects/DaysSelect';
 
@@ -13,7 +11,7 @@ function TimePanel(props) {
 
     const [search,          setsearch]     = useState(true);
     const [loading,         setloading]    = useState(true);
-    const [daysSelected,    setdaysSelected]      = useState([]);
+    //const [daysSelected,    setdaysSelected]      = useState([]);
     const [times,           settimes]      = useState([]);
     const [count,           setcount]      = useState(0);
 
@@ -62,7 +60,9 @@ function TimePanel(props) {
 
     //time
 
+    /*
     const [phonesNumber,   setPhonesNumber]     = useState([]);
+
     const listPhoneTypes = useSelector(state => state.backoffice.phoneTypes.rows);
     const addPhoneNumber = () => {
         let listOfPhonesNumber = phonesNumber;
@@ -71,13 +71,14 @@ function TimePanel(props) {
         setPhonesNumber(listOfPhonesNumber);
         setcount(count + 1);
     }
+    */
 
     useEffect(() => {
         if(loading){
             if(search){
                 setsearch(false);
                 if(props.loadValue){
-                    setPhonesNumber(props.loadValue);
+                    //setPhonesNumber(props.loadValue);
                     props.onChange(props.loadValue);
                     setloading(false);
                 }else{
@@ -100,17 +101,17 @@ function TimePanel(props) {
                     {times.map((item, key) => {
 
                         //let errors = phonesNumberErrors;
-                        let errors = [];
-                        let itemkey = iterator;
+                        //let errors = [];
+                        //let itemkey = iterator;
 
                         iterator++;
 
                         let isActive = times.filter(data => data.id === item.id);
                         let activeInput = isActive.length > 0;
-                        let thisErrors  = {};
+                        //let thisErrors  = {};
 
-                        let isError = errors.filter(data => data.id === item.id);
-                        let activeError = isError.length > 0;
+                        //let isError = errors.filter(data => data.id === item.id);
+                        //let activeError = isError.length > 0;
                         //console.log(isError);
                         
 
@@ -152,36 +153,6 @@ function TimePanel(props) {
                                         </div>
                                     </div>
                                 </div>
-
-                                {/*
-                                <label className="text-info h7 font-weight-bold my-2" htmlFor="">
-                                    Número de teléfono #{itemkey}
-                                </label>
-                                <div className="">
-                                    <div className="row">
-                                        <div className="col-md-8 my-1">
-                                            <MultipleSelect placeholder="Tipo de teléfono" value={(activeInput) ? isActive[0].phoneType : null}  change={(option) => typeNumberChange(option, item.id)} data={listPhoneTypes} />
-                                            {activeError && isError[0].validateType === false &&
-                                                <small className="my-2 text-danger font-weight-bold">Verifique el tipo de teléfono</small>
-                                            }
-                                        </div>
-                                        <div className="col-md-4 my-1">
-                                        </div>
-                                        <div className="col-md-8 my-1">
-                                            <input type="text" value={(activeInput) ? isActive[0].number : '' } onChange={(e) => phoneNumberChange(e.target.value, item.id)} 
-                                            className={"form-control" + ((activeError && isError[0].validateNumber === false) ? ' is-invalid' : '')} placeholder="Número de teléfono" />
-                                            {activeError && isError[0].validateNumber === false &&
-                                                <small className="my-2 text-danger font-weight-bold">Verifique el número de teléfono</small>
-                                            }
-                                        </div>
-                                        <div className="col-md-4 my-1">
-                                            <button type="button" onClick={() => deletePhone(item.id)} className="btn btn-primary">
-                                                <i className="fa fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                        */}
                             </div>
                         )
                     })}

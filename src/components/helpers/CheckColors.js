@@ -1,13 +1,12 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 
 function CheckColors(props) {
 
-    const [loading, setloading] = useState(false);
+    const loading = false;
     const list = props.list;
     const [colorSelected, setcolorSelected] = useState('');
 
     var result = Object.keys(list).map((key) => [String(key), list[key]]);
-    //console.log(result);
 
     const handleCheckColor = (e, color) => {
         let ischecked = e.target.checked;

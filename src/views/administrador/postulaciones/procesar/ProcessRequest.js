@@ -201,7 +201,7 @@ const ProcessRequest = () => {
                                         <span>Email: {item.Account.email}</span>
                                     </h6>
                                     <h6>
-                                        {(typeof preference === 'array') ?
+                                        {(Array.isArray(preference)) ?
                                             <Fragment>
                                                 <h6 className="font-weight-bold">Preferencias:</h6>
                                                 {preference.length > 0 && preference.map((subitem, subkey) => {
@@ -238,7 +238,7 @@ const ProcessRequest = () => {
                                     </p>
                                     <hr/>
 
-                                    {(typeof affirmations === 'array') ?
+                                    {(Array.isArray(affirmations)) ?
                                         <Fragment>
                                             <h6 className="font-weight-bold">Afirmaciones:</h6>
                                             {affirmations.length > 0 && affirmations.map((subitem, subkey) => {

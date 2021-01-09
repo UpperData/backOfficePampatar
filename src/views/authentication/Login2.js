@@ -28,7 +28,7 @@ const sidebarBackground = {
 
 const Login2 = (props) => {
 
-  const [errors,              setErrors]              = useState([]);
+  const [errors,              setErrors]              = useState(null);
   const [errorMessage,        setErrorMessage]        = useState('');
   const [sending,             setSending]             = useState(false);
   const [email, setEmail]                             = useState("");
@@ -124,42 +124,33 @@ const Login2 = (props) => {
   }
 
   const validateForm = () => {
+      let countErrors = 0;
+      let errorsList = {};
+
       let validEmail = ValidateEmail(email);
 
       if(email.length === 0){
-          let errors = {
-              email: 'Debe ingresar un correo electrónico'
-          }
-
-          setErrors(errors);
-          return false;
+        errorsList.email = 'Debe ingresar un correo electrónico';
+        countErrors++;
       }else if(!validEmail){
-          let errors = {
-              email: 'Verifique su correo electrónico, formato invalido'
-          }
-
-          setErrors(errors);
-          return false;
+        errorsList.email = 'Verifique su correo electrónico, formato invalido';
+        countErrors++;
       }
 
       if(password.length === 0){
-          let errors = {
-              password: 'No puede dejar la contraseña en blanco'
-          }
-          setErrors(errors);
-          return false;
+          errorsList.password = 'No puede dejar la contraseña en blanco';
+          countErrors++;
       }else if(password.length < 6){
-          let errors = {
-              password: 'Su contraseña es muy corta, por favor verifique sus datos'
-          }
-          setErrors(errors);
-          return false;
+          errorsList.password = 'Su contraseña es muy corta, por favor verifique sus datos';
+          countErrors++;
       }else if(password.length > 15){
-          let errors = {
-              password: 'Su contraseña es muy larga, por favor verifique sus datos'
-          }
-          setErrors(errors);
-          return false;
+          errorsList.password = 'Su contraseña es muy larga, por favor verifique sus datos';
+          countErrors++;
+      }
+
+      if(countErrors > 0){
+        setErrors(errorsList);
+        return false;
       }
 
       return true;
@@ -169,7 +160,7 @@ const login = (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    setErrors([]);
+    setErrors(null);
     setErrorMessage('');
     let validate = validateForm();
 
@@ -189,12 +180,12 @@ const login = (e) => {
             setSending(false);
 
             if(res.data.data.result === false){
-                console.log('Datos erroneos');
+                //console.log('Datos erroneos');
                 window.scrollTo({top: 0, behavior: 'smooth'});
                 setErrorMessage(res.data.data.message);
             }else{
                 //usuario logeado
-                console.log(res.data);
+                //console.log(res.data);
                 dispatch(handleLogin(res.data.data));
                 props.history.push('/');
             }
@@ -207,9 +198,6 @@ const login = (e) => {
     }
 }
 
-  console.log('------------------------------------')
-  //console.log('AUTH', auth);
-  //console.log('USUARIO', user);
 
   useEffect(() => {
     if(tkn !== null){
@@ -307,7 +295,11 @@ const login = (e) => {
                         placeholder="Correo Electrónico"
                       />
                     </InputGroup>
-                    {showErrors("email")}
+                    {(errors && errors !== null && errors.hasOwnProperty('email')) &&
+                      <div className="text-danger">
+                        <p className="mb-0 font-weight-bold">{errors.email}</p>
+                      </div>
+                    }
                     <Label for="password" className="mt-3 font-medium">
                       Contraseña
                     </Label>
@@ -329,7 +321,11 @@ const login = (e) => {
                         placeholder="Contraseña"
                       />
                     </InputGroup>
-                    {showErrors("password")}
+                    {(errors && errors !== null && errors.hasOwnProperty('password')) &&
+                      <div className="text-danger">
+                        <p className="mb-2 font-weight-bold">{errors.password}</p>
+                      </div>
+                    }
                     <div className="d-none no-block align-items-center mb-4 mt-4">
                       <CustomInput
                         type="checkbox"

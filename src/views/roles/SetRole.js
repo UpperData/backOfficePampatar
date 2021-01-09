@@ -42,13 +42,13 @@ function SetRole(props) {
     useEffect(() => {
         if(loading){
             let validate = RoleInLocalStorage === undefined  || RoleInLocalStorage === 'undefined' || RoleInLocalStorage === null;
-            console.log('cargando select de roles');
+            //console.log('cargando select de roles');
             //console.log(RoleInLocalStorage);
             //console.log(validate);
             //console.log(backoffice.role.hasOwnProperty('id'));
             //console.log(backoffice.menu);
             if(validate){
-                console.log('renderizando select de roles');
+                //console.log('renderizando select de roles');
                 setloading(false);  
             }       
         }
@@ -78,7 +78,7 @@ function SetRole(props) {
                             </div>
                         </div>
                         <hr className="d-block mx-auto w-50" />
-                        <h1 className="font-weight-bold">
+                        <h1 className="font-weight-bold text-info">
                             ¿Que rol deseas visualizar?
                         </h1>
                         {(!setting) &&

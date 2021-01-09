@@ -10,9 +10,6 @@ import {
     ModalHeader, 
     ModalBody, 
     ModalFooter,
-    InputGroupText,
-    InputGroupAddon,
-    InputGroup
 } from 'reactstrap';
 import axios from 'axios'
 import TaxesSelect from '../../../components/selects/TaxesSelect';
@@ -22,7 +19,7 @@ function UpdateTax() {
     let url = '/setting/taxes/admin/tax/update/';
     let urlget = '/taxes/admin/tax/get/oNE/';
 
-    const [loading,     setloading]             = useState(true);
+    //const [loading,     setloading]             = useState(true);
     const [search,      setsearch]              = useState(false);
     const [sending,     setsending]             = useState(false);
     const [data,        setdata]                = useState(null);
@@ -75,6 +72,8 @@ function UpdateTax() {
                 setdata(null);
                 settaxvalue('');
                 setModal(false);
+            }else{
+                seterrormessage(res.data.data.message);
             }
             setsending(false);
         }).catch((err) => {

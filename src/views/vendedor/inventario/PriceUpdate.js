@@ -1,5 +1,4 @@
-import React, {useState, useEffect} from 'react'
-import AddProductSeller from './AddProductSeller'
+import React, {useState} from 'react'
 import {
     Row,
     Col,
@@ -25,8 +24,10 @@ function PriceUpdate() {
     const [search,          setsearch]          = useState(false);
     const [sending,         setsending]         = useState(false);
 
-    const [loading,         setloading]         = useState(true);
-    const [searchdata,      setsearchdata]      = useState(true);
+    /*
+        const [loading,         setloading]         = useState(true);
+        const [searchdata,      setsearchdata]      = useState(true);
+    */
 
     const [errormessage,    seterrormessage]    = useState('');
     const [successmessage,  setsuccessmessage]  = useState('');
@@ -89,6 +90,8 @@ function PriceUpdate() {
                 setsuccessmessage(res.data.data.message);
                 setprice('');
                 setModal(false);
+            }else{
+                seterrormessage(res.data.data.message);
             }
             setsending(false);
         }).catch((err) => {
@@ -192,7 +195,7 @@ function PriceUpdate() {
             </Col>
             </Row>
 
-            {product !== null &&
+            {product !== null && oldPrice &&
                 <Modal isOpen={modal} toggle={toggle}>
                     <ModalHeader className="h3 font-weight-bold" toggle={toggle}>
                         Actualizar precio del producto

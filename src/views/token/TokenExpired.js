@@ -7,7 +7,7 @@ function TokenExpired() {
 
     const dispatch = useDispatch();
     const [loading, setloading] = useState(true);
-    const [logout, setlogout] = useState(false);
+    //const [logout, setlogout] = useState(false);
 
 
     useEffect(() => {
@@ -17,7 +17,7 @@ function TokenExpired() {
             dispatch(handleLogout());
         }
 
-    },[]);
+    },[dispatch, loading]);
 
     return (
         <div className="min-vh-100 d-flex align-items-center justify-content-center">

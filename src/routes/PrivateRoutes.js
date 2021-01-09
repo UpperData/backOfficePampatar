@@ -21,7 +21,7 @@ export const PrivateRoute = ({ component: Component, ...rest }) => {
 
         if (!session.auth) {
           // Si no esta logueado envia al login
-          console.log('No esta logueado');
+          //console.log('No esta logueado');
           return (
             <Redirect
               to={{
@@ -35,7 +35,7 @@ export const PrivateRoute = ({ component: Component, ...rest }) => {
           //console.log(session.auth);
           //console.log(validRole);
           //console.log(RoleInLocalStorage);
-          console.log('redireccionando al select de roles');
+          //console.log('redireccionando al select de roles');
           
           return (
             <Redirect

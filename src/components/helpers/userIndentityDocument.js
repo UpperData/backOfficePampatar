@@ -2,16 +2,7 @@ import React, {useState, useEffect} from 'react'
 import axios from 'axios';
 import {useSelector} from 'react-redux'
 import {
-    Row,
-    Col,
-    Card,
-    CardBody,
-    CardTitle,
-    Breadcrumb, 
-    BreadcrumbItem,
-    FormGroup,
     CustomInput,
-    Input
 } from 'reactstrap';
 
 function UserIndentityDocument(props) {

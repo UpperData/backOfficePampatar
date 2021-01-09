@@ -7,7 +7,7 @@ const BlankLayout = () => {
     <div className="authentications public-components">
       <Switch>
         {AuthRoutes.map((prop, key) => {
-          console.log(prop);
+          //console.log(prop);
           if (prop.redirect)
             return <Redirect from={prop.path} to={prop.pathTo} key={key} />;
 

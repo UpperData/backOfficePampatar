@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
 import {useSelector} from 'react-redux'
-import Iframe from "react-iframe";
 import axios from 'axios'
 import {
   Row,
@@ -9,31 +8,8 @@ import {
   CardBody,
   CardTitle,
   UncontrolledTooltip,
-  CardSubtitle,
-  Button,
-  TabContent,
-  TabPane,
-  Nav,
-  NavItem,
-  NavLink,
-  Progress,
-  Form,
-  FormGroup,
-  Label,
-  Input,
 } from "reactstrap";
 
-import classnames from "classnames";
-
-import img1 from "../../assets/images/users/7.jpg";
-import img2 from "../../assets/images/users/3.jpg";
-import img3 from "../../assets/images/users/4.jpg";
-import img4 from "../../assets/images/users/5.jpg";
-
-import time1 from "../../assets/images/big/img1.jpg";
-import time2 from "../../assets/images/big/img2.jpg";
-import time3 from "../../assets/images/big/img3.jpg";
-import time4 from "../../assets/images/big/img4.jpg";
 import InlineSpinner from "../spinner/InlineSpinner";
 
 const Profile = () => {
@@ -46,19 +22,13 @@ const Profile = () => {
   const backoffice = useSelector(state => state.backoffice);
   const session = useSelector(state => state.session);
 
-  const toggle = (tab) => {
-    if (activeTab !== tab) {
-      setActiveTab(tab);
-    }
-  };
-
   const getDataSeller = () => {
     if(search){
       setsearch(false);
       axios.get(url).then((res) => {
-        console.log(res.data);
+        //console.log(res.data);
         if(res.data.data.result){
-          console.log(res.data.data.rsAccount[0]);
+          //console.log(res.data.data.rsAccount[0]);
           setdata(res.data.data.rsAccount[0]);
         }
         setloading(false);
@@ -82,9 +52,11 @@ const Profile = () => {
     let address = shopData.address;
     let dataBank = shopData.paymentCong;
 
+    /*
     console.log(shopData);
     console.log(session);
     console.log(data);
+    */
 
     let logoshop = session.storeLogo.reduce(
       function (data, byte) {

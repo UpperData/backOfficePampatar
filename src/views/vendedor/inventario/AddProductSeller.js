@@ -11,8 +11,6 @@ import axios from 'axios'
 import WarehouseSelect from '../../../components/selects/WarehouseSelect';
 import InlineSpinner from '../../spinner/InlineSpinner';
 import ProductSelect from '../../../components/selects/ProductSelect';
-import ColorPicker from '../../../components/pickers/ColorPicker';
-import SizesSelect from '../../../components/selects/SizesSelect';
 import CheckColors from '../../../components/helpers/CheckColors';
 import SizesCombobox from '../../../components/helpers/SizesCombobox';
 import { moneyFormatter } from '../../../utils/helpers';
@@ -25,7 +23,7 @@ function AddProductSeller(props) {
     const [successmessage, setsuccessmessage] = useState('');
     const [errormessage, seterrormessage] = useState('');
 
-    const isEdit = (props.Edit !== undefined && props.Edit !== null) ? true : false;
+    //const isEdit = (props.Edit !== undefined && props.Edit !== null) ? true : false;
 
     const [errors, seterrors] = useState({});
 
@@ -34,10 +32,10 @@ function AddProductSeller(props) {
     const [note,        setnote]        = useState('');
     const [price,       setprice]       = useState('');
     const [quantity,    setquantity]    = useState('');
-    const [inPrice,     setinPrice]     = useState(true);
+    //const [inPrice,     setinPrice]     = useState(true);
     const [type,        settype]        = useState('out');
 
-    const [priceMessage,        setpricemessage]        = useState('');
+    const [priceMessage,     setpricemessage]        = useState('');
     const [variationList,    setvariationList]        = useState([]);
 
     const [variation,        setvariation]        = useState([]);
@@ -60,8 +58,8 @@ function AddProductSeller(props) {
 
             axios.get(urlGetVariations)
             .then((res) => {
-                console.log('variations');
-                console.log(res.data);
+                //console.log('variations');
+                //console.log(res.data);
                 setvariationList(res.data);
                 setloading(false);
             }).catch((err) => {
@@ -106,10 +104,10 @@ function AddProductSeller(props) {
 
         //price
         /*
-        if(price === ''){
-            thiserrors.price = 'Debe ingresar un precio';
-            errorsCount++;
-        }
+            if(price === ''){
+                thiserrors.price = 'Debe ingresar un precio';
+                errorsCount++;
+            }
         */
 
         if(errorsCount > 0){

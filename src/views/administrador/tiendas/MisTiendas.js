@@ -7,16 +7,19 @@ function MisTiendas() {
 
     const [loading, setloading]                 = useState(true);
     const [search,  setSearch]                  = useState(true);
-    const [sending, setsending]                 = useState(false);
+    //const [sending, setsending]                 = useState(false);
 
     const [data,    setData]                    = useState([]);
     const [list,    setlist]                    = useState([]);
+
+    /*
     const [errormessage, seterrormessage]       = useState('');
     const [successmessage, setsuccessmessage]   = useState('');
+    */
 
     const [filterBySearch, setFilterBySearch]   = useState('');
     const [filterByStatus, setfilterByStatus]   = useState(null);
-    const [count, setcount]   = useState(0);
+    //const [count, setcount]   = useState(0);
 
     const [searchByText,    setsearchByText]   = useState(false);
 

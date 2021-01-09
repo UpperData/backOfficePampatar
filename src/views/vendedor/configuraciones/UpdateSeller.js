@@ -88,9 +88,9 @@ function UpdateSeller() {
                     let shops = res.data.data.rsAccount[0].shopRequests;
                     let idshop = session.userData.shop.postulacionId;
 
-                    console.log(session);
-                    console.log(idshop);
-                    console.log(data);
+                    //console.log(session);
+                    //console.log(idshop);
+                    //console.log(data);
 
                     let thisShop = shops.filter(shop => shop.id === idshop);
                     if(thisShop && thisShop.length > 0){
@@ -98,9 +98,9 @@ function UpdateSeller() {
                         let person = data.Person;
                         let resbankdata = shop.paymentCong;
 
-                        console.log(resbankdata);
-                        console.log(shop);
-                        console.log(person);
+                        //console.log(resbankdata);
+                        //console.log(shop);
+                        //console.log(person);
 
                         let birth = person.birthDate.split('T');
                         //console.log(birth);

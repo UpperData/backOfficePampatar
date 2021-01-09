@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react'
-import AddProductSeller from './AddProductSeller'
+import React, {useState} from 'react'
+//import AddProductSeller from './AddProductSeller'
 
 import axios from 'axios'
 import InlineSpinner from '../../spinner/InlineSpinner';
@@ -9,7 +9,6 @@ import {
     Card,
     CardBody,
     CardTitle,
-    CustomInput,
     Table,
     Button, 
     Modal, 
@@ -23,7 +22,7 @@ import LotStatusSelect from '../../../components/selects/LotStatusSelect';
 
 function ActualizarLote() {
 
-    const [loading,         setloading]         = useState(false);
+    const loading = false;
     const [searchLote,      setsearchLote]      = useState(false);
     const [searchLotes,     setsearchLotes]     = useState(false);
 
@@ -36,8 +35,8 @@ function ActualizarLote() {
     const [lotes,           setlotes]           = useState(null);
 
     const [sending,         setsending]         = useState(false);
-    const [price,           setprice]           = useState(null);
-    const [statusId,        setstatusId]           = useState(null);
+    //const [price,           setprice]         = useState(null);
+    const [statusId,        setstatusId]        = useState(null);
     const [quantity,        setquantity]        = useState('');
     const [warehouse,       setwarehouse]       = useState('');
 
@@ -66,7 +65,9 @@ function ActualizarLote() {
         let urlDetail = '/seller/inventory/lot/sku/'+loteId;
         setsearchLote(true);
 
-        setsearch(false);
+        if(search){
+            setsearch(false);
+        }
         axios.get(urlDetail).then((res) => {
             console.log(res.data);
             setlote(res.data);

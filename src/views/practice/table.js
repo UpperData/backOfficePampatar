@@ -1,7 +1,6 @@
-import { filter } from 'lodash';
 import React, {useState} from 'react'
 import InlineSpinner from '../spinner/InlineSpinner';
-import Spinner from '../spinner/Spinner';
+//import Spinner from '../spinner/Spinner';
 import {Link} from 'react-router-dom'
 
 import {data} from './data'
@@ -102,17 +101,19 @@ function Table() {
     }
 
     const cleanFilters = () => {
-        setlist(data);
-        setFilterBySearch('');
-        setfilterByStatus(null);
-        setsearchByText(false);
-        setcount(0);
+        if(count){
+            setlist(data);
+            setFilterBySearch('');
+            setfilterByStatus(null);
+            setsearchByText(false);
+            setcount(0);
 
-        filterBy('clear');
+            filterBy('clear');
+        }
     }
 
     //console.log(list);
-
+    
     return (
         <div className="container py-3">
                 <div>
@@ -154,7 +155,7 @@ function Table() {
                         <div>
                             <div className="row row-eq-height">
                                 {(list.map((item, key) => {
-                                    let logoshop = '';
+                                    //let logoshop = '';
                                     
                                     return (
                                         <div key={key} className="col-lg-6 mb-3">

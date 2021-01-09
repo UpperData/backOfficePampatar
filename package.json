@@ -45,6 +45,7 @@
     "react-bootstrap-sweetalert": "^4.4.1",
     "react-bootstrap-switch": "^15.5.3",
     "react-bootstrap-table": "^4.3.1",
+    "react-bootstrap-tagsinput": "^0.5.0",
     "react-c3-component": "^1.4.0",
     "react-c3js": "^0.1.20",
     "react-chartjs-2": "^2.9.0",
