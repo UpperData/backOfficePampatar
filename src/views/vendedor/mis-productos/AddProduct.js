@@ -9,6 +9,7 @@ import {
 import axios from 'axios'
 import InlineSpinner from '../../spinner/InlineSpinner';
 import ProductsSelect from '../../../components/selects/productsSelect';
+import SkuTypeSelect from '../../../components/selects/SkuTypeSelect';
 
 function AddProduct(props) {
 
@@ -19,8 +20,9 @@ function AddProduct(props) {
 
     const [errors, seterrors] = useState({});
 
-    const [name,     setname]     = useState('');
-    const [product, setproduct] = useState(null);
+    const [name,            setname]            = useState('');
+    const [skuTypeId,       setskuTypeId]       = useState(null);
+    const [product,         setproduct]         = useState(null);
 
     const [searchservice, setsearchservice] = useState(false);
     const [loadingservice, setloadingservice] = useState(true);
@@ -44,6 +46,7 @@ function AddProduct(props) {
             if(res.data.count > 0){
                 let data = res.data.rows[0];
                 setname(data.name);
+                setskuTypeId({value: data.skuTypeId});
 
                 setsearchservice(false);
                 setloadingservice(false);
@@ -66,6 +69,11 @@ function AddProduct(props) {
             errorsCount++;
         }else if(name.trim().length > 40){
             thiserrors.name = 'El nombre del producto ingresado es demasiado largo';
+            errorsCount++;
+        }
+
+        if(skuTypeId === null){
+            thiserrors.skuTypeId = 'Debe seleccionar un tipo de producto';
             errorsCount++;
         }
 
@@ -120,7 +128,8 @@ function AddProduct(props) {
                 
                 let url = '/sku/add';
                 let data = {
-                    name
+                    name,
+                    skuTypeId: skuTypeId.value
                 }
 
                 axios({
@@ -166,7 +175,7 @@ function AddProduct(props) {
                 {props.Edit &&
                     <div>
                         <Row>
-                            <Col md="6">
+                            <Col md="12">
                                 <Card>
                                     <div className="p-3">
                                         <CardTitle>
@@ -188,7 +197,7 @@ function AddProduct(props) {
                 {((!props.Edit) || (props.Edit && product !== null && !loadingservice)) &&
                     <form onSubmit={(e) => addWarehouse(e)} action="">
                         <Row>
-                            <Col md="7">
+                            <Col md="12">
                                 <Card>
                                     <div className="p-3">
                                         <CardTitle>
@@ -197,7 +206,7 @@ function AddProduct(props) {
                                     </div>
                                     <CardBody className="border-top">
                                             <Row>
-                                                <Col xs="12">
+                                                <Col xs="6">
                                                     <div className="form-group">
                                                         <label htmlFor="product-name">Nombre del producto:</label>
                                                         <input 
@@ -213,6 +222,19 @@ function AddProduct(props) {
                                                             <div className="help-block text-danger font-weight-bold">
                                                                 <small>
                                                                     {errors.name}
+                                                                </small>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </Col>
+                                                <Col xs="6">
+                                                    <div className="form-group">
+                                                        <label htmlFor="product-name">Tipo del producto:</label>
+                                                        <SkuTypeSelect value={skuTypeId} onChange={(value) => setskuTypeId(value)} />
+                                                        {(typeof errors === 'object' && errors.hasOwnProperty('skuTypeId')) &&
+                                                            <div className="help-block text-danger font-weight-bold">
+                                                                <small>
+                                                                    {errors.skuTypeId}
                                                                 </small>
                                                             </div>
                                                         }

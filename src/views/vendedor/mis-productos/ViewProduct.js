@@ -86,6 +86,9 @@ function ViewProducts() {
                                                             <th>
                                                                 Nombre del producto
                                                             </th>
+                                                            <th>
+                                                                Tipo de producto
+                                                            </th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -94,6 +97,9 @@ function ViewProducts() {
                                                                 <tr key={key}>
                                                                     <td>
                                                                         {item.name}
+                                                                    </td>
+                                                                    <td>
+                                                                        {item.skuType.name}
                                                                     </td>
                                                                 </tr>
                                                             )
