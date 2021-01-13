@@ -7,9 +7,11 @@ function ShopSelect(props) {
     let values = props.list;
     let allValues = [];
 
-    const list = allValues;
+    //const list = allValues;
+
+    const [list,    setlist]    = useState(null);
     const [loading, setLoading] = useState(true);
-    const [search, setsearch] = useState(true);
+    const [search,  setsearch]  = useState(true);
 
     const getData = () => {
         if(values.length > 0){
@@ -22,7 +24,10 @@ function ShopSelect(props) {
     
                 allValues.push(thisValue);
             }
+            
+            //console.log(allValues);
 
+            setlist(allValues);
             setLoading(false);
         }
     }

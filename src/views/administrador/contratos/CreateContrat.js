@@ -166,7 +166,7 @@ function CreateContrat() {
         axios.get(urlGet)
         .then((res) => {
             console.log(res.data);
-            if(res.data && res.data.data.hasOwnProperty('message')){
+            if(res.data && res.data.hasOwnProperty('data')){
                 console.log('error');
                 seterrorMessage(res.data.data.message);
             }else{
