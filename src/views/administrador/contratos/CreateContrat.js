@@ -49,6 +49,9 @@ function CreateContrat() {
     const [nota, setnota]                           = useState('');
     const [tags, setTags]                           = useState([]);
 
+    const [serPercen, setserPercen]                 = useState('');
+    const [proPercen, setproPercen]                 = useState('');
+
     const [attachment, setattachment]               = useState(null);
     const [binaryData, setBinaryData]               = useState(null);
 
@@ -79,9 +82,80 @@ function CreateContrat() {
         let errorsCount = 0;
         let thiserrors = {};
 
+        /*
+            shopRequestId
+            inicio
+            fin
+            attachment
+            binaryData
+
+            number
+            comProduct
+            comService
+            minStock
+            nota
+            tags
+            serPercen
+            proPercen
+        */
+
+        //inicio
+        if(inicio === null || inicio === ''){
+            thiserrors.inicio = 'Indique la fecha de inicio del contrato';
+            errorsCount++;
+        }
+
+        //fin
+        if(fin === null || fin === ''){
+            thiserrors.fin = 'Indique la fecha de culminación del contrato';
+            errorsCount++;
+        }
+
         //number
-        if(number === null){
+        if(number === null || number === ''){
             thiserrors.number = 'Ingrese el número del contrato';
+            errorsCount++;
+        }
+
+        //comProduct
+        if(comProduct === null || comProduct === ''){
+            thiserrors.comProduct = 'Ingrese el número de productos';
+            errorsCount++;
+        }
+
+        //comService
+        if(comService === null || comService === ''){
+            thiserrors.comService = 'Ingrese el número de servicios';
+            errorsCount++;
+        }
+
+        //minStock
+        if(minStock === null || minStock === ''){
+            thiserrors.minStock = 'Ingrese stock mínimo';
+            errorsCount++;
+        }
+
+        //nota
+        if(nota === null || nota === ''){
+            thiserrors.nota = 'Ingrese una nota';
+            errorsCount++;
+        }
+
+        //tags
+        if(tags === null || tags === ''){
+            thiserrors.tags = 'Es necesario incluir alguna etiqueta';
+            errorsCount++;
+        }
+
+        //serPercen
+        if(serPercen === null || serPercen === ''){
+            thiserrors.serPercen = 'Porcentaje por servicio';
+            errorsCount++;
+        }
+
+        //proPercen
+        if(proPercen === null || proPercen === ''){
+            thiserrors.proPercen = 'Porcentaje por producto';
             errorsCount++;
         }
 
@@ -99,10 +173,10 @@ function CreateContrat() {
         seterrorMessage('');
 
         let urlSend = '/setting/seller/shopContract';
-        setsending(true);
-
         let validation = validate();
         if(validation){
+
+            setsending(true);
             let realTags = [];
             if(tags.length > 0){
                 for (let i = 0; i < tags.length; i++) {
@@ -132,7 +206,9 @@ function CreateContrat() {
                 attachment: {
                     data: binaryData,
                     tags: realTags,
-                }
+                },
+                serPercen,
+                proPercen
             }
 
             console.log(data);
@@ -229,7 +305,7 @@ function CreateContrat() {
                                 </div>
                                 <CardBody className="border-top">
                                     <Row>
-                                        <Col md="12">
+                                        <Col md="4">
                                             <div className="form-group">
                                                 <label htmlFor="">Número de contrato:</label>
                                                 <input 
@@ -249,7 +325,7 @@ function CreateContrat() {
                                                 }
                                             </div>
                                         </Col>
-                                        <Col md="6">
+                                        <Col md="4">
                                             <div className="form-group">
                                                 <label htmlFor="">Inicio del contrato:</label>
                                                 <Datetime
@@ -260,9 +336,16 @@ function CreateContrat() {
                                                     timeFormat={false}
                                                     inputProps={{ placeholder: "Fecha de inicio del contrato" }}
                                                 />
+                                                {(typeof errors === 'object' && errors.hasOwnProperty('inicio')) &&
+                                                    <div className="help-block text-danger font-weight-bold">
+                                                        <small>
+                                                            {errors.inicio}
+                                                        </small>
+                                                    </div>
+                                                }
                                             </div>
                                         </Col>
-                                        <Col md="6">
+                                        <Col md="4">
                                             <div className="form-group">
                                                 <label htmlFor="">Fin del contrato:</label>
                                                 <Datetime
@@ -273,32 +356,13 @@ function CreateContrat() {
                                                     timeFormat={false}
                                                     inputProps={{ placeholder: "Fecha de fin del contrato" }}
                                                 />
-                                            </div>
-                                        </Col>
-                                        <Col md="4">
-                                            <div className="form-group">
-                                                <label htmlFor="">Número de productos que proveerá la tienda</label>
-                                                <input 
-                                                    type="number"
-                                                    value={comProduct}
-                                                    onChange={(e) => setcomProduct(e.target.value)}
-                                                    min="0" 
-                                                    placeholder="Número de productos" 
-                                                    className="form-control"
-                                                />
-                                            </div>
-                                        </Col>
-                                        <Col md="4">
-                                            <div className="form-group">
-                                                <label htmlFor="">Stock mínimo por producto</label>
-                                                <input 
-                                                    type="number"
-                                                    value={minStock}
-                                                    onChange={(e) => setminStock(e.target.value)}
-                                                    min="0" 
-                                                    placeholder="Stock mínimo" 
-                                                    className="form-control"
-                                                />
+                                                {(typeof errors === 'object' && errors.hasOwnProperty('fin')) &&
+                                                    <div className="help-block text-danger font-weight-bold">
+                                                        <small>
+                                                            {errors.fin}
+                                                        </small>
+                                                    </div>
+                                                }
                                             </div>
                                         </Col>
                                         <Col md="4">
@@ -310,17 +374,104 @@ function CreateContrat() {
                                                     onChange={(e) => setcomService(e.target.value)}
                                                     min="0" 
                                                     placeholder="Número de servicios" 
-                                                    className="form-control"
+                                                    className={((typeof errors === 'object' && errors.hasOwnProperty('comService') ? 'is-invalid' : '') +' form-control')}
                                                 />
+                                                {(typeof errors === 'object' && errors.hasOwnProperty('comService')) &&
+                                                    <div className="help-block text-danger font-weight-bold">
+                                                        <small>
+                                                            {errors.comService}
+                                                        </small>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </Col>
+                                        <Col md="4">
+                                            <div className="form-group">
+                                                <label htmlFor="">Número de productos que proveerá la tienda</label>
+                                                <input 
+                                                    type="number"
+                                                    value={comProduct}
+                                                    onChange={(e) => setcomProduct(e.target.value)}
+                                                    min="0" 
+                                                    placeholder="Número de productos" 
+                                                    className={((typeof errors === 'object' && errors.hasOwnProperty('comProduct') ? 'is-invalid' : '') +' form-control')}
+                                                />
+                                                {(typeof errors === 'object' && errors.hasOwnProperty('comProduct')) &&
+                                                    <div className="help-block text-danger font-weight-bold">
+                                                        <small>
+                                                            {errors.comProduct}
+                                                        </small>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </Col>
+                                        <Col md="4">
+                                            <div className="form-group">
+                                                <label htmlFor="">Stock mínimo por producto</label>
+                                                <input 
+                                                    type="number"
+                                                    value={minStock}
+                                                    onChange={(e) => setminStock(e.target.value)}
+                                                    min="0" 
+                                                    placeholder="Stock mínimo" 
+                                                    className={((typeof errors === 'object' && errors.hasOwnProperty('minStock') ? 'is-invalid' : '') +' form-control')}
+                                                />
+                                                {(typeof errors === 'object' && errors.hasOwnProperty('minStock')) &&
+                                                    <div className="help-block text-danger font-weight-bold">
+                                                        <small>
+                                                            {errors.minStock}
+                                                        </small>
+                                                    </div>
+                                                }
                                             </div>
                                         </Col>
                                         <Col md="6">
-                                            <FormGroup className="mb-1">
+                                            <div className="form-group">
+                                                <label htmlFor="">Porcentaje por servicio</label>
+                                                <input 
+                                                    type="number"
+                                                    value={serPercen}
+                                                    onChange={(e) => setserPercen(e.target.value)}
+                                                    min="0" 
+                                                    placeholder="Porcentaje 2" 
+                                                    className={((typeof errors === 'object' && errors.hasOwnProperty('serPercen') ? 'is-invalid' : '') +' form-control')}
+                                                />
+                                                {(typeof errors === 'object' && errors.hasOwnProperty('serPercen')) &&
+                                                    <div className="help-block text-danger font-weight-bold">
+                                                        <small>
+                                                            {errors.serPercen}
+                                                        </small>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </Col>
+                                        <Col md="6">
+                                            <div className="form-group">
+                                                <label htmlFor="">Porcentaje por producto</label>
+                                                <input 
+                                                    type="number"
+                                                    value={proPercen}
+                                                    onChange={(e) => setproPercen(e.target.value)}
+                                                    min="0" 
+                                                    placeholder="Porcentaje 1" 
+                                                    className={((typeof errors === 'object' && errors.hasOwnProperty('proPercen') ? 'is-invalid' : '') +' form-control')}
+                                                />
+                                                {(typeof errors === 'object' && errors.hasOwnProperty('proPercen')) &&
+                                                    <div className="help-block text-danger font-weight-bold">
+                                                        <small>
+                                                            {errors.proPercen}
+                                                        </small>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </Col>
+                                        <Col md="12">
+                                            <FormGroup className="mb-3">
                                                 <label htmlFor="">Adjuntar archivo:</label>
                                                 <CustomFileInput value={attachment} setBinary={setBinaryData} onChange={setattachment} />
                                             </FormGroup>  
                                         </Col>
-                                        <Col md="6">
+                                        <Col md="12">
                                             <div className="form-group">
                                                 <label htmlFor="">Etiquetas:</label>
                                                 <TagsInput
@@ -347,10 +498,17 @@ function CreateContrat() {
                                                     name="" id="" 
                                                     cols="30" 
                                                     rows="5" 
-                                                    className="form-control"
+                                                    className={((typeof errors === 'object' && errors.hasOwnProperty('nota') ? 'is-invalid' : '') +' form-control')}
                                                     maxLength="400"
                                                 >
                                                 </textarea>
+                                                {(typeof errors === 'object' && errors.hasOwnProperty('nota')) &&
+                                                    <div className="help-block text-danger font-weight-bold">
+                                                        <small>
+                                                            {errors.nota}
+                                                        </small>
+                                                    </div>
+                                                }
                                             </div>
                                         </Col>
                                     </Row>
@@ -361,7 +519,7 @@ function CreateContrat() {
                     </Row>
                     {(shopRequestId !== null) &&
                         <div className="text-right">
-                            <button disabled={sending} type="submit" className="btn btn-primary">
+                            <button disabled={sending} type="submit" className="btn btn-lg font-weight-bold btn-primary">
                                     {(sending) ? <span>Cargando <i className="fa fa-spin fa-spinner mr-2"></i></span> : <span>Crear contrato <i className="mdi mdi-send mr-2"></i></span> }
                             </button>
                         </div>

@@ -122,10 +122,10 @@ const ProcessRequest = () => {
                                                     <tr key={key}>
                                                         <td>
                                                             <span href="#" id={`tooltip-brand-${item.id}`}>
-                                                                {item.Account.Person.firstName+' '+item.Account.Person.lastName}
+                                                                {item.marca}
                                                             </span>
                                                             <UncontrolledTooltip placement="top" target={`tooltip-brand-${item.id}`}>
-                                                                {item.marca}
+                                                                {item.Account.Person.firstName+' '+item.Account.Person.lastName}
                                                             </UncontrolledTooltip>
                                                         </td>
                                                         <td>{item.employees}</td>
@@ -139,7 +139,7 @@ const ProcessRequest = () => {
                                                             })}
                                                         </td>
                                                         <td>
-                                                            
+                                                            {item.createdAt.split('T')[0]}
                                                         </td>
                                                         <td>
                                                             <button onClick={() => seeDetails(item) } className="border-0 btn-sm btn btn-info">

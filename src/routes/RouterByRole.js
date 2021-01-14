@@ -8,6 +8,7 @@ const Profile = lazy(() => import("../views/user/Profile"));
 
 //administrador
 const ProcessRequest        = lazy(()     => import("../views/administrador/postulaciones/procesar/ProcessRequest"));
+const SelectRequest        = lazy(()     => import("../views/administrador/postulaciones/SelectRequest"));
 
 const CreateContract        = lazy(()     => import("../views/administrador/contratos/CreateContrat"));
 const FindContract          = lazy(()     => import("../views/administrador/contratos/FindContract"));
@@ -174,6 +175,12 @@ var ThemeRoutesByRole = [
     path: "/processRequest",
     name: "Procesar postulacion",
     component: ProcessRequest,
+    onlyRoute:true
+  },
+  {
+    path: "/selectRequest",
+    name: "Consultar postulaciones",
+    component: SelectRequest,
     onlyRoute:true
   },
   //contratos
