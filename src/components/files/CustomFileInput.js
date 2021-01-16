@@ -75,6 +75,20 @@ function CustomFileInput(props) {
                 };
             }
 
+            if(returnFileType === 'base64complete'){
+                console.log('base64');
+                console.log(fileData);
+
+                reader.readAsDataURL(fileData);
+                reader.onloadend = () => {
+                    var result = reader.result;
+                    //var base64 = result.split(',')[1];
+                    
+                    console.log(result);
+                    resolve(result);
+                };
+            }
+
             if(returnFileType === 'base64-binary'){
                 console.log('base64 to binary');
                 console.log(fileData);

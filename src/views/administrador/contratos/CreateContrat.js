@@ -207,11 +207,13 @@ function CreateContrat() {
                     data: binaryData,
                     tags: realTags,
                 },
-                serPercen,
+                servPercen: serPercen,
                 proPercen
             }
 
             console.log(data);
+
+            
             console.log('Enviando datos');
 
             axios({
@@ -234,6 +236,8 @@ function CreateContrat() {
                     setsending(false);
                 }
             });
+
+            
         }
     }
 
@@ -468,7 +472,7 @@ function CreateContrat() {
                                         <Col md="12">
                                             <FormGroup className="mb-3">
                                                 <label htmlFor="">Adjuntar archivo:</label>
-                                                <CustomFileInput value={attachment} setBinary={setBinaryData} onChange={setattachment} />
+                                                <CustomFileInput returnFileType='base64complete' value={attachment} setBinary={setBinaryData} onChange={setattachment} />
                                             </FormGroup>  
                                         </Col>
                                         <Col md="12">

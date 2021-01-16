@@ -3,7 +3,7 @@ import Select from 'react-select'
 
 function ShopSelect(props) {
     
-    console.log(props);
+    //console.log(props);
     let values = props.list;
     let allValues = [];
 
@@ -45,8 +45,8 @@ function ShopSelect(props) {
         props.onChange(selectedOption); 
     };
 
-    console.log(list);
-    console.log(props.value);
+    //console.log(list);
+    //console.log(props.value);
 
     let searchData = (props.value !== null) ? list.filter(option => option.value === props.value.value)[0] : null;
 
