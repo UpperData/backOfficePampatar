@@ -39,6 +39,7 @@ function ActualizarLote() {
     const [statusId,        setstatusId]        = useState(null);
     const [quantity,        setquantity]        = useState('');
     const [warehouse,       setwarehouse]       = useState('');
+    const [note,            setnote]            = useState('');
 
     const [modal, setModal] = useState(false);
     const toggle = () => setModal(!modal);
@@ -74,6 +75,7 @@ function ActualizarLote() {
 
             setquantity(res.data.quantity);
             //setprice(Number(res.data.price));
+            setnote(res.data.note);
             setstatusId({value: res.data.Status.id});
             setwarehouse({label: res.data.Warehouse.name, value: res.data.Warehouse.id});
 
@@ -98,10 +100,10 @@ function ActualizarLote() {
 
         let data = {
             inventoryId:lote.id,
-            //price:price,
             quantity:quantity,
             warehouseId:warehouse.value,
-            StatusId: statusId.value 	
+            StatusId: statusId.value ,
+            note	
         }
 
         let urlEdit = '/seller/inventory/lot/edit/';
@@ -115,7 +117,7 @@ function ActualizarLote() {
             if(res.data.data.result){
                 setsuccessmessage(res.data.data.message);
                 setModal(false);
-                window.scrollTo({top: 0, behavior: 'smooth'});
+                //window.scrollTo({top: 0, behavior: 'smooth'});
 
                 /*
                     setsearchLote(false);
@@ -275,6 +277,12 @@ function ActualizarLote() {
                                                             placeholder="Cantidad"
                                                             className="form-control"
                                                         />
+                                                    </div>
+                                                </Col>
+                                                <Col md="12">
+                                                    <div className="form-group">
+                                                        <label htmlFor="">Nota</label>
+                                                        <textarea className="form-control" value={note} onChange={(e) => setnote(e.target.value)} name="" id="" cols="30" rows="10"></textarea>
                                                     </div>
                                                 </Col>
                                             </Row>

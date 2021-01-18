@@ -43,9 +43,12 @@ function FindContractByShop(props) {
         if(data.length > 0){
             return (
                 <div>
-                    <h1 className="h4 mb-3 font-weight-bold">Listado de contratos para la tienda: {data[0].shop.name}</h1>
+                    <h1 className="h4 mb-4">
+                        Listado de contratos para la tienda: <span className="font-weight-bold">{data[0].shop.name}</span> - <Link to="/findContract" className="btn btn-sm btn-info">Volver a la lista</Link>
+                    </h1>
                     <Row>
                         {data.map((item, key) => {
+                            let shop = item;
                             let contract = item.contractDesc;
                             let date = item.createdAt.split('T');
                             return (
@@ -53,7 +56,8 @@ function FindContractByShop(props) {
                                     <Card>
                                         <div className="p-3">
                                             <CardTitle>
-                                                <i className="mdi mdi-border-all mr-2"></i>Contrato: <strong>{contract.number}</strong>
+                                                <i className="mdi mdi-border-all mr-2"></i>Contrato: 
+                                                <strong className="text-primary ml-2">{contract.number}</strong>
                                             </CardTitle>
                                         </div>
                                         <CardBody className="border-top">
@@ -61,10 +65,19 @@ function FindContractByShop(props) {
                                             <hr/>
                                             <h5 className="font-weight-bold">Datos del contrato: </h5>
                                             <h6 className="mt-4">
-                                                <i className="fa d-none fa-calendar-alt mr-3"></i>Inicio: {contract.inicio} - fin: {contract.fin}
+                                                <i className="fa d-none fa-calendar-alt mr-3"></i>
+                                                Inicio: <strong>{contract.inicio}</strong> - fin: <strong>{contract.fin}</strong>
                                             </h6>
-                                            <h6>Número de productos: {contract.comProduct} - Stock mínimo por producto: {contract.minStock}</h6>
-                                            <h6>Número de servicios: {contract.comService}</h6>
+
+                                            <h6>Número de productos: <span className="font-weight-bold">{contract.comProduct}</span></h6>
+                                            <h6>Stock mínimo por producto: <span className="font-weight-bold">{contract.minStock}</span></h6>
+                                            <h6>Porcentaje por producto: <span className="font-weight-bold">{shop.proPercen}</span></h6>
+                                            
+                                            <hr/>
+                                            
+                                            <h6>Número de servicios: <span className="font-weight-bold">{contract.comService}</span></h6>
+                                            <h6>Porcentaje por servicios: <span className="font-weight-bold">{shop.servPercen}</span></h6>
+                                            
                                             <hr/>
                                             <h6 className="font-weight-bold">Nota:</h6>
                                             <h6>

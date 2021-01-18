@@ -1,5 +1,5 @@
 import React, {Fragment, useState, useEffect} from 'react'
-import {withRouter} from 'react-router-dom'
+import {withRouter, Link} from 'react-router-dom'
 import axios from 'axios'
 import {
     Row,
@@ -39,9 +39,11 @@ function MiTienda(props) {
                 setSearch(false);
 
                 axios.get(url).then((res) => {
+
                     console.log(res.data.data.rsAccount);
                     setshop(res.data.data.rsAccount[0]);
                     setloading(false);
+
                 }).catch((err) => {
                     console.error(err);
                     setloading(false);
@@ -69,7 +71,9 @@ function MiTienda(props) {
 
         return (
             <div className="py-3">
-                <h5 className="font-weight-bold mb-3">Ver tienda</h5>
+                <h5 className="font-weight-bold mb-3">
+                    Ver tienda - <Link to="/admin/shop/all" className="btn btn-sm btn-info">Volver a la lista</Link>
+                </h5>
                 <Row>
                     <Col xs="12" md="4" lg="4">
                         <Card>
@@ -142,24 +146,31 @@ function MiTienda(props) {
                                 </Col>
                             </Row>
 
-                            <h6 className="font-medium pt-4 db"><i className="mdi mdi-map-marker mr-2"></i>Dirección</h6>
-                            <h6>{address[0].calle} {address[0].numero}, {address[0].local}, {address[0].comuna.name} {address[0].province.name} {address[0].region.name}</h6>
-
-
-                            <h6 className="d-none font-medium mt-4">
+                            {address !== null &&
+                                <div>
+                                    <h6 className="font-medium pt-4 db"><i className="mdi mdi-map-marker mr-2"></i>Dirección</h6>
+                                    <h6>{address[0].calle} {address[0].numero}, {address[0].local}, {address[0].comuna.name} {address[0].province.name} {address[0].region.name}</h6>
+                                </div>
+                            }
+                            
+                            <h6 className="font-medium mt-4">
                                 Descripción de la tienda:
                             </h6>
-                            <p className="d-none">
-                                {shop.descShop}
+                            <p>
+                                {(shop.descShop !== null && shop.descShop === '') ? shop.descShop : 'sin descripción.'}
                             </p>
                             
 
-                            <h6 className="font-medium mt-4">
-                                Proceso de manufactura:
-                            </h6>
-                            <p>
-                                "{shop.processId.name}"
-                            </p>
+                            {shop.processId !== null &&
+                                <div>
+                                    <h6 className="font-medium mt-4">
+                                        Proceso de manufactura:
+                                    </h6>
+                                    <p>
+                                        "{shop.processId.name}"
+                                    </p>
+                                </div>
+                            }
                             
                             <h6 className="font-medium mt-4">
                                 Tipo de tienda:
@@ -180,43 +191,45 @@ function MiTienda(props) {
 
                             </CardBody>
                         </Card>
-                        <Card>
-                        <div className="p-3">
-                            <CardTitle>
-                                <i className="mdi mdi-credit-card-multiple mr-2"></i>Colaboradores
-                            </CardTitle>
-                        </div>
-                        <CardBody className="">
-                            <div>
-                            {Array.isArray(shop.partner) && shop.partner.length > 0 &&
-                                <Fragment>
-                                    {(shop.partner.map((item, key) => {
-                                        return (
-                                        <div key={key}>
-                                            <h6 className="mb-0">
-                                                {item.firstName+' '+item.lastName} - <span className="text-muted">{item.relationship}</span>
-                                            </h6>
-                                        </div>
-                                        )
-                                    }))}
-                                    {/* 
-                                    <small className="text-muted pt-4 db"><i className="mdi mdi-storefront-outline mr-2"></i>¿Posee tienda física?</small>
-                                    <h6>{shop.isLocal ? 'Si' : 'No'}</h6>
-                                    
-                                    <small className="text-muted pt-4 db"><i className="mdi mdi-map-marker mr-2"></i>Dirección</small>
-                                    <h6>{address[0].calle} {address[0].numero}, {address[0].local}, {address[0].comuna.name} {address[0].province.name} {address[0].region.name}</h6>
-                                
-                                    <div className="d-none">
-                                        <small className="text-muted pt-4 db"><i className="mdi mdi-account-hard-hat mr-2"></i>¿Tiene inicio de actividades?</small>
-                                        <h6>{shop.startActivity ? 'Si' : 'No'}</h6>
-                                    </div>
-                                    */}
-                                
-                                </Fragment>
-                                }
+                        {shop.partner !== null &&
+                            <Card>
+                            <div className="p-3">
+                                <CardTitle>
+                                    <i className="mdi mdi-credit-card-multiple mr-2"></i>Colaboradores
+                                </CardTitle>
                             </div>
-                        </CardBody>
-                        </Card>
+                            <CardBody className="">
+                                <div>
+                                {Array.isArray(shop.partner) && shop.partner.length > 0 &&
+                                    <Fragment>
+                                        {(shop.partner.map((item, key) => {
+                                            return (
+                                            <div key={key}>
+                                                <h6 className="mb-0">
+                                                    {item.firstName+' '+item.lastName} - <span className="text-muted">{item.relationship}</span>
+                                                </h6>
+                                            </div>
+                                            )
+                                        }))}
+                                        {/* 
+                                        <small className="text-muted pt-4 db"><i className="mdi mdi-storefront-outline mr-2"></i>¿Posee tienda física?</small>
+                                        <h6>{shop.isLocal ? 'Si' : 'No'}</h6>
+                                        
+                                        <small className="text-muted pt-4 db"><i className="mdi mdi-map-marker mr-2"></i>Dirección</small>
+                                        <h6>{address[0].calle} {address[0].numero}, {address[0].local}, {address[0].comuna.name} {address[0].province.name} {address[0].region.name}</h6>
+                                    
+                                        <div className="d-none">
+                                            <small className="text-muted pt-4 db"><i className="mdi mdi-account-hard-hat mr-2"></i>¿Tiene inicio de actividades?</small>
+                                            <h6>{shop.startActivity ? 'Si' : 'No'}</h6>
+                                        </div>
+                                        */}
+                                    
+                                    </Fragment>
+                                    }
+                                </div>
+                            </CardBody>
+                            </Card>
+                        }
                         {/* 
                         <Card>
                             <div className="p-3">

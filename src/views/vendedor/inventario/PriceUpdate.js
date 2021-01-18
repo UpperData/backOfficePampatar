@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, Fragment} from 'react'
 import {
     Row,
     Col,
@@ -35,7 +35,7 @@ function PriceUpdate() {
     const [product,         setproduct]         = useState(null);
     const [price,           setprice]           = useState('');
     const [oldPrice,        setoldPrice]        = useState(null);
-    const [priceMessage,    setPriceMessage]    = useState(null);
+    const [priceMessage,    setPriceMessage]    = useState('');
     const [data,            setdata]            = useState(null);
 
     const [modal, setModal] = useState(false);
@@ -57,8 +57,11 @@ function PriceUpdate() {
                 let money = moneyFormatter(res.data.price);
                 setoldPrice(money);
                 setsearch(false);
+                setPriceMessage('');
             }else{
                 console.log('error');
+                setdata(null);
+                setoldPrice('');
                 setPriceMessage(res.data.data.message);
                 setsearch(false);
             }
@@ -87,7 +90,9 @@ function PriceUpdate() {
             console.log(res.data);
             if(res.data.data.result){
                 setoldPrice(price);
+                setPriceMessage('');
                 setsuccessmessage(res.data.data.message);
+                setproduct(null);
                 setprice('');
                 setModal(false);
             }else{
@@ -115,6 +120,12 @@ function PriceUpdate() {
                     {successmessage}
                 </div>
             }
+            {(priceMessage !== '') &&
+                <div className="alert alert-info">
+                    {priceMessage}
+                </div>
+            }
+
 
             <Row>
                 <Col md="12">
@@ -135,7 +146,7 @@ function PriceUpdate() {
                     </div>
                 }
 
-            {(product !== null && (data !== null || priceMessage !== null) && !search) &&
+            {(product !== null && (data !== null || priceMessage !== '') && !search) &&
                 <form onSubmit={(e) => GoUpdatePrice(e)} action="">
                         <Card>
                             <div className="p-3">
@@ -163,24 +174,30 @@ function PriceUpdate() {
                                             </InputGroup>
                                             {(Number(price) > 0) &&
                                                 <div>
-                                                    <hr/>
-                                                    <h5 className="h6">
-                                                        <span className="mr-2 text-success"><i className="mdi mdi-equal"></i></span> <span className="font-weight-bold ml-2">{moneyFormatter(Number(price)+(Number(data.tax) * Number(price) / 100)+(Number(data.comission) * Number(price) / 100))}</span> (mas impuestos y comisiones)
-                                                    </h5>
+                                                    {(data !== null) &&
+                                                        <Fragment>
+                                                            <hr/>
+                                                            <h5 className="h6">
+                                                                <span className="mr-2 text-success"><i className="mdi mdi-equal"></i></span> <span className="font-weight-bold ml-2">{moneyFormatter(Number(price)+(Number(data.tax) * Number(price) / 100)+(Number(data.comission) * Number(price) / 100))}</span> (mas impuestos y comisiones)
+                                                            </h5>
+                                                        </Fragment>
+                                                    }
                                                 </div>
                                             }
                                         </div>
                                     </Col>
-                                    <Col md="6">
-                                        <h3 className="font-weight-bold h4">Precio actual de venta</h3>
-                                        <h2 className="font-weight-bold h1">{moneyFormatter(data.endPrice)}</h2>
-                                        <h4>
-                                            <h5 className="h6">Precio del producto: <span className="font-weight-bold">{moneyFormatter(data.price)}</span></h5>
-                                            <hr/>
-                                            <h5 className="h6"><span className="mr-2 text-success"><i className="fa fa-plus"></i></span>Impuestos: <span className="font-weight-bold">{data.tax+'%'}</span></h5>
-                                            <h5 className="h6"><span className="mr-2 text-success"><i className="fa fa-plus"></i></span>Comisión de Pampatar: <span className="font-weight-bold">{data.comission+'%'}</span></h5>
-                                        </h4>
-                                    </Col>
+                                    {(errormessage === '' && data !== null) &&
+                                        <Col md="6">
+                                            <h3 className="font-weight-bold h4">Precio actual de venta</h3>
+                                            <h2 className="font-weight-bold h1">{moneyFormatter(data.endPrice)}</h2>
+                                            <div>
+                                                <h5 className="h6">Precio del producto: <span className="font-weight-bold">{moneyFormatter(data.price)}</span></h5>
+                                                <hr/>
+                                                <h5 className="h6"><span className="mr-2 text-success"><i className="fa fa-plus"></i></span>Impuestos: <span className="font-weight-bold">{data.tax+'%'}</span></h5>
+                                                <h5 className="h6"><span className="mr-2 text-success"><i className="fa fa-plus"></i></span>Comisión de Pampatar: <span className="font-weight-bold">{data.comission+'%'}</span></h5>
+                                            </div>
+                                        </Col>
+                                    }
                                 </Row>
                             </CardBody>
                         </Card>
@@ -195,7 +212,7 @@ function PriceUpdate() {
             </Col>
             </Row>
 
-            {product !== null && oldPrice &&
+            {product !== null &&
                 <Modal isOpen={modal} toggle={toggle}>
                     <ModalHeader className="h3 font-weight-bold" toggle={toggle}>
                         Actualizar precio del producto

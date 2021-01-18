@@ -80,7 +80,7 @@ function MisTiendas() {
     const filterBy = (type = '', value = '', key = null) => {
         switch (type) {
             case 'search':
-                if(value.trim() !== '' && value.trim().length > 0){
+                if(value.trim() !== ''){
                     searchShop(value.trim());
                 }else{
                     setsearchByText(false);
