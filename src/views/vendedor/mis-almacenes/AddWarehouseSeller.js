@@ -240,10 +240,10 @@ function AddWarehouseSeller(props) {
                     setsending(false);
                     if(res.data.data.result){
                         setsuccessmessage('¡Almacen Editado satisfactoriamente!')
-                        window.scrollTo({top: 0, behavior: 'smooth'});
+                        window.scrollTo({top: 10, behavior: 'smooth'});
                     }else{
                         seterrormessage(res.data.data.message);
-                        window.scrollTo({top: 0, behavior: 'smooth'});
+                        window.scrollTo({top: 10, behavior: 'smooth'});
                     }
                 }).catch((err) => {
                     console.error(err);
@@ -274,10 +274,10 @@ function AddWarehouseSeller(props) {
                     setsending(false);
                     if(res.data.data.result){
                         setsuccessmessage('¡Almacen creado satisfactoriamente!')
-                        window.scrollTo({top: 0, behavior: 'smooth'});
+                        window.scrollTo({top: 10, behavior: 'smooth'});
                     }else{
                         seterrormessage(res.data.data.message);
-                        window.scrollTo({top: 0, behavior: 'smooth'});
+                        window.scrollTo({top: 10, behavior: 'smooth'});
                     }
                 }).catch((err) => {
                     console.error(err);

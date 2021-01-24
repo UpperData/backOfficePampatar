@@ -95,8 +95,10 @@ function PriceUpdate() {
                 setproduct(null);
                 setprice('');
                 setModal(false);
+                window.scrollTo({top: 10, behavior: 'smooth'});
             }else{
                 seterrormessage(res.data.data.message);
+                window.scrollTo({top: 10, behavior: 'smooth'});
             }
             setsending(false);
         }).catch((err) => {

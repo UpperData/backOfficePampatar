@@ -74,9 +74,11 @@ const ProcessRequest = () => {
 
             if(!res.data.data.result){
                 console.log(res.data.data.message);
+                window.scrollTo({top: 10, behavior: 'smooth'});
                 seterrormessage(res.data.data.message);
             }else{
                 setSeeItem(null);
+                window.scrollTo({top: 10, behavior: 'smooth'});
                 setsuccessmessage('Solicitud procesada correctamente');
                 setloading(true);
                 setSearch(true);

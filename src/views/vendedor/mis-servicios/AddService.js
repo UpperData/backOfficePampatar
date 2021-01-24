@@ -28,6 +28,7 @@ function AddService(props) {
     const reset = () => {
         setname('');
         setservice(null);
+        window.scrollTo({top: 10, behavior: 'smooth'});
     }
 
     const changeService = (data) => {

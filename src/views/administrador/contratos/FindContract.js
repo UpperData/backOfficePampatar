@@ -208,6 +208,7 @@ function FindContract() {
                                 <Table responsive>
                                     <thead>
                                         <tr>
+                                            <th>ID</th>
                                             <th>Nombre de la tienda</th>
                                             <th>Estado</th>
                                             <th></th>
@@ -218,6 +219,9 @@ function FindContract() {
                                             //let date = item.createdAt.split(' ');
                                             return (
                                                 <tr key={key}>
+                                                    <td>
+                                                        {item.id}
+                                                    </td>
                                                     <td>
                                                         <strong>{item.name}</strong>
                                                     </td>

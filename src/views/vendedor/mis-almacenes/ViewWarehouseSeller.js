@@ -109,23 +109,31 @@ function ViewWarehouseSeller() {
                                                             let phone = ((item.phone !== null) ? item.phone[0] : null);
 
                                                             let dir = '';
-                                                            if(typeof item.address[0].comuna === 'object' && item.address[0].comuna.hasOwnProperty('name')){
-                                                                dir = dir+''+item.address[0].comuna.name+' ';
-                                                            }
-                                                            if(typeof item.address[0].calle !== null && item.address[0].calle !== undefined){
-                                                                dir = dir+''+item.address[0].calle+' ';
-                                                            }
-                                                            if(typeof item.address[0].numero !== null && item.address[0].numero !== undefined){
-                                                                dir = dir+''+item.address[0].numero+' ';
-                                                            }
-                                                            if(typeof item.address[0].local !== null && item.address[0].local !== undefined){
-                                                                dir = dir+''+item.address[0].local+' ';
-                                                            }
-                                                            if(typeof item.address[0].province === 'object' && item.address[0].province.hasOwnProperty('name')){
-                                                                dir = dir+''+item.address[0].province.name+' ';
-                                                            }
-                                                            if(typeof item.address[0].region === 'object' && item.address[0].region.hasOwnProperty('name')){
-                                                                dir = dir+''+item.address[0].region.name+' ';
+                                                            if(Array.isArray(item.address)){
+                                                                if(item.address[0].comuna !== null && typeof item.address[0].comuna === 'object' && item.address[0].comuna.hasOwnProperty('name')){
+                                                                    if(item.address[0].comuna.name !== undefined){
+                                                                        dir = dir+''+item.address[0].comuna.name+' '; 
+                                                                    }
+                                                                }
+                                                                if(typeof item.address[0].calle !== null && item.address[0].calle !== undefined){
+                                                                    dir = dir+''+item.address[0].calle+' ';
+                                                                }
+                                                                if(typeof item.address[0].numero !== null && item.address[0].numero !== undefined){
+                                                                    dir = dir+''+item.address[0].numero+' ';
+                                                                }
+                                                                if(typeof item.address[0].local !== null && item.address[0].local !== undefined){
+                                                                    dir = dir+''+item.address[0].local+' ';
+                                                                }
+                                                                if(typeof item.address[0].province === 'object' && item.address[0].province.hasOwnProperty('name')){
+                                                                    if(item.address[0].province.name !== undefined){
+                                                                        dir = dir+''+item.address[0].province.name+' ';
+                                                                    }
+                                                                }
+                                                                if(typeof item.address[0].region === 'object' && item.address[0].region.hasOwnProperty('name')){
+                                                                    if(item.address[0].region.name !== undefined){
+                                                                        dir = dir+''+item.address[0].region.name+' ';
+                                                                    }
+                                                                }
                                                             }
 
                                                             return (

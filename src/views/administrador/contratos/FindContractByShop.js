@@ -1,18 +1,17 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState,  useRef} from 'react'
 import {
-    Table,
     Row,
     Col,
     Card,
     CardBody,
     CardTitle,
-    Badge,
-    Breadcrumb, 
-    BreadcrumbItem, 
-    UncontrolledTooltip  
 } from 'reactstrap';
 import {Link, withRouter} from 'react-router-dom'
 import axios from 'axios'
+import { Fragment } from 'react';
+
+import { Document, Page, pdfjs } from "react-pdf";
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 function FindContractByShop(props) {
     let id = props.match.params.id;
@@ -21,6 +20,25 @@ function FindContractByShop(props) {
     const [search,  setSearch]              = useState(true);
     const [sending, setsending]             = useState(false);
     const [data,    setData]                = useState([]);
+
+    const [numPages, setNumPages] = useState(null);
+    const [pageNumber, setPageNumber] = useState(1);
+
+    const pdfWrapper = useRef(null);
+
+    function onDocumentLoadSuccess({ numPages }) {
+        setNumPages(numPages);
+    }
+
+    function _arrayBufferToBase64( buffer ) {
+        var binary = '';
+        var bytes = new Uint8Array( buffer );
+        var len = bytes.byteLength;
+        for (var i = 0; i < len; i++) {
+            binary += String.fromCharCode( bytes[ i ] );
+        }
+        return window.btoa( binary );
+    }
 
     useEffect(() => {
         let url = '/setting/seller/contract/shop/'+id;
@@ -51,41 +69,83 @@ function FindContractByShop(props) {
                             let shop = item;
                             let contract = item.contractDesc;
                             let date = item.createdAt.split('T');
-                            return (
-                                <Col key={key} md="12">
-                                    <Card>
-                                        <div className="p-3">
-                                            <CardTitle>
-                                                <i className="mdi mdi-border-all mr-2"></i>Contrato: 
-                                                <strong className="text-primary ml-2">{contract.number}</strong>
-                                            </CardTitle>
-                                        </div>
-                                        <CardBody className="border-top">
-                                            <h6><i className="fa d-none fa-calendar-alt mr-3"></i>Creación: {date[0]}</h6>
-                                            <hr/>
-                                            <h5 className="font-weight-bold">Datos del contrato: </h5>
-                                            <h6 className="mt-4">
-                                                <i className="fa d-none fa-calendar-alt mr-3"></i>
-                                                Inicio: <strong>{contract.inicio}</strong> - fin: <strong>{contract.fin}</strong>
-                                            </h6>
+                            
+                            let contractdata = item.contract.data.data;
+                            let pdfFile = contractdata.reduce(
+                                function (data, byte) {
+                                    return data + String.fromCharCode(byte);
+                                },
+                                ''
+                            );
 
-                                            <h6>Número de productos: <span className="font-weight-bold">{contract.comProduct}</span></h6>
-                                            <h6>Stock mínimo por producto: <span className="font-weight-bold">{contract.minStock}</span></h6>
-                                            <h6>Porcentaje por producto: <span className="font-weight-bold">{shop.proPercen}</span></h6>
-                                            
-                                            <hr/>
-                                            
-                                            <h6>Número de servicios: <span className="font-weight-bold">{contract.comService}</span></h6>
-                                            <h6>Porcentaje por servicios: <span className="font-weight-bold">{shop.servPercen}</span></h6>
-                                            
-                                            <hr/>
-                                            <h6 className="font-weight-bold">Nota:</h6>
-                                            <h6>
-                                                {contract.nota}
-                                            </h6>
-                                        </CardBody>
-                                    </Card>
-                                </Col>
+                            console.log(pdfFile.split(';')[1]);
+                            //console.log(item.contract.data.data);
+                            //console.log(_arrayBufferToBase64(item.contract.data.data));
+                            console.log(contractdata);
+
+                            let file = {data: { file: contractdata }}
+
+                            return (
+                                <Fragment key={key}>
+                                    <Col md="7">
+                                            <Card>
+                                                <div className="p-3">
+                                                    <CardTitle>
+                                                        <h3>
+                                                            <i className="mdi mdi-border-all mr-2"></i>Número de contrato: 
+                                                            <strong className="text-primary ml-2">{contract.number}</strong>
+                                                        </h3>
+                                                    </CardTitle>
+                                                </div>
+                                                <CardBody className="border-top">
+                                                    <h6><i className="fa d-none fa-calendar-alt mr-3"></i>Creación: {date[0]}</h6>
+                                                    <hr/>
+                                                    <h5 className="font-weight-bold">Datos del contrato: </h5>
+                                                    <h6 className="mt-4">
+                                                        <i className="fa d-none fa-calendar-alt mr-3"></i>
+                                                        Inicio: <strong>{contract.inicio}</strong> - fin: <strong>{contract.fin}</strong>
+                                                    </h6>
+
+                                                    <h6>Número de productos: <span className="font-weight-bold">{contract.comProduct}</span></h6>
+                                                    <h6>Stock mínimo por producto: <span className="font-weight-bold">{contract.minStock}</span></h6>
+                                                    <h6>Porcentaje por producto: <span className="font-weight-bold">{shop.proPercen}</span></h6>
+                                                    
+                                                    <hr/>
+                                                    
+                                                    <h6>Número de servicios: <span className="font-weight-bold">{contract.comService}</span></h6>
+                                                    <h6>Porcentaje por servicios: <span className="font-weight-bold">{shop.servPercen}</span></h6>
+                                                    
+                                                    <hr/>
+                                                    <h6 className="font-weight-bold">Nota:</h6>
+                                                    <h6>
+                                                        {contract.nota}
+                                                    </h6>
+                                                </CardBody>
+                                            </Card>
+                                        </Col>
+                                        <Col key={key} md="5">
+                                        <Card>
+                                            <div className="p-3">
+                                                <CardTitle>
+                                                    <h3>
+                                                        <i className="mdi mdi-border-all mr-2"></i>Vista previa
+                                                    </h3>
+                                                </CardTitle>
+                                            </div>
+                                            <CardBody className="border-top">
+                                            <div className="div-pdf" ref={pdfWrapper}>
+                                                <Document
+                                                    file={`data:application/pdf;${pdfFile.split(';')[1]}`}
+                                                    onLoadSuccess={onDocumentLoadSuccess}
+                                                >
+                                                    <Page pageNumber={pageNumber} width={400} />
+                                                </Document>
+                                                <p>Página {pageNumber} de {numPages}</p>
+                                            </div>
+                                            </CardBody>
+                                        </Card>
+                                    </Col>
+                                </Fragment>
                             )
                         })}
                     </Row>

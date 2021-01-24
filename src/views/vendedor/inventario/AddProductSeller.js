@@ -177,8 +177,10 @@ function AddProductSeller(props) {
                 console.log(res);
                 setsending(false);
                 if(res.data.data.result){
+                    window.scrollTo({top: 10, behavior: 'smooth'});
                     setsuccessmessage('¡Inventario incroporado con satisfactoriamente!')
                 }else{
+                    window.scrollTo({top: 10, behavior: 'smooth'});
                     seterrormessage(res.data.data.message);
                 }
             }).catch((err) => {

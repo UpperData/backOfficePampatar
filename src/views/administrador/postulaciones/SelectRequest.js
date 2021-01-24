@@ -432,6 +432,32 @@ function SelectRequest() {
                                             </p>
                                             <hr/>
 
+                                            {(Array.isArray(item.status)) ?
+                                                <Fragment>
+                                                    <h6 className="font-weight-bold">Estatus</h6>
+                                                    {item.status.length > 0 && item.status.map((item, key) => {
+                                                        let date = item.date.split('T');
+                                                        if(Array.isArray(date) && date.length > 0){
+                                                            return (
+                                                                <p key={key} className="mx-1">
+                                                                    {item.date.split('T')[0]} - <span className="badge badge-info">{item.name}</span>
+                                                                </p>
+                                                            )
+                                                        }
+
+                                                    })}
+                                                </Fragment>
+                                                :
+                                                <Fragment>
+                                                    <h6 className="font-weight-bold">
+                                                        Afirmación:
+                                                    </h6>
+                                                    <p>
+                                                        {affirmations.name}
+                                                    </p>
+                                                </Fragment>
+                                            }
+
                                             {(Array.isArray(affirmations)) ?
                                                 <Fragment>
                                                     <h6 className="font-weight-bold">Afirmaciones:</h6>
@@ -475,6 +501,7 @@ function SelectRequest() {
                                             </h6>
                                             <hr/>
                                             <h6 className="font-weight-bold">Contacto</h6>
+                                            <hr/>
                                                 <Fragment>
                                                     <h6 className="font-weight-bold">Teléfonos:</h6>
                                                     {item.phone.length > 0 && item.phone.map((subitem, subkey) => {

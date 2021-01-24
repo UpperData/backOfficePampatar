@@ -117,7 +117,7 @@ function ActualizarLote() {
             if(res.data.data.result){
                 setsuccessmessage(res.data.data.message);
                 setModal(false);
-                //window.scrollTo({top: 0, behavior: 'smooth'});
+                window.scrollTo({top: 250, behavior: 'smooth'});
 
                 /*
                     setsearchLote(false);
@@ -132,7 +132,7 @@ function ActualizarLote() {
             }else{
                 seterrormessage(res.data.data.message);
                 setModal(false);
-                window.scrollTo({top: 0, behavior: 'smooth'});
+                window.scrollTo({top: 250, behavior: 'smooth'});
             }
             setsending(false);
         }).catch((err) => {

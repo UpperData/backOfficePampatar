@@ -32,6 +32,7 @@ function CustomFileInput(props) {
     }
 
     const [preview, setpreview] = useState(null);
+    const [errorMessage, seterrorMessage] = useState('');
 
     function getBuffer(fileData) {
         return function(resolve) {
@@ -110,22 +111,45 @@ function CustomFileInput(props) {
         let filesSelected = e.target.files;
 
         if(filesSelected.length > 0){
+            seterrorMessage('');
             // Eventhandler for file input. 
-            function convertTo() {
-                console.log('convirtiendo files:', filesSelected);
-                let fileData = new Blob([filesSelected[0]]);
-                var promise = new Promise(getBuffer(fileData));
-                // Wait for promise to be resolved, or log error.
-                promise.then(function(data) {
-                    console.log(data);
-                    props.setBinary(data);
-                    props.onChange(filesSelected);
-                }).catch(function(err) {
-                    console.log('Error: ',err);
-                });
+            let type = filesSelected[0].name.split('.').pop();
+
+            if((props.accept && props.accept.includes(type)) || props.accept === undefined){
+
+                console.log('formato aceptado');
+                console.log(filesSelected[0].size);
+
+                if((props.size && filesSelected[0].size <= Number(props.size) * 1024) || props.size === undefined){
+
+                    function convertTo() {
+                        console.log('convirtiendo files:', filesSelected);
+                        let fileData = new Blob([filesSelected[0]]);
+                        var promise = new Promise(getBuffer(fileData));
+                        // Wait for promise to be resolved, or log error.
+                        promise.then(function(data) {
+                            console.log(data);
+                            props.setBinary(data);
+                            props.onChange(filesSelected);
+                        }).catch(function(err) {
+                            console.log('Error: ',err);
+                        });
+                    }
+                    
+                    convertTo();
+                }else{
+                    seterrorMessage('El tamaño de archivo es demasiado grande');
+                    setpreview(null);
+                    props.setBinary(null);
+                    props.onChange(null);
+                }
+            }else{
+                seterrorMessage('El formato del archivo es invalido');
+                setpreview(null);
+                props.setBinary(null);
+                props.onChange(null);
             }
-            
-            convertTo();
+
         }else{
 
             setpreview(null);
@@ -153,6 +177,11 @@ function CustomFileInput(props) {
                     {(files !== null) ? files[0].name : 'Seleccionar archivo'}
                 </label>
             </div>
+            {errorMessage !== '' &&
+                <div className="alert my-2 alert-danger">
+                    {errorMessage}
+                </div>
+            }
 
             {(showPreview && preview !== null) &&
                 <div className="my-2 d-none">

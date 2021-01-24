@@ -67,12 +67,14 @@ function UpdateTax() {
         }).then((res) => {
             console.log(res.data);
             if(res.data.data.result){
+                window.scrollTo({top: 10, behavior: 'smooth'});
                 setsuccessmessage(res.data.data.message);
                 settax(null);
                 setdata(null);
                 settaxvalue('');
                 setModal(false);
             }else{
+                window.scrollTo({top: 10, behavior: 'smooth'});
                 seterrormessage(res.data.data.message);
             }
             setsending(false);

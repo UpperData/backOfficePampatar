@@ -18,7 +18,8 @@ import "react-datetime/css/react-datetime.css";
 import "react-tagsinput/react-tagsinput.css";
 import ShopSelect from '../../../components/selects/ShopSelect';
 import CustomFileInput from '../../../components/files/CustomFileInput';
-import { array } from 'joi';
+import ShopWithContractsSelect from '../../../components/selects/ShopsWithContractsSelect';
+
 
 //lang
 require("moment/locale/es");
@@ -30,15 +31,18 @@ var valid = function (current) {
 };
 */
 
-function CreateContrat() {
+function RepairContract() {
 
     const [loading, setloading]                     = useState(true);
-    const [search, setsearch]                     = useState(true);
+    const [search, setsearch]                       = useState(true);
     const [sending, setsending]                     = useState(false);
     const [success, setsuccess]                     = useState(false);
     const [errors, seterrors]                       = useState({});
     const [data, setData]                           = useState(null);
     const [errorMessage, seterrorMessage]           = useState('');
+
+    const [searchContract, setSearchContract]       = useState(null);
+    const [contract, setContract]                   = useState(null);
 
     const [shopRequestId, setShopRequestId]         = useState(null);
     const [number, setnumber]                       = useState('');
@@ -65,6 +69,9 @@ function CreateContrat() {
 
         seterrorMessage('');
 
+        setSearchContract(null);
+        setContract(null);
+        
         setShopRequestId(null);
         setnumber('');
         setinicio(null);
@@ -180,14 +187,14 @@ function CreateContrat() {
         return true;
     }
 
-    console.log(binaryData);
+    //console.log(binaryData);
 
     const sendData = (e) => {
         e.stopPropagation();
         e.preventDefault();
         seterrorMessage('');
 
-        let urlSend = '/setting/seller/shopContract';
+        let urlSend = '/setting/shOPContract/Admin/';
         let validation = validate();
         if(validation){
 
@@ -207,7 +214,7 @@ function CreateContrat() {
             console.log(realTags);
 
             let data = {
-                shopRequestId: shopRequestId.value,
+                id: contract.id,
                 contractDesc: { 
                     number: number.toString(),
                     inicio: moment(inicio).format('YYYY-MM-DD'),
@@ -230,7 +237,7 @@ function CreateContrat() {
 
             axios({
                 url: urlSend,
-                method: 'post',
+                method: 'put',
                 data
             }).then((res) => {
                 if(!res.data.data.result){
@@ -257,6 +264,8 @@ function CreateContrat() {
 
     const getShopsRequests = () => {
         setsearch(false);
+        setloading(false);
+        /*
         axios.get(urlGet)
         .then((res) => {
             console.log(res.data);
@@ -271,6 +280,7 @@ function CreateContrat() {
         }).catch((err) => {
             console.log(err);
         });
+        */
     }
 
     useEffect(() => {
@@ -281,11 +291,44 @@ function CreateContrat() {
         }
     });
 
+    const changeShop = (value) => {
+        setShopRequestId(value);
+        setSearchContract(true);
+
+        let urlcontract = '/setting/seller/contract/shop/';
+
+        axios.get(urlcontract+value.value+'/').then((res) => {
+            let thiscontract = res.data.data.rsShopContract[0];
+            console.log(thiscontract);
+
+            let descriptioncontract = (Array.isArray(thiscontract.contractDesc)) ? thiscontract.contractDesc[0] : thiscontract.contractDesc ;
+
+            setContract(thiscontract);
+
+            setinicio(descriptioncontract.inicio);
+            setfin(descriptioncontract.fin);
+            setnota(descriptioncontract.nota);
+            setnumber(descriptioncontract.number);
+            setminStock(descriptioncontract.minStock);
+            setcomProduct(descriptioncontract.comProduct);
+            setcomService(descriptioncontract.comService);
+
+            setproPercen(thiscontract.proPercen);
+            setserPercen(thiscontract.servPercen);
+
+            setSearchContract(false);
+
+        }).catch((err) => {
+            console.error(err);
+            setSearchContract(false);
+        })
+    }
+
     if(!loading){
         if(!success){
             return (
                 <div>
-                    <h1 className="h4 mb-3 font-weight-bold">Crear contrato</h1>
+                    <h1 className="h4 mb-3 font-weight-bold">Corregir contrato</h1>
 
                     {(errorMessage !== '') &&
                         <div className="alert alert-primary">
@@ -301,7 +344,7 @@ function CreateContrat() {
                             <Card>
                                 <div className="p-3">
                                     <CardTitle>
-                                        <i className="mdi mdi-border-all mr-2"></i>Seleccione una tienda
+                                        <i className="mdi mdi-border-all mr-2"></i>Seleccione una tienda con contrato activo
                                     </CardTitle>
                                 </div>
                                 <CardBody className="border-top">
@@ -309,17 +352,22 @@ function CreateContrat() {
                                         <Col md="12">
                                             <div className="form-group">
                                                 <label htmlFor="">Tienda:</label>
-                                                <ShopSelect onChange={setShopRequestId} value={shopRequestId} list={data.rsShopRequestByStatus} />
+                                                <ShopWithContractsSelect onChange={changeShop} value={shopRequestId} />
                                             </div>
                                         </Col>
                                     </Row>
                                 </CardBody>
                             </Card>
-                            {(shopRequestId !== null) &&
+
+                            {(searchContract) &&
+                                <InlineSpinner />
+                            }
+
+                            {(contract !== null) &&
                             <Card>
                                 <div className="p-3">
                                     <CardTitle>
-                                        <i className="mdi mdi-border-all mr-2"></i>Datos del contrato
+                                        <i className="mdi mdi-border-all mr-2"></i>Datos del contrato actual
                                     </CardTitle>
                                 </div>
                                 <CardBody className="border-top">
@@ -485,24 +533,29 @@ function CreateContrat() {
                                             </div>
                                         </Col>
                                         <Col md="12">
+                                            <hr/>
+                                        </Col>
+                                        <Col md="6">
                                             <div className="mb-3">
-                                                <FormGroup>
-                                                    <label htmlFor="">Adjuntar archivo:</label>
-                                                    <CustomFileInput accept='pdf' size={2048} returnFileType='base64complete' value={attachment} setBinary={setBinaryData} onChange={setattachment} />
-                                                </FormGroup>  
-                                                <p className="text-muted small">
-                                                    <strong>Nota:</strong> debe incluir el archivo en formato <strong>PDF</strong>.
-                                                </p>
-                                                {(typeof errors === 'object' && errors.hasOwnProperty('binaryData')) &&
-                                                    <div className="help-block text-danger font-weight-bold">
-                                                        <small>
-                                                            {errors.binaryData}
-                                                        </small>
-                                                    </div>
-                                                }
+                                                <div className="mb-3">
+                                                    <FormGroup>
+                                                        <label htmlFor="">Adjuntar archivo:</label>
+                                                        <CustomFileInput accept='pdf' size={2048} returnFileType='base64complete' value={attachment} setBinary={setBinaryData} onChange={setattachment} />
+                                                    </FormGroup>  
+                                                    <p className="text-muted small">
+                                                        <strong>Nota:</strong> debe incluir el archivo en formato <strong>PDF</strong>.
+                                                    </p>
+                                                    {(typeof errors === 'object' && errors.hasOwnProperty('binaryData')) &&
+                                                        <div className="help-block text-danger font-weight-bold">
+                                                            <small>
+                                                                {errors.binaryData}
+                                                            </small>
+                                                        </div>
+                                                    }
+                                                </div>
                                             </div>
                                         </Col>
-                                        <Col md="12">
+                                        <Col md="6">
                                             <div className="form-group">
                                                 <label htmlFor="">Etiquetas:</label>
                                                 <TagsInput
@@ -555,10 +608,10 @@ function CreateContrat() {
                             }
                         </Col>
                     </Row>
-                    {(shopRequestId !== null) &&
+                    {(contract !== null) &&
                         <div className="text-right">
-                            <button disabled={sending} type="submit" className="btn btn-lg font-weight-bold btn-primary">
-                                    {(sending) ? <span>Cargando <i className="fa fa-spin fa-spinner mr-2"></i></span> : <span>Crear contrato <i className="mdi mdi-send mr-2"></i></span> }
+                            <button disabled={sending} type="submit" className="btn btn-lg font-weight-bold btn-warning">
+                                    {(sending) ? <span>Cargando <i className="fa fa-spin fa-spinner mr-2"></i></span> : <span>Corregir contrato <i className="mdi mdi-send mr-2"></i></span> }
                             </button>
                         </div>
                     }
@@ -568,12 +621,12 @@ function CreateContrat() {
         }else{
             return (
                 <div>
-                    <h1 className="h4 mb-3 font-weight-bold">Crear contrato</h1>
+                    <h1 className="h4 mb-3 font-weight-bold">Corregir contrato</h1>
                     <div className="alert alert-success mb-3">
-                        ¡Contrato registrado con exito!
+                        ¡Contrato corregido con exito!
                     </div>
-                    <button onClick={() => setsuccess(false)} className="btn btn-primary">
-                        Crear nuevo contrato
+                    <button onClick={() => newContrat()} className="btn btn-primary">
+                        Corregir otro contrato
                     </button>
                 </div>
             )
@@ -582,7 +635,7 @@ function CreateContrat() {
         if(errorMessage !== ''){
             return(
                 <div>
-                    <h1 className="h4 mb-3 font-weight-bold">Crear contrato</h1>
+                    <h1 className="h4 mb-3 font-weight-bold">Corregir contrato</h1>
                     <div className="alert alert-primary">
                         <p className="mb-0">
                             {errorMessage}
@@ -593,7 +646,7 @@ function CreateContrat() {
         }else{
             return(
                 <div>
-                    <h1 className="h4 mb-3 font-weight-bold">Crear contrato</h1>
+                    <h1 className="h4 mb-3 font-weight-bold">Corregir contrato</h1>
                     <InlineSpinner />
                 </div>
             )
@@ -601,4 +654,4 @@ function CreateContrat() {
     }
 }
 
-export default CreateContrat
+export default RepairContract

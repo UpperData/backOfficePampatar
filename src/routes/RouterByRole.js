@@ -13,6 +13,7 @@ const SelectRequest        = lazy(()     => import("../views/administrador/postu
 const CreateContract        = lazy(()     => import("../views/administrador/contratos/CreateContrat"));
 const FindContract          = lazy(()     => import("../views/administrador/contratos/FindContract"));
 const FindContractByShop    = lazy(()     => import("../views/administrador/contratos/FindContractByShop"));
+const RepairContract        = lazy(()     => import("../views/administrador/contratos/RepairContract"));
 
 const MisTiendas    = lazy(()     => import("../views/administrador/tiendas/MisTiendas"));
 const MiTienda      = lazy(()     => import("../views/administrador/tiendas/MiTienda"));
@@ -200,6 +201,12 @@ var ThemeRoutesByRole = [
     path: "/findContract/shop/:id",
     name: "Buscar contratos por tienda",
     component: FindContractByShop,
+    onlyRoute:true
+  },
+  {
+    path: "/conTract/repairRecoRd",
+    name: "Reparar contrato",
+    component: RepairContract,
     onlyRoute:true
   },
   //publicaciones

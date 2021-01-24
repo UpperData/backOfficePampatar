@@ -30,6 +30,7 @@ function AddProduct(props) {
     const reset = () => {
         setname('');
         setproduct(null);
+        window.scrollTo({top: 10, behavior: 'smooth'});
     }
 
     const changeService = (data) => {

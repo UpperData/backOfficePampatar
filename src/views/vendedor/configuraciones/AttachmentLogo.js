@@ -43,6 +43,7 @@ function AttachmentLogo() {
         setSearch(false);
         axios.get(urlGet)
         .then((res) => {
+            console.log(res.data);
             //let decode = String.fromCharCode.apply(null, res.data.data.rsShop.logo.data);
             let logoshop = res.data.data.rsShop.logo.data.reduce(
                 function (data, byte) {
@@ -87,6 +88,7 @@ function AttachmentLogo() {
         }).then((res) => {
             console.log(res.data);
             if(res.data.data.result){
+                window.scrollTo({top: 10, behavior: 'smooth'});
                 setsuccessmessage(res.data.data.message);
                 dispatch(set_store_logo());
             }

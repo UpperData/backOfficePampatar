@@ -152,11 +152,11 @@ function InventoryService() {
                 if(res.data.data.result){
                     reset();
                     setsended(true);
-                    window.scrollTo({top: 0, behavior: 'smooth'});
+                    window.scrollTo({top: 10, behavior: 'smooth'});
                     setsuccessmessage('¡Servicio añadido satisfactoriamente!')
                 }else{
                     reset();
-                    window.scrollTo({top: 0, behavior: 'smooth'});
+                    window.scrollTo({top: 10, behavior: 'smooth'});
                     seterrormessage(res.data.data.message);
                 }
             }).catch((err) => {
