@@ -1,12 +1,10 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { Nav, Collapse, UncontrolledTooltip } from "reactstrap";
+import { Nav, Collapse } from "reactstrap";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import FeatherIcon from "feather-icons-react";
 
-import profile from "../../../assets/images/users/user.png";
-import { handleLogout } from "../../../redux/session/Actions";
 import DefaultUser from "../../../components/files/DefaultUser";
 
 import tippy from 'tippy.js';
@@ -35,13 +33,13 @@ const Sidebar = (props) => {
   const settings = useSelector((state) => state.settings);
   const session = useSelector(state => state.session);
   const backoffice = useSelector(state => state.backoffice);
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
 
 
   //VARIABLES
   let shopName = session.userData.shop.name;
   let role = backoffice.role.name;
-  let account = session.userData.account;
+  //let account = session.userData.account;
 
 
   /*--------------------------------------------------------------------------------*/
@@ -66,9 +64,11 @@ const Sidebar = (props) => {
     document.getElementById("main-wrapper").classList.toggle("show-sidebar");
   };
 
+  /*
   const toggle = () => {
     setState((state) => ({ collapse: !state.collapse }));
   };
+  */
 
   useEffect(() => {
     tippy('[data-tippy-content]',{
@@ -76,6 +76,7 @@ const Sidebar = (props) => {
     });
   });
 
+  /*
   function slugify(str)
   {
       str = str.replace(/^\s+|\s+$/g, '');
@@ -99,6 +100,7 @@ const Sidebar = (props) => {
 
       return str;
   }
+  */
 
   //console.log(backoffice.menu);
 

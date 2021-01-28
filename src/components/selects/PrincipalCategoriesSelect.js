@@ -9,36 +9,36 @@ function PrincipalCategoriesSelect(props) {
     const [search,  setsearch]  = useState(true);
     let url = '/menu/cat1';
 
-    const getData = () => {
-        axios.get(url).then((res) => {
-            console.log(res.data);
-            let items = res.data.data.menu;
-            let newList = [];
-
-            for(var i=0; i < items.length; i++){
-                
-                let thisElement = items[i];
-
-                let formattedElement = {};
-                formattedElement.label = thisElement.name;
-                formattedElement.value = thisElement.id;
-
-                newList.push(formattedElement);
-            }            
-
-            setList(newList);
-            setLoading(false);
-        });
-    }
-
     useEffect(() => {
         if(loading){
             if(search){
+                const getData = () => {
+                    axios.get(url).then((res) => {
+                        console.log(res.data);
+                        let items = res.data.data.menu;
+                        let newList = [];
+            
+                        for(var i=0; i < items.length; i++){
+                            
+                            let thisElement = items[i];
+            
+                            let formattedElement = {};
+                            formattedElement.label = thisElement.name;
+                            formattedElement.value = thisElement.id;
+            
+                            newList.push(formattedElement);
+                        }            
+            
+                        setList(newList);
+                        setLoading(false);
+                    });
+                }
+
                 setsearch(false);
                 getData();
             }
         }
-    }, []);
+    }, [loading,search, url]);
 
     const handleSelect = async (selectedOption) => {
         console.log(selectedOption);

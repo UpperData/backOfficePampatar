@@ -28,8 +28,8 @@ function SelectRequest() {
     const [filterBySearch,  setFilterBySearch]  = useState('');
     const [searchByText,    setsearchByText]    = useState(false);
 
-    const [errormessage, seterrormessage]   = useState('');
-    const [successmessage, setsuccessmessage]   = useState('');
+    const errormessage                          = '';
+    //const [successmessage, setsuccessmessage]   = useState('');
 
     const getFilterClass = (data) => {
         switch (data) {
@@ -150,20 +150,6 @@ function SelectRequest() {
         }
     }
 
-    const getData = () => {
-        axios.get(url)
-        .then((res) => {
-            console.log(res.data);
-
-            setdata(res.data);
-            setlist(res.data.rows);
-            setloading(false);
-            
-        }).catch((err) => {
-            console.error(err);
-        })
-    }
-
     const cleanFilters = () => {
 
         setlist(data.rows);
@@ -210,11 +196,25 @@ function SelectRequest() {
     useEffect(() => {
         if(loading){
             if(search){
+                const getData = () => {
+                    axios.get(url)
+                    .then((res) => {
+                        console.log(res.data);
+            
+                        setdata(res.data);
+                        setlist(res.data.rows);
+                        setloading(false);
+                        
+                    }).catch((err) => {
+                        console.error(err);
+                    })
+                }
+
                 setsearch(false);
                 getData();
             }
         }
-    }, []);
+    }, [loading,search,url]);
 
     if(!loading){
         if(store === null){
@@ -271,6 +271,9 @@ function SelectRequest() {
                             </div>
                         </form>
                     </div>
+                    {(searchByText) &&
+                        <InlineSpinner />
+                    }
                     <Row>
                         {(store === null) &&
                             <Col md="12">
@@ -346,7 +349,6 @@ function SelectRequest() {
             )
         }else{
             let item = store;
-            let preference = item.Account.preference;
             let affirmations = item.affirmations;
 
             return (
@@ -443,8 +445,9 @@ function SelectRequest() {
                                                                     {item.date.split('T')[0]} - <span className="badge badge-info">{item.name}</span>
                                                                 </p>
                                                             )
+                                                        }else{
+                                                            return ''
                                                         }
-
                                                     })}
                                                 </Fragment>
                                                 :

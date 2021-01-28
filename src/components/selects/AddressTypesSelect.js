@@ -9,31 +9,31 @@ function AddressTypesSelect(props) {
     const [list, setList] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const formatData = () => {
-        let newList = [];
-
-        for(var i=0; i < addressTypes.length; i++){
-            
-            let thisElement = addressTypes[i];
-
-            let formattedElement = {};
-            formattedElement.label = thisElement.name;
-            formattedElement.value = thisElement.id;
-
-            newList.push(formattedElement);
-        }            
-
-        setList(newList);
-        setLoading(false);
-    }
-
     useEffect(() => {
         if(loading){
             if(backoffice.addressTypes !== null){
+                const formatData = () => {
+                    let newList = [];
+            
+                    for(var i=0; i < addressTypes.length; i++){
+                        
+                        let thisElement = addressTypes[i];
+            
+                        let formattedElement = {};
+                        formattedElement.label = thisElement.name;
+                        formattedElement.value = thisElement.id;
+            
+                        newList.push(formattedElement);
+                    }            
+            
+                    setList(newList);
+                    setLoading(false);
+                }
+
                 formatData();
             }
         }
-    }, []);
+    }, [loading, backoffice.addressTypes, addressTypes]);
 
     const handleSelect = async (selectedOption) => {
         //console.log(selectedOption);

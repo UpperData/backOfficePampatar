@@ -39,14 +39,15 @@ function CustomFileInput(props) {
             var reader = new FileReader();
 
             if(showPreview){
-                var auxreader = new FileReader();
-                auxreader.readAsDataURL(fileData);
+                /*
+                    var auxreader = new FileReader();
+                    auxreader.readAsDataURL(fileData);
 
-                auxreader.onloadend = () => {
-                    var result = auxreader.result;
-                    //props.handlePreview(result);
-                };
-
+                    auxreader.onloadend = () => {
+                        var result = auxreader.result;
+                        //props.handlePreview(result);
+                    };
+                */
                 console.log('mostrando preview');
             }
 

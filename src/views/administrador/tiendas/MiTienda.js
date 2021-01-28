@@ -51,7 +51,7 @@ function MiTienda(props) {
                 
             }
         }
-    }, []);
+    }, [loading,search,url]);
 
     console.log(shop);
 

@@ -9,36 +9,36 @@ function ServicesSelect(props) {
     const [search,  setsearch]  = useState(true);
     let url = '/services/myList';
 
-    const getData = () => {
-        axios.get(url).then((res) => {
-            console.log(res.data);
-            let services = res.data.data.sku;
-            let newList = [];
-
-            for(var i=0; i < services.length; i++){
-                
-                let thisElement = services[i];
-
-                let formattedElement = {};
-                formattedElement.label = thisElement.name;
-                formattedElement.value = thisElement.id;
-
-                newList.push(formattedElement);
-            }            
-
-            setList(newList);
-            setLoading(false);
-        });
-    }
-
     useEffect(() => {
         if(loading){
             if(search){
+                const getData = () => {
+                    axios.get(url).then((res) => {
+                        console.log(res.data);
+                        let services = res.data.data.sku;
+                        let newList = [];
+            
+                        for(var i=0; i < services.length; i++){
+                            
+                            let thisElement = services[i];
+            
+                            let formattedElement = {};
+                            formattedElement.label = thisElement.name;
+                            formattedElement.value = thisElement.id;
+            
+                            newList.push(formattedElement);
+                        }            
+            
+                        setList(newList);
+                        setLoading(false);
+                    });
+                }
+
                 setsearch(false);
                 getData();
             }
         }
-    }, []);
+    }, [loading,search,url]);
 
     const handleSelect = async (selectedOption) => {
         console.log(selectedOption);

@@ -24,28 +24,29 @@ function ViewServices() {
 
     let url = '/services/myList';
 
-    const getData = () => {
-        setsearch(false);
-
-        axios.get(url).then((res) => {
-            console.log(res.data.data);
-            if(res.data.data.result){
-                setdata(res.data.data);
-                setloading(false);
-            }
-        }).catch((err) => {
-            console.error(err);
-            setloading(false);
-        });
-    }
 
     useEffect(() => {
         if(loading){
             if(search){
+                const getData = () => {
+                    setsearch(false);
+            
+                    axios.get(url).then((res) => {
+                        console.log(res.data.data);
+                        if(res.data.data.result){
+                            setdata(res.data.data);
+                            setloading(false);
+                        }
+                    }).catch((err) => {
+                        console.error(err);
+                        setloading(false);
+                    });
+                }
+
                 getData();
             }
         }
-    }, []);
+    }, [loading,search,url]);
     
     if(!loading){
         return (

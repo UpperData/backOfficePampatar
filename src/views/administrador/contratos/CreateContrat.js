@@ -18,7 +18,6 @@ import "react-datetime/css/react-datetime.css";
 import "react-tagsinput/react-tagsinput.css";
 import ShopSelect from '../../../components/selects/ShopSelect';
 import CustomFileInput from '../../../components/files/CustomFileInput';
-import { array } from 'joi';
 
 //lang
 require("moment/locale/es");

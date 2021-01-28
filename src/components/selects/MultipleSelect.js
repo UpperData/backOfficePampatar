@@ -26,7 +26,7 @@ function MultipleSelect(props) {
             setList(newList);
             setloading(false);
         }
-    });
+    }, [loading, data]);
 
     const handleSelect = async (selectedOption) => {
         console.log(selectedOption);

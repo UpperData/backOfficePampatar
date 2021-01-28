@@ -35,7 +35,7 @@ function SizesCombobox(props) {
         setcategory(data);
         let findSizes = result.find(item => item.id === data.value);
         let formatsizes = [];
-        let it = 0;
+        //let it = 0;
 
         if(findSizes !== undefined){
             //console.log(data);

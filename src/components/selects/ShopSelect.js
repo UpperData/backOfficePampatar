@@ -12,34 +12,34 @@ function ShopSelect(props) {
     const [list,    setlist]    = useState(null);
     const [loading, setLoading] = useState(true);
     const [search,  setsearch]  = useState(true);
-
-    const getData = () => {
-        if(values.length > 0){
-            for (let i = 0; i < values.length; i++) {
-                const element = values[i];
-    
-                let thisValue = {};
-                thisValue.label = element.marca+' - '+element.Account.Person.firstName+' '+element.Account.Person.lastName;
-                thisValue.value = element.id;
-    
-                allValues.push(thisValue);
-            }
-            
-            //console.log(allValues);
-
-            setlist(allValues);
-            setLoading(false);
-        }
-    }
     
     useEffect(() => {
         if(loading){
             if(search){
+                const getData = () => {
+                    if(values.length > 0){
+                        for (let i = 0; i < values.length; i++) {
+                            const element = values[i];
+                
+                            let thisValue = {};
+                            thisValue.label = element.marca+' - '+element.Account.Person.firstName+' '+element.Account.Person.lastName;
+                            thisValue.value = element.id;
+                
+                            allValues.push(thisValue);
+                        }
+                        
+                        //console.log(allValues);
+            
+                        setlist(allValues);
+                        setLoading(false);
+                    }
+                }
+
                 setsearch(false);
                 getData();
             }
         }
-    }, []);
+    }, [loading, search,values, allValues]);
     
     const handleSelect = async (selectedOption) => {
         props.onChange(selectedOption); 

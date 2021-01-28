@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import {Redirect, withRouter} from 'react-router-dom'
 import {useSelector, useDispatch} from 'react-redux'
-import {Link} from 'react-router-dom'
+//import {Link} from 'react-router-dom'
 import { set_role, set_backoffice_menu } from '../../redux/backoffice/Actions';
 import Spinner from '../spinner/Spinner';
 import { AuthenticationService } from '../../jwt/_services';
@@ -52,7 +52,7 @@ function SetRole(props) {
                 setloading(false);  
             }       
         }
-    });
+    }, [loading,RoleInLocalStorage]);
 
     const logout = () => {
         dispatch(handleLogout());
@@ -102,6 +102,8 @@ function SetRole(props) {
                                                 </h2>      
                                             </a>
                                         )
+                                    }else{
+                                        return ''
                                     }
                                 }))}
 

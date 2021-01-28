@@ -11,25 +11,25 @@ function CurrentTaxes() {
     const [search, setsearch]   = useState(true);
     const [data, setdata]       = useState(null);
 
-    const getData = () => {
-        if(search){
-            setsearch(false);
-
-            axios.get(urlGetCurrentTaxes).then((res) => {
-                console.log(res.data);
-                setdata(res.data);
-                setloading(false);
-            }).catch((err) => {
-                console.error(err);
-            });
-        }
-    }
-
     useEffect(() => {
         if(loading){
+            const getData = () => {
+                if(search){
+                    setsearch(false);
+        
+                    axios.get(urlGetCurrentTaxes).then((res) => {
+                        console.log(res.data);
+                        setdata(res.data);
+                        setloading(false);
+                    }).catch((err) => {
+                        console.error(err);
+                    });
+                }
+            }
+
             getData();
         }
-    }, []);
+    }, [urlGetCurrentTaxes, loading, search]);
 
     if(!loading){
         return (
@@ -54,8 +54,8 @@ function CurrentTaxes() {
                                                         </h2>
                                                         {item.taxValues.length > 0 && item.taxValues.map((subitem, index) => {
                                                             return (
-                                                                <div className="text-center">
-                                                                    <h4 key={index} className="text-primary mb-0 font-weight-normal">
+                                                                <div key={index} className="text-center">
+                                                                    <h4 className="text-primary mb-0 font-weight-normal">
                                                                         <span className="font-weight-bold">{subitem.value}{item.name === 'IVA' ? ' %': ''}</span>
                                                                     </h4>
                                                                     <small className="text-muted">

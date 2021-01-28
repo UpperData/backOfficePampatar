@@ -50,20 +50,6 @@ function UserIndentityDocument(props) {
         });
     }
 
-    const changePersonTypeInLoad = (id) => {
-        setPersonTypeId(id);
-
-        let docsByNaturalUrl = '/docByPeopleType/'+id;
-        setSearchDocumentTypes(true);
-
-        axios.get(docsByNaturalUrl).then((res) => {
-            console.log('person type:'+id);
-            console.log(document);
-            setListDocumentTypes(res.data.data.rows);
-            setSearchDocumentTypes(false);
-        });
-    }
-
     const handleDocumentTypeInputChange = (e, id) => {
         let {value} = e.target;
         let documentList = document;
@@ -90,6 +76,20 @@ function UserIndentityDocument(props) {
             if(search){
                 setsearch(false);
                 if(personTypeId !== null){
+                    const changePersonTypeInLoad = (id) => {
+                        setPersonTypeId(id);
+                
+                        let docsByNaturalUrl = '/docByPeopleType/'+id;
+                        setSearchDocumentTypes(true);
+                
+                        axios.get(docsByNaturalUrl).then((res) => {
+                            console.log('person type:'+id);
+                            console.log(document);
+                            setListDocumentTypes(res.data.data.rows);
+                            setSearchDocumentTypes(false);
+                        });
+                    }
+
                     changePersonTypeInLoad(personTypeId);
                 }
                 setloading(false);
@@ -100,7 +100,7 @@ function UserIndentityDocument(props) {
                 props.onChange(document);
             }
         }
-    });
+    },[loading, search, personTypeId, document, props]);
 
     let userDocumentIderntity = listDocumentTypes;
 

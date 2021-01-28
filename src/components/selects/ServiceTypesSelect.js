@@ -49,7 +49,7 @@ function ServiceTypesSelect(props) {
                 getList();
             }
         } 
-    }, []);
+    }, [loading,search]);
 
     const handleSelect = async (selectedOption) => {
         console.log(selectedOption);

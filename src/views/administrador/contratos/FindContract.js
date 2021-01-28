@@ -47,9 +47,10 @@ function FindContract() {
                 if(value.trim() !== '' && value.trim().length > 0){
                     searchShop(value.trim());
                 }else{
-                    setsearchByText(false);
                     setlist(data);
                 }
+
+                setsearchByText(false);
             break;
 
             case 'sort':
@@ -121,26 +122,26 @@ function FindContract() {
         }, 500);
     }
 
-    const getData = () => {
-        axios.get(url)
-        .then((res) => {
-            console.log(res.data);
-            setData(res.data.data.rsShopAll);
-            setlist(res.data.data.rsShopAll);
-            setloading(false);
-        }).catch((err) => {
-            console.error(err);
-        });
-    }
-
     useEffect(() => {
+        const getData = () => {
+            axios.get(url)
+            .then((res) => {
+                console.log(res.data);
+                setData(res.data.data.rsShopAll);
+                setlist(res.data.data.rsShopAll);
+                setloading(false);
+            }).catch((err) => {
+                console.error(err);
+            });
+        }
+
         if(loading){
             if(search){
                 setSearch(false);
                 getData();
             }
         }
-    }, []);
+    }, [loading, search, url]);
 
     const getFilterClass = (data) => {
         switch (data) {
@@ -198,6 +199,9 @@ function FindContract() {
                         </div>
                     </form>
                 </div>
+                {searchByText &&
+                    <InlineSpinner />
+                }
                 <Row>
                     <Col md="12">
                         <Card>
@@ -239,7 +243,7 @@ function FindContract() {
                                     </tbody>
                                 </Table>
                                 {(list.length === 0) &&
-                                    <p colSpan="5">
+                                    <p colSpan="5" className="text-center">
                                         Sin resultados encontrados
                                     </p>
                                 }

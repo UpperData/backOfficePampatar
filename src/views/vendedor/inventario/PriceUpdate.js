@@ -34,7 +34,7 @@ function PriceUpdate() {
 
     const [product,         setproduct]         = useState(null);
     const [price,           setprice]           = useState('');
-    const [oldPrice,        setoldPrice]        = useState(null);
+    //const [oldPrice,        setoldPrice]        = useState(null);
     const [priceMessage,    setPriceMessage]    = useState('');
     const [data,            setdata]            = useState(null);
 
@@ -54,14 +54,14 @@ function PriceUpdate() {
             console.log(res.data);
             if(res.data && res.data.hasOwnProperty('price')){
                 setdata(res.data);
-                let money = moneyFormatter(res.data.price);
-                setoldPrice(money);
+                //let money = moneyFormatter(res.data.price);
+                //setoldPrice(money);
                 setsearch(false);
                 setPriceMessage('');
             }else{
                 console.log('error');
                 setdata(null);
-                setoldPrice('');
+                //setoldPrice('');
                 setPriceMessage(res.data.data.message);
                 setsearch(false);
             }
@@ -89,7 +89,7 @@ function PriceUpdate() {
         }).then((res) => {
             console.log(res.data);
             if(res.data.data.result){
-                setoldPrice(price);
+                //setoldPrice(price);
                 setPriceMessage('');
                 setsuccessmessage(res.data.data.message);
                 setproduct(null);

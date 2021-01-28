@@ -16,7 +16,6 @@ import moment from 'moment'
 //styles
 import "react-datetime/css/react-datetime.css";
 import "react-tagsinput/react-tagsinput.css";
-import ShopSelect from '../../../components/selects/ShopSelect';
 import CustomFileInput from '../../../components/files/CustomFileInput';
 import ShopWithContractsSelect from '../../../components/selects/ShopsWithContractsSelect';
 
@@ -38,7 +37,6 @@ function RepairContract() {
     const [sending, setsending]                     = useState(false);
     const [success, setsuccess]                     = useState(false);
     const [errors, seterrors]                       = useState({});
-    const [data, setData]                           = useState(null);
     const [errorMessage, seterrorMessage]           = useState('');
 
     const [searchContract, setSearchContract]       = useState(null);
@@ -59,8 +57,6 @@ function RepairContract() {
 
     const [attachment, setattachment]               = useState(null);
     const [binaryData, setBinaryData]               = useState(null);
-
-    let urlGet = '/setting/seller/shoptRequest-pre';
 
     const newContrat = () => {
         setsending(false);
@@ -211,7 +207,8 @@ function RepairContract() {
 
             realTags.push({name: moment(inicio).format('YYYY-MM-DD')});
             realTags.push({name: moment(fin).format('YYYY-MM-DD')});
-            console.log(realTags);
+            //console.log(realTags);
+            let getBinaryData = binaryData.split(',')[1];
 
             let data = {
                 id: contract.id,
@@ -225,7 +222,7 @@ function RepairContract() {
                     nota,
                 },
                 attachment: {
-                    data: binaryData,
+                    data: String(binaryData),
                     tags: realTags,
                 },
                 servPercen: serPercen,
@@ -499,6 +496,7 @@ function RepairContract() {
                                                     type="number"
                                                     value={serPercen}
                                                     onChange={(e) => setserPercen(e.target.value)}
+                                                    step="any"
                                                     min="0" 
                                                     placeholder="Porcentaje 2" 
                                                     className={((typeof errors === 'object' && errors.hasOwnProperty('serPercen') ? 'is-invalid' : '') +' form-control')}
@@ -519,6 +517,7 @@ function RepairContract() {
                                                     type="number"
                                                     value={proPercen}
                                                     onChange={(e) => setproPercen(e.target.value)}
+                                                    step="any"
                                                     min="0" 
                                                     placeholder="Porcentaje 1" 
                                                     className={((typeof errors === 'object' && errors.hasOwnProperty('proPercen') ? 'is-invalid' : '') +' form-control')}

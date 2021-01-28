@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardBody, Row, Col } from "reactstrap";
-import PerfectScrollbar from "react-perfect-scrollbar";
 import {useSelector} from 'react-redux'
+/*
 import {
   RecentComment,
   Chat,
@@ -14,14 +14,13 @@ import {
 import img1 from "../../assets/images/users/1.jpg";
 import img4 from "../../assets/images/users/4.jpg";
 import img5 from "../../assets/images/users/5.jpg";
+*/
 
 const Home = () => {
 
   const session     = useSelector(state => state.session);
-  const settings    = useSelector((state) => state.settings);
   const backoffice  = useSelector((state) => state.backoffice);
 
-  let shopName = session.userData.shop.name;
   let role = backoffice.role.name;
   let account = session.userData.account;
 

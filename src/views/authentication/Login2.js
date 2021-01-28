@@ -80,40 +80,6 @@ const Login2 = (props) => {
     });
   };
 
-  /*
-  const validForm = () => {
-    let status = true;
-    Object.keys(validators).forEach((field) => {
-      if (field === "email" || field === "password") {
-        if (!validators[field].valid) {
-          status = false;
-        }
-      }
-    });
-    return status;
-  };
-  */
-
-  const showErrors = (fieldName) => {
-    const validator = validators[fieldName];
-    const result = "";
-    /*
-    if (validator && !validator.valid) {
-      const errors = validator.errors.map((info, index) => {
-        return (
-          <span className="error" key={index}>
-            * {info}
-            <br />
-          </span>
-        );
-      });
-      return <div className="error mb-2">{errors}</div>;
-    }
-    */
-    return result;
-  };
-
-
   function ValidateEmail(mail) {
 
       if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(mail)){
@@ -230,7 +196,7 @@ const login = (e) => {
         });
       }
     }
-  }, []);
+  }, [tkn,loading,dispatch,props.history]);
 
   if(tkn === null){
     return (

@@ -43,8 +43,6 @@ function AddProductSeller(props) {
     const maxVariations = 5;
 
     //Edit
-    const [searchwarehouse, setsearchwarehouse] = useState(false);
-    const [loadingwarehouse, setloadingwarehouse] = useState(true);
 
     const changeWarehouse = (data) => {
         setwarehouse(data);
@@ -52,27 +50,27 @@ function AddProductSeller(props) {
 
     let urlGetVariations = 'https://intimi.vps.co.ve/inner/pampatarStatic/data/variations.json';
 
-    const getData = () => {
-        if(search){
-            setsearch(false);
-
-            axios.get(urlGetVariations)
-            .then((res) => {
-                //console.log('variations');
-                //console.log(res.data);
-                setvariationList(res.data);
-                setloading(false);
-            }).catch((err) => {
-                console.error(err);
-            });
-        }   
-    }
-
     useEffect(() => {
         if(loading){
+            const getData = () => {
+                if(search){
+                    setsearch(false);
+        
+                    axios.get(urlGetVariations)
+                    .then((res) => {
+                        //console.log('variations');
+                        //console.log(res.data);
+                        setvariationList(res.data);
+                        setloading(false);
+                    }).catch((err) => {
+                        console.error(err);
+                    });
+                }   
+            }
+
             getData();
         }
-    }, []);
+    }, [loading,search,urlGetVariations]);
 
     const validate = () => {
         let errorsCount = 0;
@@ -127,7 +125,7 @@ function AddProductSeller(props) {
         seterrormessage('');
 
         let urlset = '/inventory/product/all';
-        let newPhonesNumber = [];
+        //let newPhonesNumber = [];
         
         let validation = validate();
         
@@ -304,7 +302,7 @@ function AddProductSeller(props) {
                         </div>
                     }
 
-                    {((!props.Edit) || (props.Edit && warehouse !== null && !loadingwarehouse)) &&
+                    {((!props.Edit) || (props.Edit && warehouse !== null)) &&
                         <form onSubmit={(e) => goToAddProductSeller(e)} action="">
                             <Row>
                                 <Col md="7">
@@ -595,10 +593,6 @@ function AddProductSeller(props) {
                                 </Col>
                             </Row>
                         </form>
-                    }
-
-                    {(props.Edit && searchwarehouse) &&
-                        <InlineSpinner />
                     }
             </div>
         )

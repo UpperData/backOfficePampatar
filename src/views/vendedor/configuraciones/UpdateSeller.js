@@ -36,7 +36,7 @@ function UpdateSeller() {
 
     const [loading, setloading]     = useState(true);
     const [search, setsearch]       = useState(true);
-    const [data,    setdata]        = useState(null);
+    //const [data,    setdata]        = useState(null);
     const [sending, setsending]     = useState(false);
     //const [isvald, setisvald]       = useState(false);
     const [errors, seterrors]       = useState({});
@@ -55,7 +55,7 @@ function UpdateSeller() {
     const [document,       setdocument ]            = useState(null);
     
     //store
-    const [logo, setlogo ]                                          = useState(null);
+    const logo                                                      = null;
     const [partner, setpartner]                                     = useState(null);
     const [shopDescription, setshopDescription]                     = useState('');
     const [employees, setemployees ]                                = useState('');
@@ -180,7 +180,6 @@ function UpdateSeller() {
                         setnumber(resbankdata.number);
                         setrut(resbankdata.rut);
 
-                        setdata(data);
                         setloading(false);
                     }
                 }).catch((err) => {
@@ -188,7 +187,7 @@ function UpdateSeller() {
                 });    
             }
         } 
-    });
+    }, [loading, search, urlget, session.userData.shop.postulacionId]);
 
     const validate = () => {
         let errorsCount = 0;

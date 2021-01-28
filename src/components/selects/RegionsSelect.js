@@ -9,31 +9,31 @@ function RegionsSelect(props) {
     const [list, setList] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const formatData = () => {
-        let newList = [];
-
-        for(var i=0; i < regions.length; i++){
-            
-            let thisElement = regions[i];
-
-            let formattedElement = {};
-            formattedElement.label = thisElement.name;
-            formattedElement.value = thisElement.id;
-
-            newList.push(formattedElement);
-        }            
-
-        setList(newList);
-        setLoading(false);
-    }
-
     useEffect(() => {
         if(loading){
             if(backoffice.regions !== null){
+                const formatData = () => {
+                    let newList = [];
+            
+                    for(var i=0; i < regions.length; i++){
+                        
+                        let thisElement = regions[i];
+            
+                        let formattedElement = {};
+                        formattedElement.label = thisElement.name;
+                        formattedElement.value = thisElement.id;
+            
+                        newList.push(formattedElement);
+                    }            
+            
+                    setList(newList);
+                    setLoading(false);
+                }
+
                 formatData();
             }
         }
-    }, []);
+    }, [loading, backoffice.regions, regions]);
 
     const handleSelect = async (selectedOption) => {
         console.log(selectedOption);

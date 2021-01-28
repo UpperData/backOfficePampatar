@@ -13,8 +13,7 @@ import {
 import InlineSpinner from "../spinner/InlineSpinner";
 
 const Profile = () => {
-  let url = '/seller/profile';
-  const [activeTab, setActiveTab] = useState("2");
+  //const [activeTab, setActiveTab] = useState("2");
   const [loading, setloading] = useState(true);
   const [search, setsearch] = useState(true);
   const [data, setdata] = useState(null);
@@ -22,41 +21,37 @@ const Profile = () => {
   const backoffice = useSelector(state => state.backoffice);
   const session = useSelector(state => state.session);
 
-  const getDataSeller = () => {
-    if(search){
-      setsearch(false);
-      axios.get(url).then((res) => {
-        //console.log(res.data);
-        if(res.data.data.result){
-          //console.log(res.data.data.rsAccount[0]);
-          setdata(res.data.data.rsAccount[0]);
-        }
-        setloading(false);
-      }).catch((err) => {
-        console.error(err);
-        setloading(false);
-      })
-    }
-  }
 
   useEffect(() => {
     if(loading){
       if(backoffice.role.name === 'Vendedor'){
+        const getDataSeller = () => {
+          let url = '/seller/profile';
+          if(search){
+            setsearch(false);
+            axios.get(url).then((res) => {
+              console.log(res.data);
+              if(res.data.data.result){
+                //console.log(res.data.data.rsAccount[0]);
+                setdata(res.data.data.rsAccount[0]);
+              }
+              setloading(false);
+            }).catch((err) => {
+              console.error(err);
+              setloading(false);
+            })
+          }
+        }
+
         getDataSeller();
       }
     }
-  }, []);
+  }, [loading, backoffice.role.name, search]);
 
   if(!loading){
     let shopData = data.shopRequests[0].shop;
     let address = shopData.address;
     let dataBank = shopData.paymentCong;
-
-    /*
-    console.log(shopData);
-    console.log(session);
-    console.log(data);
-    */
 
     let logoshop = session.storeLogo.reduce(
       function (data, byte) {

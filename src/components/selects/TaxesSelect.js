@@ -7,38 +7,38 @@ function TaxesSelect(props) {
     const [list, setList]       = useState([]);
     const [loading, setLoading] = useState(true);
     const [search,  setsearch]  = useState(true);
-    let url = '/taxes/admin/tax/getAll/';
-
-    const getData = () => {
-        axios.get(url).then((res) => {
-            console.log(res.data);
-            let product = res.data;
-            let newList = [];
-
-            for(var i=0; i < product.length; i++){
-                
-                let thisElement = product[i];
-
-                let formattedElement = {};
-                formattedElement.label = thisElement.name;
-                formattedElement.value = thisElement.id;
-
-                newList.push(formattedElement);
-            }            
-
-            setList(newList);
-            setLoading(false);
-        });
-    }
 
     useEffect(() => {
         if(loading){
             if(search){
+                let url = '/taxes/admin/tax/getAll/';
+
+                const getData = () => {
+                    axios.get(url).then((res) => {
+                        console.log(res.data);
+                        let product = res.data;
+                        let newList = [];
+
+                        for(var i=0; i < product.length; i++){
+                            
+                            let thisElement = product[i];
+
+                            let formattedElement = {};
+                            formattedElement.label = thisElement.name;
+                            formattedElement.value = thisElement.id;
+
+                            newList.push(formattedElement);
+                        }            
+
+                        setList(newList);
+                        setLoading(false);
+                    });
+                }
                 setsearch(false);
                 getData();
             }
         }
-    }, []);
+    }, [loading,search]);
 
     const handleSelect = async (selectedOption) => {
         console.log(selectedOption);

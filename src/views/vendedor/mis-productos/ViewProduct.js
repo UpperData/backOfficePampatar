@@ -40,7 +40,7 @@ function ViewProducts() {
                 });
             }
         }
-    }, []);
+    }, [loading,search,url]);
     
     if(!loading){
         return (

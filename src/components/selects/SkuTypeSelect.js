@@ -4,9 +4,6 @@ import axios from 'axios';
 
 function SkuTypeSelect(props) {
 
-    let idProvinceByProps = props.idProvince ? props.idProvince : null;
-    const [idByProps, setIdByProps] = useState(idProvinceByProps);
-
     const [list, setList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState(true);
@@ -52,7 +49,7 @@ function SkuTypeSelect(props) {
                 getList();
             }
         }
-    });
+    }, [loading,search]);
 
     const handleSelect = async (selectedOption) => {
         console.log(selectedOption);

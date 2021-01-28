@@ -24,7 +24,6 @@ import {
   set_nationalities,
   set_banks,
   set_address_types,
-  set_general_days
 } 
 from "./redux/backoffice/Actions";
 
@@ -45,12 +44,6 @@ let urls = {
 axios.defaults.baseURL = urls[process.env.NODE_ENV];
 //console.log('cargando ruta de la API:'+ urls[process.env.NODE_ENV]);
 
-const NotFound = () => {
-  return  <div>
-            404
-          </div>
-}
-
 const AppRouter = (props) => {
 
   const [loading, setloading] = useState(true);
@@ -66,18 +59,23 @@ const AppRouter = (props) => {
 
   let search = ((props.location.search !== '' && props.location.search !== null) ? props.location.search : null);
   let loginWithTkn = search !== null && props.location.pathname === '/authentication/Login';
-  let query = null;
-  let withTkn = null;
-  let tkn = null;
+  //let query = null;
+  //let withTkn = null;
+  
+  /*
+    let tkn = null;
+  */
 
   if(loginWithTkn){
 
-    query = new URLSearchParams(props.location.search);
-    withTkn = query.get('withTkn');
+    //query = new URLSearchParams(props.location.search);
+    //withTkn = query.get('withTkn');
     
+    /*
     if(withTkn !== null && withTkn !== undefined){
       tkn = query.get('tkn');
     }
+    */
 
     //console.log(withTkn);
     //console.log(tkn);
@@ -101,9 +99,10 @@ const AppRouter = (props) => {
     }
   }
 
-  let failRequestByToken = false;
-
   useEffect(() => {
+    
+    let failRequestByToken = false;
+
     //INTERCEPCION
         axios.interceptors.response.use((response) => {
           return response;
@@ -113,7 +112,7 @@ const AppRouter = (props) => {
           //alert('NETWORK ERROR, revise su conexion a internet')
       } else {
           const code = error.response.status
-          const response = error.response.data
+          //const response = error.response.data
           const originalRequest = error.config;
   
           if (code === 401 && !originalRequest._retry && !failRequestByToken) {
@@ -221,7 +220,7 @@ const AppRouter = (props) => {
           }
 
           if(backoffice.generalsDays === null){
-            dispatch(set_general_days());
+            //dispatch(set_general_days());
           }
 
           if(backoffice.regions === null){

@@ -30,14 +30,14 @@ function TimePanel(props) {
 
         settimes(list);
         setcount(count + 1);
-        console.log(list);
+        //console.log(list);
     }
 
     const changehh = (id, type, date) => {
         let list = times;
         list[id - 1].hours[type] = date;
 
-        console.log(list[id - 1]);
+        //console.log(list[id - 1]);
 
         settimes(list);
         setcount(count + 1);
@@ -90,9 +90,9 @@ function TimePanel(props) {
                 props.onChange(times);
             }
         }
-    });
+    }, [loading, search, props, times]);
 
-    let iterator = 1;
+    let it = 1;
     
     return (
         <div>
@@ -102,9 +102,8 @@ function TimePanel(props) {
 
                         //let errors = phonesNumberErrors;
                         //let errors = [];
-                        //let itemkey = iterator;
 
-                        iterator++;
+                        it = it+1;
 
                         let isActive = times.filter(data => data.id === item.id);
                         let activeInput = isActive.length > 0;
@@ -116,7 +115,7 @@ function TimePanel(props) {
                         
 
                         return (
-                            <div key={key}>
+                            <div key={it+key}>
                                 <div>
                                     <div className="horario">
                                         <div className="row">

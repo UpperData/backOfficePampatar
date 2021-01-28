@@ -49,7 +49,7 @@ function ViewWarehouseSeller() {
                 });
             }
         }
-    }, []);
+    }, [loading,search,url]);
     
     if(!loading){
         return (
@@ -115,13 +115,13 @@ function ViewWarehouseSeller() {
                                                                         dir = dir+''+item.address[0].comuna.name+' '; 
                                                                     }
                                                                 }
-                                                                if(typeof item.address[0].calle !== null && item.address[0].calle !== undefined){
+                                                                if(item.address[0].calle !== null && item.address[0].calle !== undefined){
                                                                     dir = dir+''+item.address[0].calle+' ';
                                                                 }
-                                                                if(typeof item.address[0].numero !== null && item.address[0].numero !== undefined){
+                                                                if(item.address[0].numero !== null && item.address[0].numero !== undefined){
                                                                     dir = dir+''+item.address[0].numero+' ';
                                                                 }
-                                                                if(typeof item.address[0].local !== null && item.address[0].local !== undefined){
+                                                                if(item.address[0].local !== null && item.address[0].local !== undefined){
                                                                     dir = dir+''+item.address[0].local+' ';
                                                                 }
                                                                 if(typeof item.address[0].province === 'object' && item.address[0].province.hasOwnProperty('name')){

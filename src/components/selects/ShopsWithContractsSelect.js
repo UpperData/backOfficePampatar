@@ -8,38 +8,38 @@ function ShopWithContractsSelect(props) {
     const [loading, setLoading] = useState(true);
     const [search,  setsearch]  = useState(true);
 
-    let url = '/setting/seller/shop/all';
-
-    const getData = () => {
-        return axios.get(url).then((res) => {
-            console.log(res.data);
-            let items = res.data.data.rsShopAll;
-            let newList = [];
-
-            for(var i=0; i < items.length; i++){
-                
-                let thisElement = items[i];
-
-                let formattedElement = {};
-                formattedElement.label = thisElement.name;
-                formattedElement.value = thisElement.id;
-
-                newList.push(formattedElement);
-            }            
-
-            setList(newList);
-            setLoading(false);
-        });
-    }
-
     useEffect(() => {
         if(loading){
             if(search){
+                let url = '/setting/seller/shop/all';
+
+                const getData = () => {
+                    return axios.get(url).then((res) => {
+                        console.log(res.data);
+                        let items = res.data.data.rsShopAll;
+                        let newList = [];
+
+                        for(var i=0; i < items.length; i++){
+                            
+                            let thisElement = items[i];
+
+                            let formattedElement = {};
+                            formattedElement.label = thisElement.name;
+                            formattedElement.value = thisElement.id;
+
+                            newList.push(formattedElement);
+                        }            
+
+                        setList(newList);
+                        setLoading(false);
+                    });
+                }
+
                 setsearch(false);
                 getData();
             }
         }
-    }, []);
+    }, [loading, search]);
 
     const handleSelect = async (selectedOption) => {
         props.onChange(selectedOption); 

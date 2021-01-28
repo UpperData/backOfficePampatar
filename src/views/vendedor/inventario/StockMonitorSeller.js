@@ -5,7 +5,6 @@ import {
     Card,
     CardBody,
     CardTitle,
-    CustomInput,
     Table,
     Modal, 
     ModalHeader, 
@@ -21,7 +20,6 @@ import { moneyFormatter } from '../../../utils/helpers';
 function StockMonitorSeller() {
 
     const [product, setproduct] = useState(null);
-    const [loading, setLoading] = useState(false);
     const [search,  setsearch]  = useState(false);
     const [stock,   setstock]  = useState(null);
     const [dataProduct,   setdataProduct]  = useState(null);
@@ -124,15 +122,15 @@ function StockMonitorSeller() {
 
         dir = '';
 
-        if(typeof item.address[0].street !== null && item.address[0].street !== undefined){
+        if(item.address[0].street !== null && item.address[0].street !== undefined){
             dir = dir+''+item.address[0].street+', ';
         }
 
-        if(typeof item.address[0].number !== null && item.address[0].number !== undefined){
+        if(item.address[0].number !== null && item.address[0].number !== undefined){
             dir = dir+''+item.address[0].number+', ';
         }
 
-        if(typeof item.address[0].local !== null && item.address[0].local !== undefined){
+        if(item.address[0].local !== null && item.address[0].local !== undefined){
             dir = dir+''+item.address[0].local+', ';
         }
 

@@ -12,29 +12,29 @@ function GenderSelect(props) {
     const [list, setList] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const formatData = () => {
-        let newList = [];
-            for(var i=0; i < genders.length; i++){
-                
-                let thisElement = genders[i];
-
-                let formattedElement = {};
-                formattedElement.label = thisElement.name;
-                formattedElement.value = thisElement.id;
-
-                newList.push(formattedElement);
-            }            
-        setList(newList);
-        setLoading(false);
-    }
-
     useEffect(() => {
         if(loading){
             if(backoffice.genders !== null){
+                const formatData = () => {
+                    let newList = [];
+                        for(var i=0; i < genders.length; i++){
+                            
+                            let thisElement = genders[i];
+            
+                            let formattedElement = {};
+                            formattedElement.label = thisElement.name;
+                            formattedElement.value = thisElement.id;
+            
+                            newList.push(formattedElement);
+                        }            
+                    setList(newList);
+                    setLoading(false);
+                }
+
                 formatData();
             }
         }
-    }, []);
+    }, [loading, backoffice, genders]);
 
     const handleSelect = async (selectedOption) => {
         //console.log(selectedOption);

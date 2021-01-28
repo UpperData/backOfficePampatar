@@ -12,25 +12,25 @@ function ShowTax(props) {
     const [search, setsearch]   = useState(true);
     const [data, setdata]       = useState(null);
 
-    const getData = () => {
-        if(search){
-            setsearch(false);
-
-            axios.get(url+props.match.params.id).then((res) => {
-                console.log(res.data);
-                setdata(res.data[0]);
-                setloading(false);
-            }).catch((err) => {
-                console.error(err);
-            });
-        }
-    }
-
     useEffect(() => {
         if(loading){
+            const getData = () => {
+                if(search){
+                    setsearch(false);
+        
+                    axios.get(url+props.match.params.id).then((res) => {
+                        console.log(res.data);
+                        setdata(res.data[0]);
+                        setloading(false);
+                    }).catch((err) => {
+                        console.error(err);
+                    });
+                }
+            }
+
             getData();
         }
-    }, []);
+    }, [loading, search, url, props.match.params.id]);
 
     if(!loading){
         return (
