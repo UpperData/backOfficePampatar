@@ -12,6 +12,7 @@ import {
     UncontrolledTooltip  
 } from 'reactstrap';
 import axios from 'axios'
+import {useSelector} from 'react-redux'
 import InlineSpinner from '../../../spinner/InlineSpinner';
 
 const ProcessRequest = () => {
@@ -24,6 +25,8 @@ const ProcessRequest = () => {
     const [seeItem, setSeeItem]             = useState(null);
     const [errormessage, seterrormessage]   = useState('');
     const [successmessage, setsuccessmessage]   = useState('');
+
+    const backoffice = useSelector(state => state.backoffice);
 
     let url = '/setting/seller/shoptRequest';
 
@@ -168,7 +171,8 @@ const ProcessRequest = () => {
             let item = seeItem;
             let preference = item.Account.preference;
             let affirmations = item.affirmations;
-            
+            let gender = backoffice.genders.rows.find(gender => gender.id === item.Account.Person.genderId);
+
             return (
                 <div>
                     <Breadcrumb listClassName="px-0">
@@ -193,7 +197,7 @@ const ProcessRequest = () => {
                                 <CardBody className="border-top">
                                     <h4><span className="font-weight-bold">Nombre</span>: {item.Account.Person.firstName+' '+item.Account.Person.lastName}</h4>
                                     <h6>
-                                        <span>Género: {item.Account.Person.gender}</span>
+                                        <span>Género: {gender.name}</span>
                                     </h6>
                                     <h6>
                                         <span>Nacionalidad: {item.Account.Person.Nationality.name}</span>
@@ -202,7 +206,7 @@ const ProcessRequest = () => {
                                     <h6>
                                         <span>Email: {item.Account.email}</span>
                                     </h6>
-                                    <h6>
+                                    <div>
                                         {(Array.isArray(preference)) ?
                                             <Fragment>
                                                 <h6 className="font-weight-bold">Preferencias:</h6>
@@ -224,7 +228,7 @@ const ProcessRequest = () => {
                                                 </Badge>
                                             </Fragment>
                                         }
-                                    </h6>
+                                    </div>
                                 </CardBody>
                             </Card>
                         </Col>

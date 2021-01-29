@@ -58,6 +58,9 @@ function CreateContrat() {
     let urlGet = '/setting/seller/shoptRequest-pre';
 
     const newContrat = () => {
+        setloading(true);
+        setsearch(true);
+
         setsending(false);
         setsuccess(false);
         seterrors({});
@@ -115,11 +118,19 @@ function CreateContrat() {
         if(inicio === null || inicio === ''){
             thiserrors.inicio = 'Indique la fecha de inicio del contrato';
             errorsCount++;
+        }else if(moment().isAfter(moment(inicio))){
+            thiserrors.inicio = 'La fecha debe ser superior a la fecha de hoy';
+            errorsCount++;
         }
-
-        //fin
+        
         if(fin === null || fin === ''){
             thiserrors.fin = 'Indique la fecha de culminación del contrato';
+            errorsCount++;
+        }
+        
+        if( moment(inicio).isAfter(moment(fin)) ){
+            thiserrors.inicio = 'Esta fecha debe ser menor a la culminación';
+            thiserrors.fin = 'Esta fecha debe ser posterior al inicio.';
             errorsCount++;
         }
 
