@@ -25,7 +25,7 @@ function ServicesStock() {
     const [service, setservice] = useState(null);
     const [search,  setsearch]  = useState(false);
     const [stock,   setstock]  = useState(null);
-    const [dataProduct,   setdataProduct]  = useState(null);
+    const [dataService,   setdataService]  = useState(null);
 
     const [modal, setModal] = useState(false);
     const [datawarehouse, setdatawarehouse]     = useState(null);
@@ -38,6 +38,7 @@ function ServicesStock() {
     const getStock = (data) => {
         setservice(data);
         
+        let url = '/getPriceCurrent/Inventory/sku/'+data.value+'/service';
         let urlprice    = '/seller/inventory/stock/sku/'+data.value+'/'+type;
         setsearch(true);
 
@@ -45,13 +46,22 @@ function ServicesStock() {
             console.log(res.data);
             //let stock = res.data.stock;
             setstock(res.data.data.rsInventoryService);
-            setsearch(false);
+            axios.get(url).then((res) => {
+                console.log(res.data);
+                setdataService(res.data);
+                setsearch(false);
+            }).catch((err) => {
+                console.error(err);
+                setsearch(false);
+            });
         }).catch((err) => {
             console.error(err);
             setsearch(false);
         });
 
     }
+
+    console.log(dataService);
 
     return (
         <div>
@@ -97,6 +107,34 @@ function ServicesStock() {
                             <div className="row">
                                 <div className="col col-lg-12">
                                     <Card>
+                                        <CardBody>
+                                                <div className="row">
+                                                    <div className="col-lg-6">
+                                                        <div className="text-center">
+                                                            <div className="stock-circle mb-3">
+                                                                <span><i className="fa fa-dollar-sign"></i></span>
+                                                            </div>
+                                                            <h4><span className="h4 font-weight-bold">Precio Actual:</span><span className="font-weight-light ml-2">{moneyFormatter(dataService.endPrice)}</span></h4>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-lg-6">
+                                                        <div className="text-center">
+                                                            <div className="text-center">
+                                                                <h5 className="h3 font-weight-bold">Stock Actual</h5> 
+                                                                <div className="stock-circle mb-3">
+                                                                    <div>
+                                                                        <h5 className="h6 font-weight-bold">Disponibles</h5>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        </CardBody>
+                                    </Card>
+                                </div>
+                                <div className="col col-lg-12">
+                                    <Card>
                                 <div className="p-3">
                                     <CardTitle>
                                         <i className="mdi mdi-border-all mr-2"></i> Stock
@@ -112,19 +150,19 @@ function ServicesStock() {
                                                             ID
                                                         </th>
                                                         <th>
-                                                            Precio
+                                                            Tipo de servicio
                                                         </th>
                                                         <th>
                                                             Cupos disponibles
                                                         </th>
                                                         <th>
-                                                            Tipo de servicio
+                                                            Precio
                                                         </th>
                                                         <th>
-                                                            Desde
+                                                            Inicio
                                                         </th>
                                                         <th>
-                                                            Hasta
+                                                            Fin
                                                         </th>
                                                     </tr>
                                                 </thead>
@@ -132,17 +170,17 @@ function ServicesStock() {
                                                     {(stock.length > 0 && stock.map((item, key) => {
                                                         return (
                                                             <tr key={key}>
-                                                                <td>
+                                                                <td className="font-weight-bold">
                                                                     {item.id}
                                                                 </td>
                                                                 <td>
-                                                                    {moneyFormatter(item.price)}
+                                                                    {item.serviceType.name}
                                                                 </td>
                                                                 <td>
                                                                     {item.quantity}
                                                                 </td>
                                                                 <td>
-                                                                    {item.serviceType.name}
+                                                                    {moneyFormatter(item.price)}
                                                                 </td>
                                                                 <td>
                                                                     {moment(item.timetable.dateStart, 'DD-MM-YYYY').format('DD-MM-YYYY')}
