@@ -179,7 +179,7 @@ function CustomFileInput(props) {
                 </label>
             </div>
             {errorMessage !== '' &&
-                <div className="alert my-2 alert-danger">
+                <div className="alert my-2 alert-warning">
                     {errorMessage}
                 </div>
             }

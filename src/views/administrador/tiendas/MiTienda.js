@@ -7,8 +7,14 @@ import {
     Card,
     CardBody,
     CardTitle,
-    UncontrolledTooltip
+    UncontrolledTooltip,
+    Modal, 
+    ModalHeader, 
+    ModalBody, 
+    ModalFooter,
+    Button
   } from "reactstrap";
+import moment from 'moment'
 import InlineSpinner from '../../spinner/InlineSpinner';
 
 function MiTienda(props) {
@@ -17,7 +23,19 @@ function MiTienda(props) {
     const [search,  setSearch]                  = useState(true);
     const [shop,    setshop]                    = useState({});
 
+    const [sending, setsending]                 = useState(false);
+
     let id = props.match.params.id;
+
+    const [modalChangeStatus, setModalChangeStatus] = useState(false);
+    const [changeStatusType, setchangeStatusType] = useState('active');
+    const toggle = () => setModalChangeStatus(!modalChangeStatus);
+
+    const OpenModalChangeStatus = (type) => {
+        setchangeStatusType(type);
+        setModalChangeStatus(true);
+    }
+
     //let dataBank = {};
     //let address  = {};
 
@@ -146,6 +164,13 @@ function MiTienda(props) {
                                 </Col>
                             </Row>
 
+                            <h6 className="font-medium mt-4">
+                                Fecha de creación:
+                            </h6>
+                            <p>
+                                {moment(shop.createdAt).format('YYYY-MM-DD')}
+                            </p>
+
                             {address !== null &&
                                 <div>
                                     <h6 className="font-medium pt-4 db"><i className="mdi mdi-map-marker mr-2"></i>Dirección</h6>
@@ -230,6 +255,33 @@ function MiTienda(props) {
                             </CardBody>
                             </Card>
                         }
+                        <div>
+                            <button onClick={() => OpenModalChangeStatus('active')} className="btn btn-primary shadow-sm">
+                                Activar
+                            </button>
+                            <button onClick={() => OpenModalChangeStatus('inactive')} className="btn btn-info shadow-sm">
+                                Dar de baja
+                            </button>
+                        </div>
+
+                        <Modal isOpen={modalChangeStatus} toggle={toggle}>
+                            <ModalHeader className="h3 font-weight-bold" toggle={toggle}>
+                                {(changeStatusType === 'active' ? 'Activar' : 'Dar de baja')}
+                            </ModalHeader>
+                            <ModalBody>
+                                <h6>¿Desea {(changeStatusType === 'active' ? 'Activar' : 'Dar de baja a')} la tienda <strong>{shop.name}</strong>?</h6>
+                            </ModalBody>
+                            <ModalFooter>
+                            <Button color="info" 
+                            //onClick={(e) => GoUpdateTax(e)}
+                            >
+                                {(sending) ? <span><i className="fa fa-spin fa-spinner"></i></span> : <span><i className="fa fa-check mr-2"></i>confirmar</span>}
+                            </Button>
+                            <Button color="primary" onClick={toggle}><i className="fa fa-times mr-2"></i>Cancelar</Button>
+                            </ModalFooter>
+                        </Modal>
+                        
+
                         {/* 
                         <Card>
                             <div className="p-3">

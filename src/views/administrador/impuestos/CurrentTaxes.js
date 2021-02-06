@@ -52,19 +52,16 @@ function CurrentTaxes() {
                                                                 {item.name}
                                                             </strong>
                                                         </h2>
-                                                        {item.taxValues.length > 0 && item.taxValues.map((subitem, index) => {
-                                                            return (
-                                                                <div key={index} className="text-center">
-                                                                    <h4 className="text-primary mb-0 font-weight-normal">
-                                                                        <span className="font-weight-bold">{subitem.value}{item.name === 'IVA' ? ' %': ''}</span>
-                                                                    </h4>
-                                                                    <small className="text-muted">
-                                                                        Creado el día: <span className="font-weight-bold">{subitem.createdAt.split('T')[0]}</span>
-                                                                    </small>
-                                                                </div>
-                                                                
-                                                            )
-                                                        })}
+                                                        {item.taxValues.length > 0 &&
+                                                            <div className="text-center">
+                                                                <h4 className="text-primary mb-0 font-weight-normal">
+                                                                    <span className="font-weight-bold">{item.taxValues[item.taxValues.length - 1].value}{item.name === 'IVA' ? ' %': ''}</span>
+                                                                </h4>
+                                                                <small className="text-muted">
+                                                                    Creado el día: <span className="font-weight-bold">{item.taxValues[item.taxValues.length - 1].createdAt.split('T')[0]}</span>
+                                                                </small>
+                                                            </div>
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>

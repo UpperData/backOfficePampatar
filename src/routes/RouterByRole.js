@@ -43,6 +43,8 @@ const AddProductSeller = lazy(() => import("../views/vendedor/inventario/AddProd
 const InventoryService = lazy(() => import("../views/vendedor/inventario/InventoryService"));
 const ActualizarLote = lazy(() => import("../views/vendedor/inventario/ActualizarLote"));
 const PriceUpdate = lazy(() => import("../views/vendedor/inventario/PriceUpdate"));
+const UpdateService = lazy(() => import("../views/vendedor/inventario/UpdateService"));
+const ServicesStock = lazy(() => import("../views/vendedor/inventario/ServicesStock"));
 
 const UpdateSeller = lazy(() => import("../views/vendedor/configuraciones/UpdateSeller"));
 const AttachmentLogo = lazy(() => import("../views/vendedor/configuraciones/AttachmentLogo"));
@@ -76,6 +78,12 @@ var ThemeRoutesByRole = [
     onlyRoute:true
   },
   {
+    path: "/SERvICES/stOck/curreNT/",
+    name: "Stock de servicios",
+    component: ServicesStock,
+    onlyRoute:true
+  },
+  {
     path: "/addWarehouseSeller",
     name: "Añadir almacen",
     component: AddWarehouseSeller,
@@ -83,7 +91,7 @@ var ThemeRoutesByRole = [
   },
   {
     path: "/editWahrehouseSeller",
-    name: "Editar almacen",
+    name: "Actualizar almacen",
     component: EditWarehouseSeller,
     onlyRoute:true
   },
@@ -102,7 +110,7 @@ var ThemeRoutesByRole = [
   },
   {
     path: "/editService",
-    name: "Editar servicios",
+    name: "Actualizar servicios",
     component: EditService,
     onlyRoute:true
   },
@@ -121,7 +129,7 @@ var ThemeRoutesByRole = [
   },
   {
     path: "/editProducts",
-    name: "Editar producto",
+    name: "Actualizar producto",
     component: EditProduct,
     onlyRoute:true
   },
@@ -141,7 +149,7 @@ var ThemeRoutesByRole = [
    //inventario
   {
     path: "/addProductSeller",
-    name: "Incorporar lote",
+    name: "Nuevo lote",
     component: AddProductSeller,
     onlyRoute:true
   },
@@ -149,6 +157,12 @@ var ThemeRoutesByRole = [
     path: "/service/inventory",
     name: "Inventariar servicio",
     component: InventoryService,
+    onlyRoute:true
+  },
+  {
+    path: "/iNVENTORY/UpDAte/seRVICes",
+    name: "Actualizar servicio",
+    component: UpdateService,
     onlyRoute:true
   },
   {

@@ -194,6 +194,7 @@ const AppRouter = (props) => {
         axios.defaults.headers.common = {'Authorization': `Bearer ${localStorage.getItem('token')}`}
         let RoleInLocalStorage = localStorage.getItem('role');
 
+        //console.log('login');
         //si esta logueado entonces buscar maestros
         if(searchMasters){
           setSearchMasters(false);
@@ -259,8 +260,9 @@ const AppRouter = (props) => {
           let getRoleByUser = roles.find(item => item.id === Number(RoleInLocalStorage));
           dispatch(set_role(getRoleByUser));
         }
-
-        //console.log('Render Router');
+      }else{
+        //console.log('Cambiando de sesión');
+        setSearchMasters(true);
       }
     }
   });

@@ -13,7 +13,7 @@ import SkuTypeSelect from '../../../components/selects/SkuTypeSelect';
 
 function AddProduct(props) {
 
-    //const [loading, setloading] = useState(false);
+    const [loading, setloading] = useState(false);
     const [sending, setsending] = useState(false);
     const [successmessage, setsuccessmessage] = useState('');
     const [errormessage, seterrormessage] = useState('');
@@ -28,6 +28,7 @@ function AddProduct(props) {
     const [loadingservice, setloadingservice] = useState(true);
 
     const reset = () => {
+        setloading(false);
         setname('');
         setproduct(null);
         setskuTypeId(null);
@@ -58,6 +59,17 @@ function AddProduct(props) {
         });
     }
 
+    var regex = new RegExp("^[a-zA-Z0-9áéíóú_ \-]+$");
+
+    const onlyTextAndNumbers = (e) => {
+        var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+        if (!regex.test(key)) {
+          e.preventDefault();
+          return false;
+       }
+    }
+    
+
     const validate = () => {
         let errorsCount = 0;
         let thiserrors = {};
@@ -71,6 +83,9 @@ function AddProduct(props) {
             errorsCount++;
         }else if(name.trim().length > 40){
             thiserrors.name = 'El nombre del producto ingresado es demasiado largo';
+            errorsCount++;
+        }else if(!regex.test(name)){
+            thiserrors.name = 'El nombre del producto contiene caracteres no permitidos';
             errorsCount++;
         }
 
@@ -116,7 +131,8 @@ function AddProduct(props) {
                     console.log(res);
                     setsending(false);
                     if(res.data.data.result){
-                        setsuccessmessage('¡Producto editado satisfactoriamente!')
+                        setloading(true);
+                        setsuccessmessage('¡Producto actualizado satisfactoriamente!')
                         reset();
                     }else{
                         seterrormessage(res.data.data.message);
@@ -142,6 +158,7 @@ function AddProduct(props) {
                     console.log(res);
                     setsending(false);
                     if(res.data.data.result){
+                        //setloading(true);
                         setsuccessmessage('¡Producto creado satisfactoriamente!');
                         reset();
                     }else{
@@ -157,13 +174,14 @@ function AddProduct(props) {
         }
     }
 
-    return (
-        <div>
-            <h1 className="h4 mb-3 font-weight-bold">
-                {props.Edit ? 'Editar producto' : 'crear nuevo producto'}
-            </h1>
+    if(loading){
+        return (
+            <div>
+                <h1 className="h4 mb-3 font-weight-bold">
+                    {props.Edit ? 'Actualizar producto' : 'Nuevo producto'}
+                </h1>
                 {(errormessage !== '') &&
-                    <div className="alert alert-danger">
+                    <div className="alert alert-warning">
                         {errormessage}
                     </div>
                 }
@@ -174,101 +192,124 @@ function AddProduct(props) {
                     </div>
                 }
 
-                {props.Edit &&
-                    <div>
-                        <Row>
-                            <Col md="12">
-                                <Card>
-                                    <div className="p-3">
-                                        <CardTitle>
-                                            <i className="mdi mdi-border-all mr-2"></i>Seleccione un producto.
-                                        </CardTitle>
-                                    </div>
-                                    <CardBody className="border-top">
-                                        <ProductsSelect 
-                                            value={product} 
-                                            onChange={changeService} 
-                                        />
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                        </Row>
-                    </div>
-                }
+                <InlineSpinner />
+            </div>
+        )
+    }else{
+        return (
+            <div>
+                <h1 className="h4 mb-3 font-weight-bold">
+                    {props.Edit ? 'Actualizar producto' : 'Nuevo producto'}
+                </h1>
+                    {(errormessage !== '') &&
+                        <div className="alert alert-warning">
+                            {errormessage}
+                        </div>
+                    }
 
-                {((!props.Edit) || (props.Edit && product !== null && !loadingservice)) &&
-                    <form onSubmit={(e) => addWarehouse(e)} action="">
-                        <Row>
-                            <Col md="12">
-                                <Card>
-                                    <div className="p-3">
-                                        <CardTitle>
-                                            <i className="mdi mdi-border-all mr-2"></i>Datos del producto
-                                        </CardTitle>
-                                    </div>
-                                    <CardBody className="border-top">
-                                            <Row>
-                                                <Col xs="6">
-                                                    <div className="form-group">
-                                                        <label htmlFor="product-name">Nombre del producto:</label>
-                                                        <input 
-                                                            type="text"
-                                                            id="product-name"
-                                                            min="0" 
-                                                            value={name}
-                                                            onChange={(e) => setname(e.target.value)}
-                                                            placeholder="Ingrese el nombre del producto" 
-                                                            className={((typeof errors === 'object' && errors.hasOwnProperty('name') ? 'is-invalid' : '') +' form-control')}
-                                                        />
-                                                        {(typeof errors === 'object' && errors.hasOwnProperty('name')) &&
-                                                            <div className="help-block text-danger font-weight-bold">
-                                                                <small>
-                                                                    {errors.name}
-                                                                </small>
-                                                            </div>
-                                                        }
-                                                    </div>
-                                                </Col>
-                                                <Col xs="6">
-                                                    <div className="form-group">
-                                                        <label htmlFor="product-name">Tipo del producto:</label>
-                                                        <SkuTypeSelect value={skuTypeId} onChange={(value) => setskuTypeId(value)} />
-                                                        {(typeof errors === 'object' && errors.hasOwnProperty('skuTypeId')) &&
-                                                            <div className="help-block text-danger font-weight-bold">
-                                                                <small>
-                                                                    {errors.skuTypeId}
-                                                                </small>
-                                                            </div>
-                                                        }
-                                                    </div>
-                                                </Col>
-                                            </Row>
-                                    </CardBody>
-                                </Card>
-                                {(props.Edit) 
-                                ?
-                                <p>
-                                    <button type="submit" disabled={sending} className="btn btn-warning">
-                                        {(sending) ? <span>Cargando<i className="fa fa-spin fa-spinner ml-2"></i></span> : 'Editar producto'}
-                                    </button>
-                                </p>
-                                :
-                                <p>
-                                    <button type="submit" disabled={sending} className="btn btn-primary">
-                                        {(sending) ? <span>Cargando<i className="fa fa-spin fa-spinner ml-2"></i></span> : 'Añadir producto'}
-                                    </button>
-                                </p>
-                                }
-                            </Col>
-                        </Row>
-                    </form>
-                }
+                    {(successmessage !== '') &&
+                        <div className="alert alert-success">
+                            {successmessage}
+                        </div>
+                    }
 
-                {(props.Edit && searchservice) &&
-                    <InlineSpinner />
-                }
-        </div>
-    )
+                    {props.Edit &&
+                        <div>
+                            <Row>
+                                <Col md="12">
+                                    <Card>
+                                        <div className="p-3">
+                                            <CardTitle>
+                                                <i className="mdi mdi-border-all mr-2"></i>Seleccione un producto.
+                                            </CardTitle>
+                                        </div>
+                                        <CardBody className="border-top">
+                                            <ProductsSelect 
+                                                value={product} 
+                                                onChange={changeService} 
+                                            />
+                                        </CardBody>
+                                    </Card>
+                                </Col>
+                            </Row>
+                        </div>
+                    }
+
+                    {((!props.Edit) || (props.Edit && product !== null && !loadingservice)) &&
+                        <form onSubmit={(e) => addWarehouse(e)} action="">
+                            <Row>
+                                <Col md="12">
+                                    <Card>
+                                        <div className="p-3">
+                                            <CardTitle>
+                                                <i className="mdi mdi-border-all mr-2"></i>Datos del producto
+                                            </CardTitle>
+                                        </div>
+                                        <CardBody className="border-top">
+                                                <Row>
+                                                    <Col xs="6">
+                                                        <div className="form-group">
+                                                            <label htmlFor="product-name">Nombre del producto:</label>
+                                                            <input 
+                                                                type="text"
+                                                                id="product-name"
+                                                                onKeyPress={(e) => onlyTextAndNumbers(e)}
+                                                                min="0" 
+                                                                value={name}
+                                                                onChange={(e) => setname(e.target.value)}
+                                                                placeholder="Ingrese el nombre del producto" 
+                                                                className={((typeof errors === 'object' && errors.hasOwnProperty('name') ? 'is-invalid' : '') +' form-control')}
+                                                            />
+                                                            {(typeof errors === 'object' && errors.hasOwnProperty('name')) &&
+                                                                <div className="help-block text-danger font-weight-bold">
+                                                                    <small>
+                                                                        {errors.name}
+                                                                    </small>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </Col>
+                                                    <Col xs="6">
+                                                        <div className="form-group">
+                                                            <label htmlFor="product-name">Tipo del producto:</label>
+                                                            <SkuTypeSelect value={skuTypeId} onChange={(value) => setskuTypeId(value)} />
+                                                            {(typeof errors === 'object' && errors.hasOwnProperty('skuTypeId')) &&
+                                                                <div className="help-block text-danger font-weight-bold">
+                                                                    <small>
+                                                                        {errors.skuTypeId}
+                                                                    </small>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+                                        </CardBody>
+                                    </Card>
+                                    {(props.Edit) 
+                                    ?
+                                    <p className="text-right">
+                                        <button type="submit" disabled={sending} className="btn btn-warning">
+                                            {(sending) ? <span>Cargando<i className="fa fa-spin fa-spinner ml-2"></i></span> : 'Actualizar producto'}
+                                        </button>
+                                    </p>
+                                    :
+                                    <p className="text-right">
+                                        <button type="submit" disabled={sending} className="btn btn-primary">
+                                            {(sending) ? <span>Cargando<i className="fa fa-spin fa-spinner ml-2"></i></span> : 'Añadir producto'}
+                                        </button>
+                                    </p>
+                                    }
+                                </Col>
+                            </Row>
+                        </form>
+                    }
+
+                    {(props.Edit && searchservice) &&
+                        <InlineSpinner />
+                    }
+            </div>
+        )
+    }
 }
 
 export default AddProduct

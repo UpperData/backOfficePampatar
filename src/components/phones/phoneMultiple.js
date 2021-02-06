@@ -73,7 +73,13 @@ function PhoneMultiple(props) {
             }
         }else{
             if(phonesNumber !== props.value){
-                props.onChange(phonesNumber);
+                //console.log(phonesNumber);
+                //console.log(props.value);
+                if(props.value.length === 0 && phonesNumber.length > 0){
+                    setPhonesNumber([]);
+                }else{
+                    props.onChange(phonesNumber);
+                }
             }
         }
     }, [loading, search, props, phonesNumber]);
@@ -108,22 +114,22 @@ function PhoneMultiple(props) {
                                 </label>
                                 <div className="">
                                     <div className="row">
-                                        <div className="col-md-8 my-1">
+                                        <div className="col-md-9 my-1">
                                             <MultipleSelect placeholder="Tipo de teléfono" value={(activeInput) ? isActive[0].phoneType : null}  change={(option) => typeNumberChange(option, item.id)} data={listPhoneTypes} />
                                             {activeError && isError[0].validateType === false &&
                                                 <small className="my-2 text-danger font-weight-bold">Verifique el tipo de teléfono</small>
                                             }
                                         </div>
-                                        <div className="col-md-4 my-1">
+                                        <div className="col-md-3 my-1">
                                         </div>
-                                        <div className="col-md-8 my-1">
+                                        <div className="col-md-9 my-1">
                                             <input type="text" value={(activeInput) ? isActive[0].number : '' } onChange={(e) => phoneNumberChange(e.target.value, item.id)} 
                                             className={"form-control" + ((activeError && isError[0].validateNumber === false) ? ' is-invalid' : '')} placeholder="Número de teléfono" />
                                             {activeError && isError[0].validateNumber === false &&
                                                 <small className="my-2 text-danger font-weight-bold">Verifique el número de teléfono</small>
                                             }
                                         </div>
-                                        <div className="col-md-4 my-1">
+                                        <div className="col-md-3 my-1">
                                             <button type="button" onClick={() => deletePhone(item.id)} className="btn btn-primary">
                                                 <i className="fa fa-trash"></i>
                                             </button>

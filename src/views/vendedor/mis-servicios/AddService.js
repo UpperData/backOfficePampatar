@@ -12,7 +12,7 @@ import ServicesSelect from '../../../components/selects/servicesSelect';
 
 function AddService(props) {
 
-    //const [loading, setloading] = useState(false);
+    const [loading, setloading] = useState(false);
     const [sending, setsending] = useState(false);
     const [successmessage, setsuccessmessage] = useState('');
     const [errormessage, seterrormessage] = useState('');
@@ -27,6 +27,7 @@ function AddService(props) {
 
     const reset = () => {
         setname('');
+        setloading(false);
         setservice(null);
         window.scrollTo({top: 10, behavior: 'smooth'});
     }
@@ -106,7 +107,8 @@ function AddService(props) {
                     console.log(res);
                     setsending(false);
                     if(res.data.data.result){
-                        setsuccessmessage('¡Servicio editado satisfactoriamente!')
+                        setsuccessmessage('¡Servicio actualizado satisfactoriamente!')
+                        setloading(true);
                         reset();
                     }else{
                         seterrormessage(res.data.data.message);
@@ -145,13 +147,14 @@ function AddService(props) {
         }
     }
 
-    return (
-        <div>
-            <h1 className="h4 mb-3 font-weight-bold">
-                {props.Edit ? 'Editar servicio' : 'crear nuevo servicio'}
-            </h1>
+    if(loading){
+        return (
+            <div>
+                <h1 className="h4 mb-3 font-weight-bold">
+                    {props.Edit ? 'Actualizar servicio' : 'Nuevo servicio'}
+                </h1>
                 {(errormessage !== '') &&
-                    <div className="alert alert-danger">
+                    <div className="alert alert-warning">
                         {errormessage}
                     </div>
                 }
@@ -161,89 +164,110 @@ function AddService(props) {
                         {successmessage}
                     </div>
                 }
+                <InlineSpinner />
+            </div>
+        )
+    }else{
+        return (
+            <div>
+                <h1 className="h4 mb-3 font-weight-bold">
+                    {props.Edit ? 'Actualizar servicio' : 'Nuevo servicio'}
+                </h1>
+                    {(errormessage !== '') &&
+                        <div className="alert alert-warning">
+                            {errormessage}
+                        </div>
+                    }
 
-                {props.Edit &&
-                    <div>
-                        <Row>
-                            <Col md="12">
-                                <Card>
-                                    <div className="p-3">
-                                        <CardTitle>
-                                            <i className="mdi mdi-border-all mr-2"></i>Seleccione un servicio.
-                                        </CardTitle>
-                                    </div>
-                                    <CardBody className="border-top">
-                                        <ServicesSelect 
-                                            value={service} 
-                                            onChange={changeService} 
-                                        />
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                        </Row>
-                    </div>
-                }
+                    {(successmessage !== '') &&
+                        <div className="alert alert-success">
+                            {successmessage}
+                        </div>
+                    }
 
-                {((!props.Edit) || (props.Edit && service !== null && !loadingservice)) &&
-                    <form onSubmit={(e) => addWarehouse(e)} action="">
-                        <Row>
-                            <Col md="7">
-                                <Card>
-                                    <div className="p-3">
-                                        <CardTitle>
-                                            <i className="mdi mdi-border-all mr-2"></i>Datos del servicio
-                                        </CardTitle>
-                                    </div>
-                                    <CardBody className="border-top">
-                                            <Row>
-                                                <Col xs="12">
-                                                    <div className="form-group">
-                                                        <label htmlFor="service-name">Nombre del servicio:</label>
-                                                        <input 
-                                                            type="text"
-                                                            id="service-name"
-                                                            min="0" 
-                                                            value={name}
-                                                            onChange={(e) => setname(e.target.value)}
-                                                            placeholder="Ingrese el nombre del servicio" 
-                                                            className={((typeof errors === 'object' && errors.hasOwnProperty('name') ? 'is-invalid' : '') +' form-control')}
-                                                        />
-                                                        {(typeof errors === 'object' && errors.hasOwnProperty('name')) &&
-                                                            <div className="help-block text-danger font-weight-bold">
-                                                                <small>
-                                                                    {errors.name}
-                                                                </small>
-                                                            </div>
-                                                        }
-                                                    </div>
-                                                </Col>
-                                            </Row>
-                                    </CardBody>
-                                </Card>
-                                {(props.Edit) 
-                                ?
-                                <p>
-                                    <button type="submit" disabled={sending} className="btn btn-warning">
-                                        {(sending) ? <span>Cargando<i className="fa fa-spin fa-spinner ml-2"></i></span> : 'Editar servicio'}
-                                    </button>
-                                </p>
-                                :
-                                <p>
-                                    <button type="submit" disabled={sending} className="btn btn-primary">
-                                        {(sending) ? <span>Cargando<i className="fa fa-spin fa-spinner ml-2"></i></span> : 'Añadir servicio'}
-                                    </button>
-                                </p>
-                                }
-                            </Col>
-                        </Row>
-                    </form>
-                }
+                    {props.Edit &&
+                        <div>
+                            <Row>
+                                <Col md="12">
+                                    <Card>
+                                        <div className="p-3">
+                                            <CardTitle>
+                                                <i className="mdi mdi-border-all mr-2"></i>Seleccione un servicio.
+                                            </CardTitle>
+                                        </div>
+                                        <CardBody className="border-top">
+                                            <ServicesSelect 
+                                                value={service} 
+                                                onChange={changeService} 
+                                            />
+                                        </CardBody>
+                                    </Card>
+                                </Col>
+                            </Row>
+                        </div>
+                    }
 
-                {(props.Edit && searchservice) &&
-                    <InlineSpinner />
-                }
-        </div>
-    )
+                    {((!props.Edit) || (props.Edit && service !== null && !loadingservice)) &&
+                        <form onSubmit={(e) => addWarehouse(e)} action="">
+                            <Row>
+                                <Col md="7">
+                                    <Card>
+                                        <div className="p-3">
+                                            <CardTitle>
+                                                <i className="mdi mdi-border-all mr-2"></i>Datos del servicio
+                                            </CardTitle>
+                                        </div>
+                                        <CardBody className="border-top">
+                                                <Row>
+                                                    <Col xs="12">
+                                                        <div className="form-group">
+                                                            <label htmlFor="service-name">Nombre del servicio:</label>
+                                                            <input 
+                                                                type="text"
+                                                                id="service-name"
+                                                                min="0" 
+                                                                value={name}
+                                                                onChange={(e) => setname(e.target.value)}
+                                                                placeholder="Ingrese el nombre del servicio" 
+                                                                className={((typeof errors === 'object' && errors.hasOwnProperty('name') ? 'is-invalid' : '') +' form-control')}
+                                                            />
+                                                            {(typeof errors === 'object' && errors.hasOwnProperty('name')) &&
+                                                                <div className="help-block text-danger font-weight-bold">
+                                                                    <small>
+                                                                        {errors.name}
+                                                                    </small>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+                                        </CardBody>
+                                    </Card>
+                                    {(props.Edit) 
+                                    ?
+                                    <p className="text-right">
+                                        <button type="submit" disabled={sending} className="btn btn-warning">
+                                            {(sending) ? <span>Cargando<i className="fa fa-spin fa-spinner ml-2"></i></span> : 'Actualizar servicio'}
+                                        </button>
+                                    </p>
+                                    :
+                                    <p className="text-right">
+                                        <button type="submit" disabled={sending} className="btn btn-primary">
+                                            {(sending) ? <span>Cargando<i className="fa fa-spin fa-spinner ml-2"></i></span> : 'Añadir servicio'}
+                                        </button>
+                                    </p>
+                                    }
+                                </Col>
+                            </Row>
+                        </form>
+                    }
+
+                    {(props.Edit && searchservice) &&
+                        <InlineSpinner />
+                    }
+            </div>
+        )
+    }
 }
 
 export default AddService

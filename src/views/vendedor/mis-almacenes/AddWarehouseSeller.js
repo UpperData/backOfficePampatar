@@ -17,7 +17,7 @@ import InlineSpinner from '../../spinner/InlineSpinner';
 
 function AddWarehouseSeller(props) {
 
-    //const [loading, setloading] = useState(false);
+    const [loading, setloading] = useState(false);
     const [sending, setsending] = useState(false);
     const [successmessage, setsuccessmessage] = useState('');
     const [errormessage, seterrormessage] = useState('');
@@ -38,12 +38,31 @@ function AddWarehouseSeller(props) {
     const [street, setstreet] = useState('');
     const [number, setnumber] = useState('');
     const [local,  setlocal ] = useState('');
+    //const [cleanPhones, setCleanPhones] = useState(true);
 
     //Edit
 
     const [warehouse, setwarehouse] = useState(null);
     const [searchwarehouse, setsearchwarehouse] = useState(false);
     const [loadingwarehouse, setloadingwarehouse] = useState(true);
+
+    const reset = () => {
+        setloading(false);
+        setwarehouse(null);
+        setsearchwarehouse(false);
+        setloadingwarehouse(true);
+
+        setregion(null);
+        setprovince(null);
+        setcomuna(null);
+        setPhonesNumber([]);
+        setEditPhonesNumber([]);
+
+        setname('');
+        setstreet('');
+        setnumber('');
+        setlocal('');
+    }
 
     const changeWarehouse = (data) => {
         setsearchwarehouse(true);
@@ -167,6 +186,21 @@ function AddWarehouseSeller(props) {
         if(phonesNumber.length === 0){
             thiserrors.phone = 'Debe ingresar como mínimo un número de teléfono';
             errorsCount++;
+        }else{
+            let reg = /^(\+?56)?(\s?)(0?9)(\s?)[9876543]\d{7}$/;
+
+            for (let i = 0; i < phonesNumber.length; i++) {
+
+                const phone = phonesNumber[i];
+                let thisNumberValidate = reg.test(phone.number);
+                let thisTypeNumberValidate = phone.phoneType !== null && phone.phoneType.hasOwnProperty('value');
+                
+                if(!thisNumberValidate || !thisTypeNumberValidate){
+                    thiserrors.phone = 'Alguno de los números telefónicos ingresados no cumplen un formato aceptado.';
+                    errorsCount++;
+                }
+            }
+    
         }
 
         if(errorsCount > 0){
@@ -239,7 +273,9 @@ function AddWarehouseSeller(props) {
                     console.log(res);
                     setsending(false);
                     if(res.data.data.result){
-                        setsuccessmessage('¡Almacen Editado satisfactoriamente!')
+                        setsuccessmessage('¡Almacen actualizado satisfactoriamente!')
+                        setloading(true);
+                        reset();
                         window.scrollTo({top: 10, behavior: 'smooth'});
                     }else{
                         seterrormessage(res.data.data.message);
@@ -273,7 +309,8 @@ function AddWarehouseSeller(props) {
                     console.log(res);
                     setsending(false);
                     if(res.data.data.result){
-                        setsuccessmessage('¡Almacen creado satisfactoriamente!')
+                        setsuccessmessage('¡Almacen creado satisfactoriamente!');
+                        reset();
                         window.scrollTo({top: 10, behavior: 'smooth'});
                     }else{
                         seterrormessage(res.data.data.message);
@@ -287,13 +324,14 @@ function AddWarehouseSeller(props) {
         }
     }
 
-    return (
-        <div>
-            <h1 className="h4 mb-3 font-weight-bold">
-                {props.Edit ? 'Editar almacén' : 'crear nuevo almacén'}
-            </h1>
+    if(loading){
+        return (
+            <div>
+                <h1 className="h4 mb-3 font-weight-bold">
+                    {props.Edit ? 'Actualizar almacén' : 'Nuevo almacén'}
+                </h1>
                 {(errormessage !== '') &&
-                    <div className="alert alert-danger">
+                    <div className="alert alert-warning">
                         {errormessage}
                     </div>
                 }
@@ -303,226 +341,251 @@ function AddWarehouseSeller(props) {
                         {successmessage}
                     </div>
                 }
+            </div>
+        )
+    }else{
+        return (
+            <div>
+                <h1 className="h4 mb-3 font-weight-bold">
+                    {props.Edit ? 'Actualizar almacén' : 'Nuevo almacén'}
+                </h1>
+                    {(errormessage !== '') &&
+                        <div className="alert alert-warning">
+                            {errormessage}
+                        </div>
+                    }
 
-                {props.Edit &&
-                    <div>
-                        <Row>
-                            <Col md="12">
-                                <Card>
-                                    <div className="p-3">
-                                        <CardTitle>
-                                            <i className="mdi mdi-border-all mr-2"></i>Seleccione un almacén
-                                        </CardTitle>
-                                    </div>
-                                    <CardBody className="border-top">
-                                        <WarehouseSelect value={warehouse} onChange={changeWarehouse} />
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                        </Row>
-                    </div>
-                }
+                    {(successmessage !== '') &&
+                        <div className="alert alert-success">
+                            {successmessage}
+                        </div>
+                    }
 
-                {((!props.Edit) || (props.Edit && warehouse !== null && !loadingwarehouse)) &&
-                    <form onSubmit={(e) => addWarehouse(e)} action="">
-                        <Row>
-                            <Col md="7">
-                                <Card>
-                                    <div className="p-3">
-                                        <CardTitle>
-                                            <i className="mdi mdi-border-all mr-2"></i>Datos del almacén
-                                        </CardTitle>
-                                    </div>
-                                    <CardBody className="border-top">
-                                            <Row>
-                                                <Col xs="12">
-                                                    <div className="form-group">
-                                                        <label htmlFor="warehouseName">Nombre del almacén:</label>
-                                                        <input 
-                                                            type="text"
-                                                            id="warehouseName"
-                                                            min="0" 
-                                                            value={name}
-                                                            onChange={(e) => setname(e.target.value)}
-                                                            placeholder="Ingrese el nombre del almacén" 
-                                                            className={((typeof errors === 'object' && errors.hasOwnProperty('name') ? 'is-invalid' : '') +' form-control')}
-                                                        />
-                                                        {(typeof errors === 'object' && errors.hasOwnProperty('name')) &&
-                                                            <div className="help-block text-danger font-weight-bold">
-                                                                <small>
-                                                                    {errors.name}
-                                                                </small>
-                                                            </div>
-                                                        }
-                                                    </div>
-                                                    <h3 className="h6 text-muted">
-                                                        Dirección:
-                                                    </h3>
-                                                    <hr/>
-                                                </Col>
-                                                <Col md="6">
-                                                    <div className={((typeof errors === 'object' && errors.hasOwnProperty('name') ? 'has-error' : '') +' form-group')}>
-                                                        <label htmlFor="warehouseName">Región:</label>
-                                                        <RegionsSelect value={region} onChange={setregion} />
-                                                        {(typeof errors === 'object' && errors.hasOwnProperty('region')) &&
-                                                            <div className="help-block text-danger font-weight-bold">
-                                                                <small>
-                                                                    {errors.region}
-                                                                </small>
-                                                            </div>
-                                                        }
-                                                    </div>
-                                                </Col>
-                                                <Col md="6">
-                                                    <div className={((typeof errors === 'object' && errors.hasOwnProperty('name') ? 'has-error' : '') +' form-group')}>
-                                                        <label htmlFor="warehouseName">Provincia:</label>
-                                                        <ProvincesSelect 
-                                                            value={province}
-                                                            onChange={setprovince}
-                                                            idRegion={(region !== null && typeof region === 'object' && region.hasOwnProperty('value') ? region.value : null)} 
-                                                        />
-                                                        {(typeof errors === 'object' && errors.hasOwnProperty('province')) &&
-                                                            <div className="help-block text-danger font-weight-bold">
-                                                                <small>
-                                                                    {errors.province}
-                                                                </small>
-                                                            </div>
-                                                        }
-                                                    </div>
-                                                </Col>
-                                                <Col md="6">
-                                                    <div className={((typeof errors === 'object' && errors.hasOwnProperty('name') ? 'has-error' : '') +' form-group')}>
-                                                        <label htmlFor="warehouseName">Comuna:</label>
-                                                        <ComunasSelect 
-                                                            value={comuna}
-                                                            onChange={setcomuna}
-                                                            idProvince={(province !== null && typeof province === 'object' && province.hasOwnProperty('value') ? province.value : null)} 
-                                                        />
-                                                        {(typeof errors === 'object' && errors.hasOwnProperty('comuna')) &&
-                                                            <div className="help-block text-danger font-weight-bold">
-                                                                <small>
-                                                                    {errors.comuna}
-                                                                </small>
-                                                            </div>
-                                                        }
-                                                    </div>
-                                                </Col>
-                                                <Col md="6">
-                                                    <div className="form-group">
-                                                        <label htmlFor="warehouseStreet">Calle:</label>
-                                                        <input 
-                                                            type="text"
-                                                            id="warehouseStreet"
-                                                            min="0" 
-                                                            value={street}
-                                                            onChange={(e) => setstreet(e.target.value)}
-                                                            placeholder="Dirección de calle" 
-                                                            className={((typeof errors === 'object' && errors.hasOwnProperty('street') ? 'is-invalid' : '') +' form-control')}
-                                                        />
-                                                        {(typeof errors === 'object' && errors.hasOwnProperty('street')) &&
-                                                            <div className="help-block text-danger font-weight-bold">
-                                                                <small>
-                                                                    {errors.street}
-                                                                </small>
-                                                            </div>
-                                                        }
-                                                    </div>
-                                                </Col>
-                                                <Col md="6">
-                                                    <div className="form-group">
-                                                        <label htmlFor="warehouseNDpto">Número:</label>
-                                                        <input 
-                                                            type="text"
-                                                            id="warehouseNDpto"
-                                                            min="0" 
-                                                            value={number}
-                                                            onChange={(e) => setnumber(e.target.value)}
-                                                            placeholder="Número de departamento" 
-                                                            className={((typeof errors === 'object' && errors.hasOwnProperty('number') ? 'is-invalid' : '') +' form-control')}
-                                                        />
-                                                        {(typeof errors === 'object' && errors.hasOwnProperty('number')) &&
-                                                            <div className="help-block text-danger font-weight-bold">
-                                                                <small>
-                                                                    {errors.number}
-                                                                </small>
-                                                            </div>
-                                                        }
-                                                    </div>
-                                                </Col>
-                                                <Col md="6">
-                                                    <div className="form-group">
-                                                        <label htmlFor="warehouseLocal">Local:</label>
-                                                        <input 
-                                                            type="text"
-                                                            id="warehouseLocal"
-                                                            min="0" 
-                                                            value={local}
-                                                            onChange={(e) => setlocal(e.target.value)}
-                                                            placeholder="Local del almacén" 
-                                                            className={((typeof errors === 'object' && errors.hasOwnProperty('local') ? 'is-invalid' : '') +' form-control')}
-                                                        />
-                                                        {(typeof errors === 'object' && errors.hasOwnProperty('local')) &&
-                                                            <div className="help-block text-danger font-weight-bold">
-                                                                <small>
-                                                                    {errors.local}
-                                                                </small>
-                                                            </div>
-                                                        }
-                                                    </div>
-                                                </Col>
-                                            </Row>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                            <Col md="5">
-                                <Card>
-                                    <div className="p-3">
-                                        <CardTitle>
-                                            <i className="mdi mdi-border-all mr-2"></i>Datos de contacto
-                                        </CardTitle>
-                                    </div>
-                                    <CardBody className="border-top">
-                                            <Row>
-                                                <Col xs="12">
-                                                    <div className="form-group">
-                                                        <label htmlFor="warehouseName">Teléfono:</label>
-                                                        <PhoneMultiple loadValue={editphonesNumber} value={phonesNumber} onChange={setPhonesNumber} />
-                                                        {(typeof errors === 'object' && errors.hasOwnProperty('phone')) &&
-                                                            <div className="help-block text-danger font-weight-bold">
-                                                                <small>
-                                                                    {errors.phone}
-                                                                </small>
-                                                            </div>
-                                                        }
-                                                    </div>
-                                                </Col>
-                                            </Row>
-                                    </CardBody>
-                                </Card>
-                                {props.Edit 
-                                ?
-                                    <p>
-                                        <button disabled={sending} type="submit" className="btn btn-warning">
-                                            {(!sending) ? 'Editar almacén' : <p className="mb-0"><i className="fa fa-spinner fa-spin"></i></p>}
-                                        </button>
-                                    </p>
-                                :
-                                    <p>
-                                        <button disabled={sending} type="submit" className="btn btn-info">
-                                            {(!sending) ? 'Crear almacén' : <p className="mb-0"><i className="fa fa-spinner fa-spin"></i></p>}
-                                        </button>
-                                    </p>
-                                }
-                            </Col>
-                        </Row>
-                    </form>
-                }
+                    {props.Edit &&
+                        <div>
+                            <Row>
+                                <Col md="12">
+                                    <Card>
+                                        <div className="p-3">
+                                            <CardTitle>
+                                                <i className="mdi mdi-border-all mr-2"></i>Seleccione un almacén
+                                            </CardTitle>
+                                        </div>
+                                        <CardBody className="border-top">
+                                            <WarehouseSelect value={warehouse} onChange={changeWarehouse} />
+                                        </CardBody>
+                                    </Card>
+                                </Col>
+                            </Row>
+                        </div>
+                    }
 
-                {(props.Edit && searchwarehouse) &&
-                    <InlineSpinner />
-                }
-        </div>
-    )
+                    {((!props.Edit) || (props.Edit && warehouse !== null && !loadingwarehouse)) &&
+                        <form onSubmit={(e) => addWarehouse(e)} action="">
+                            <Row>
+                                <Col md="7">
+                                    <Card>
+                                        <div className="p-3">
+                                            <CardTitle>
+                                                <i className="mdi mdi-border-all mr-2"></i>Datos del almacén
+                                            </CardTitle>
+                                        </div>
+                                        <CardBody className="border-top">
+                                                <Row>
+                                                    <Col xs="12">
+                                                        <div className="form-group">
+                                                            <label htmlFor="warehouseName">Nombre del almacén:</label>
+                                                            <input 
+                                                                type="text"
+                                                                id="warehouseName"
+                                                                min="0" 
+                                                                value={name}
+                                                                onChange={(e) => setname(e.target.value)}
+                                                                placeholder="Ingrese el nombre del almacén" 
+                                                                className={((typeof errors === 'object' && errors.hasOwnProperty('name') ? 'is-invalid' : '') +' form-control')}
+                                                            />
+                                                            {(typeof errors === 'object' && errors.hasOwnProperty('name')) &&
+                                                                <div className="help-block text-danger font-weight-bold">
+                                                                    <small>
+                                                                        {errors.name}
+                                                                    </small>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                        <h3 className="h6 text-muted">
+                                                            Dirección:
+                                                        </h3>
+                                                        <hr/>
+                                                    </Col>
+                                                    <Col md="6">
+                                                        <div className={((typeof errors === 'object' && errors.hasOwnProperty('region') ? 'has-error' : '') +' form-group')}>
+                                                            <label htmlFor="warehouseName">Región:</label>
+                                                            <RegionsSelect value={region} onChange={setregion} />
+                                                            {(typeof errors === 'object' && errors.hasOwnProperty('region')) &&
+                                                                <div className="help-block text-danger font-weight-bold">
+                                                                    <small>
+                                                                        {errors.region}
+                                                                    </small>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </Col>
+                                                    <Col md="6">
+                                                        <div className={((typeof errors === 'object' && errors.hasOwnProperty('province') ? 'has-error' : '') +' form-group')}>
+                                                            <label htmlFor="warehouseName">Provincia:</label>
+                                                            <ProvincesSelect 
+                                                                value={province}
+                                                                onChange={setprovince}
+                                                                idRegion={(region !== null && typeof region === 'object' && region.hasOwnProperty('value') ? region.value : null)} 
+                                                            />
+                                                            {(typeof errors === 'object' && errors.hasOwnProperty('province')) &&
+                                                                <div className="help-block text-danger font-weight-bold">
+                                                                    <small>
+                                                                        {errors.province}
+                                                                    </small>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </Col>
+                                                    <Col md="6">
+                                                        <div className={((typeof errors === 'object' && errors.hasOwnProperty('comuna') ? 'has-error' : '') +' form-group')}>
+                                                            <label htmlFor="warehouseName">Comuna:</label>
+                                                            <ComunasSelect 
+                                                                value={comuna}
+                                                                onChange={setcomuna}
+                                                                idProvince={(province !== null && typeof province === 'object' && province.hasOwnProperty('value') ? province.value : null)} 
+                                                            />
+                                                            {(typeof errors === 'object' && errors.hasOwnProperty('comuna')) &&
+                                                                <div className="help-block text-danger font-weight-bold">
+                                                                    <small>
+                                                                        {errors.comuna}
+                                                                    </small>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </Col>
+                                                    <Col md="6">
+                                                        <div className="form-group">
+                                                            <label htmlFor="warehouseStreet">Calle:</label>
+                                                            <input 
+                                                                type="text"
+                                                                id="warehouseStreet"
+                                                                min="0" 
+                                                                value={street}
+                                                                onChange={(e) => setstreet(e.target.value)}
+                                                                placeholder="Dirección de calle" 
+                                                                className={((typeof errors === 'object' && errors.hasOwnProperty('street') ? 'is-invalid' : '') +' form-control')}
+                                                            />
+                                                            {(typeof errors === 'object' && errors.hasOwnProperty('street')) &&
+                                                                <div className="help-block text-danger font-weight-bold">
+                                                                    <small>
+                                                                        {errors.street}
+                                                                    </small>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </Col>
+                                                    <Col md="6">
+                                                        <div className="form-group">
+                                                            <label htmlFor="warehouseNDpto">Número:</label>
+                                                            <input 
+                                                                type="text"
+                                                                id="warehouseNDpto"
+                                                                min="0" 
+                                                                value={number}
+                                                                onChange={(e) => setnumber(e.target.value)}
+                                                                placeholder="Número de departamento" 
+                                                                className={((typeof errors === 'object' && errors.hasOwnProperty('number') ? 'is-invalid' : '') +' form-control')}
+                                                            />
+                                                            {(typeof errors === 'object' && errors.hasOwnProperty('number')) &&
+                                                                <div className="help-block text-danger font-weight-bold">
+                                                                    <small>
+                                                                        {errors.number}
+                                                                    </small>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </Col>
+                                                    <Col md="6">
+                                                        <div className="form-group">
+                                                            <label htmlFor="warehouseLocal">Local:</label>
+                                                            <input 
+                                                                type="text"
+                                                                id="warehouseLocal"
+                                                                min="0" 
+                                                                value={local}
+                                                                onChange={(e) => setlocal(e.target.value)}
+                                                                placeholder="Local del almacén" 
+                                                                className={((typeof errors === 'object' && errors.hasOwnProperty('local') ? 'is-invalid' : '') +' form-control')}
+                                                            />
+                                                            {(typeof errors === 'object' && errors.hasOwnProperty('local')) &&
+                                                                <div className="help-block text-danger font-weight-bold">
+                                                                    <small>
+                                                                        {errors.local}
+                                                                    </small>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+                                        </CardBody>
+                                    </Card>
+                                </Col>
+                                <Col md="5">
+                                    <Card>
+                                        <div className="p-3">
+                                            <CardTitle>
+                                                <i className="mdi mdi-border-all mr-2"></i>Datos de contacto
+                                            </CardTitle>
+                                        </div>
+                                        <CardBody className="border-top">
+                                                <Row>
+                                                    <Col xs="12">
+                                                        <div className="form-group">
+                                                            <label htmlFor="warehouseName">Teléfono:</label>
+                                                            {(typeof errors === 'object' && errors.hasOwnProperty('phone')) &&
+                                                                <div className="alert alert-danger mt-3 font-weight-bold">
+                                                                    <p className="mb-0 small">
+                                                                        {errors.phone}
+                                                                    </p>
+                                                                </div>
+                                                            }
+                                                            <PhoneMultiple 
+                                                                //clean={cleanPhones} 
+                                                                loadValue={editphonesNumber} 
+                                                                value={phonesNumber} 
+                                                                onChange={setPhonesNumber} 
+                                                            />
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+                                        </CardBody>
+                                    </Card>
+                                    {props.Edit 
+                                    ?
+                                        <p>
+                                            <button disabled={sending} type="submit" className="btn btn-warning">
+                                                {(!sending) ? 'Actualizar almacén' : <p className="mb-0"><i className="fa fa-spinner fa-spin"></i></p>}
+                                            </button>
+                                        </p>
+                                    :
+                                        <p>
+                                            <button disabled={sending} type="submit" className="btn btn-info">
+                                                {(!sending) ? 'Crear almacén' : <p className="mb-0"><i className="fa fa-spinner fa-spin"></i></p>}
+                                            </button>
+                                        </p>
+                                    }
+                                </Col>
+                            </Row>
+                        </form>
+                    }
+
+                    {(props.Edit && searchwarehouse) &&
+                        <InlineSpinner />
+                    }
+            </div>
+        )
+    }
 }
 
 export default AddWarehouseSeller

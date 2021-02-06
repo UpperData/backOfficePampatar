@@ -182,7 +182,7 @@ const ProcessRequest = () => {
                     </Breadcrumb>
                     <h1 className="h4 mb-3 font-weight-bold">Detalles de la postulación: {item.marca}</h1>
                     {(errormessage !== '') &&
-                        <div className="alert alert-danger">
+                        <div className="alert alert-warning">
                             <p className="mb-0">
                                 {errormessage}
                             </p>

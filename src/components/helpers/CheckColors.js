@@ -27,8 +27,13 @@ function CheckColors(props) {
                     return (
                         <div key={key} className="d-inline-flex">
                             <div className="color-checkbox">
-                                <input checked={colorSelected === item[1]} onChange={(e) => handleCheckColor(e, item[1])} id={`check-${item[0]}`} type="checkbox"/>
-                                <label htmlFor={`check-${item[0]}`}>
+                                <input 
+                                    checked={colorSelected === item[1]} 
+                                    onChange={(e) => handleCheckColor(e, item[1])} 
+                                    id={`check-${item[0]}-${props.id}`} 
+                                    type="checkbox"
+                                />
+                                <label htmlFor={`check-${item[0]}-${props.id}`}>
                                     <span style={{backgroundColor: item[1]}} className="color"></span>
                                 </label>
                             </div>

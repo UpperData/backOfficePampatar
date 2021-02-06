@@ -336,7 +336,7 @@ function RepairContract() {
                     <h1 className="h4 mb-3 font-weight-bold">Corregir contrato</h1>
 
                     {(errorMessage !== '') &&
-                        <div className="alert alert-primary">
+                        <div className="alert alert-warning">
                             <p className="mb-0">
                                 {errorMessage}
                             </p>
@@ -643,7 +643,7 @@ function RepairContract() {
             return(
                 <div>
                     <h1 className="h4 mb-3 font-weight-bold">Corregir contrato</h1>
-                    <div className="alert alert-primary">
+                    <div className="alert alert-warning">
                         <p className="mb-0">
                             {errorMessage}
                         </p>

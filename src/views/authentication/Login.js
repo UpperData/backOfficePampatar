@@ -191,7 +191,7 @@ const Login = (props) => {
                         </div>
                       </div>
                       {status && (
-                        <div className={"alert alert-danger"}>{status}</div>
+                        <div className={"alert alert-warning"}>{status}</div>
                       )}
                     </Form>
                   )}

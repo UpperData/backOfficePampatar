@@ -212,14 +212,14 @@ const login = (e) => {
             <Row className="no-gutters justify-content-center">
               {state !== null && state !== undefined && typeof state === 'object' && state.hasOwnProperty('errorMessage') && 
                 <div className="col-12 col-lg-9">
-                  <div className="alert alert-danger">
+                  <div className="alert alert-warning">
                     {state.errorMessage}
                   </div>
                 </div>
               }
               {(errorMessage !== '') && 
                 <div className="col-12 col-lg-9">
-                  <div className="alert alert-danger">
+                  <div className="alert alert-warning">
                     {errorMessage}
                   </div>
                 </div>

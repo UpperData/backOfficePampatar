@@ -69,7 +69,7 @@ function ViewWarehouseSeller() {
                     </div>
     
                     {(errormessage !== '') &&
-                        <div className="alert d-none alert-danger">
+                        <div className="alert d-none alert-warning">
                             {errormessage}
                         </div>
                     }

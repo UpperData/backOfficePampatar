@@ -47,13 +47,13 @@ function ActualizarLote() {
     let urlGetUpdate = '/seller/inventory/lot/sku/list/all/';
 
     const changeProduct = (data) => {
-        console.log(data);
+        //console.log(data);
         setsearchLotes(true);
         setproduct(data);
 
         axios(urlGetUpdate+data.value)
         .then((res) => {
-            console.log(res.data);
+            //console.log(res.data);
             setlotes(res.data.items);
             setsearchLotes(false);
         }).catch((err) => {
@@ -113,7 +113,7 @@ function ActualizarLote() {
             url: urlEdit,
             data
         }).then((res) => {
-            console.log(res.data);
+            //console.log(res.data);
             if(res.data.data.result){
                 setsuccessmessage(res.data.data.message);
                 setModal(false);
@@ -148,7 +148,7 @@ function ActualizarLote() {
                     Actualizar lote
                 </h1>
                 {(errormessage !== '') &&
-                    <div className="alert alert-danger">
+                    <div className="alert alert-warning">
                         {errormessage}
                     </div>
                 }
@@ -222,7 +222,7 @@ function ActualizarLote() {
                                                         </td>
                                                         <td>
                                                             <button onClick={() => getDetail(item.id)} className="btn btn-sm btn-warning font-weight-bold px-4 shadow">
-                                                                Editar
+                                                                Actualizar
                                                             </button>
                                                         </td>
                                                     </tr>

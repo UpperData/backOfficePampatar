@@ -119,7 +119,7 @@ function CreateContrat() {
             thiserrors.inicio = 'Indique la fecha de inicio del contrato';
             errorsCount++;
         }else if(moment().isAfter(moment(inicio))){
-            thiserrors.inicio = 'La fecha debe ser superior a la fecha de hoy';
+            thiserrors.inicio = 'La fecha debe ser igual ó superior a la fecha de hoy';
             errorsCount++;
         }
         
@@ -295,10 +295,10 @@ function CreateContrat() {
         if(!success){
             return (
                 <div>
-                    <h1 className="h4 mb-3 font-weight-bold">Crear contrato</h1>
+                    <h1 className="h4 mb-3 font-weight-bold">Nuevo contrato</h1>
 
                     {(errorMessage !== '') &&
-                        <div className="alert alert-primary">
+                        <div className="alert alert-warning">
                             <p className="mb-0">
                                 {errorMessage}
                             </p>
@@ -583,7 +583,7 @@ function CreateContrat() {
                         ¡Contrato registrado con exito!
                     </div>
                     <button onClick={() => setsuccess(false)} className="btn btn-primary">
-                        Crear nuevo contrato
+                        Nuevo contrato
                     </button>
                 </div>
             )
@@ -593,7 +593,7 @@ function CreateContrat() {
             return(
                 <div>
                     <h1 className="h4 mb-3 font-weight-bold">Crear contrato</h1>
-                    <div className="alert alert-primary">
+                    <div className="alert alert-warning">
                         <p className="mb-0">
                             {errorMessage}
                         </p>
@@ -603,7 +603,7 @@ function CreateContrat() {
         }else{
             return(
                 <div>
-                    <h1 className="h4 mb-3 font-weight-bold">Crear contrato</h1>
+                    <h1 className="h4 mb-3 font-weight-bold">Nuevo contrato</h1>
                     <InlineSpinner />
                 </div>
             )

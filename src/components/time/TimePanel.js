@@ -86,7 +86,12 @@ function TimePanel(props) {
                 }
             }
         }else{
-            if(times !== props.value){
+            console.log(props.value);
+
+            if((times.length === 0 || times === null) && Array.isArray(props.value)){
+                settimes(props.value);
+            }else if(times !== props.value){
+                console.log(props.value);
                 props.onChange(times);
             }
         }

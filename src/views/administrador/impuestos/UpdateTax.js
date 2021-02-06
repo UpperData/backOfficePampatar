@@ -90,7 +90,7 @@ function UpdateTax() {
                 Actualizar impuesto
             </h1>
             {(errormessage !== '') &&
-                <div className="alert alert-danger">
+                <div className="alert alert-warning">
                     {errormessage}
                 </div>
             }

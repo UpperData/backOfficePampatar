@@ -60,7 +60,7 @@ function ViewProducts() {
                     </div>
     
                     {(errormessage !== '') &&
-                        <div className="alert alert-danger">
+                        <div className="alert alert-warning">
                             {errormessage}
                         </div>
                     }

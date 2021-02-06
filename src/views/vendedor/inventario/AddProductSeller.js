@@ -26,6 +26,7 @@ function AddProductSeller(props) {
     //const isEdit = (props.Edit !== undefined && props.Edit !== null) ? true : false;
 
     const [errors, seterrors] = useState({});
+    const [variationerrors, setvariationerrors] = useState({});
 
     const [warehouse,   setwarehouse]   = useState(null);
     const [skuId,       setskuId]       = useState(null);
@@ -98,6 +99,44 @@ function AddProductSeller(props) {
         if(quantity === ''){
             thiserrors.quantity = 'Ingrese una cantidad';
             errorsCount++;
+        }
+
+        if(variation.length > 0){
+            let variationList = variation;
+            let variationErrorsCount = 0;
+            let variationstotalquantity = 0;
+
+            for (let i = 0; i < variationList.length; i++) {
+                const variation = variationList[i];
+
+                if(variation.size === null){
+                    variationErrorsCount++;
+                }
+
+                if(variation.quantity === '' || Number(variation.quantity) === 0){
+                    variationErrorsCount++;
+                }
+
+                if(variation.quantity === '' || Number(variation.quantity) === 0){
+                    variationErrorsCount++;
+                }else{
+                    variationstotalquantity = Number(variationstotalquantity) + Number(variation.quantity);
+                }
+
+                if(variation.color === ''){
+                    variationErrorsCount++;
+                }
+            }
+
+            if(variationErrorsCount > 0){
+                errorsCount++;
+                thiserrors.variations = 'Revise las variaciones y sus parametros, recuerde que debe completar los datos de la variación en su totalidad.';
+            }
+
+            if(Number(variationstotalquantity) > Number(quantity)){
+                errorsCount++;
+                thiserrors.variations = 'Las cantidades de productos por variación no deben exceder a la cantidad de productos ingresados en el lote';
+            }
         }
 
         //price
@@ -176,7 +215,7 @@ function AddProductSeller(props) {
                 setsending(false);
                 if(res.data.data.result){
                     window.scrollTo({top: 10, behavior: 'smooth'});
-                    setsuccessmessage('¡Inventario incroporado con satisfactoriamente!')
+                    setsuccessmessage('¡Lote creado satisfactoriamente!')
                 }else{
                     window.scrollTo({top: 10, behavior: 'smooth'});
                     seterrormessage(res.data.data.message);
@@ -269,10 +308,10 @@ function AddProductSeller(props) {
         return (
             <div>
                 <h1 className="h4 mb-3 font-weight-bold">
-                    {props.Edit ? 'Actualizar lote' : 'Icorporar lote'}
+                    {props.Edit ? 'Actualizar lote' : 'Nuevo lote'}
                 </h1>
                     {(errormessage !== '') &&
-                        <div className="alert alert-danger">
+                        <div className="alert alert-warning">
                             {errormessage}
                         </div>
                     }
@@ -381,7 +420,7 @@ function AddProductSeller(props) {
                                                             <div className="form-group">
                                                                 <label htmlFor="">Precio</label>
                                                                 {(priceMessage !== '') ?
-                                                                    <div className="alert alert-primary">
+                                                                    <div className="alert alert-warning">
                                                                         {priceMessage}
                                                                     </div>
                                                                 :
@@ -510,6 +549,19 @@ function AddProductSeller(props) {
                                             </CardTitle>
                                         </div>
                                         <CardBody className="border-top">
+                                            {(typeof errors === 'object' && errors.hasOwnProperty('variations')) ?
+                                                <div className="alert alert-danger font-weight-bold">
+                                                    <p className="mb-0 small">
+                                                        {errors.variations}
+                                                    </p>
+                                                </div>
+                                                :
+                                                <div className="alert alert-info">
+                                                    <p className="mb-0 small">
+                                                        <strong>Nota:</strong> Las variaciones se utilizan para definir algunas características de las prendas de vestir.
+                                                    </p>
+                                                </div>
+                                            }
                                             {variation.length > 0 && variation.length && variation.map((item, key) => {
                                                 let search = variation.filter(data => data.id === item.id);
                                                 let activeForm = search.length > 0;
@@ -557,7 +609,7 @@ function AddProductSeller(props) {
                                                             <Col xs="12">
                                                                 <div className="form-group">
                                                                     <label htmlFor="">Color:</label>
-                                                                    <CheckColors onChange={(data) => changeVariationData(item.id, 'color', data)} value={(activeForm) ? search[0].color : '' } list={variationList.COLORES} />
+                                                                    <CheckColors id={item.id} onChange={(data) => changeVariationData(item.id, 'color', data)} value={(activeForm) ? search[0].color : '' } list={variationList.COLORES} />
                                                                 </div>
                                                             </Col>
                                                         </Row>
@@ -580,13 +632,13 @@ function AddProductSeller(props) {
                                     ?
                                         <p className="text-right">
                                             <button disabled={sending} type="submit" className="btn btn-lg font-weight-bold btn-warning">
-                                                {(!sending) ? 'Editar lote' : <p className="mb-0"><i className="fa fa-spinner fa-spin"></i></p>}
+                                                {(!sending) ? 'Actualizar lote' : <p className="mb-0"><i className="fa fa-spinner fa-spin"></i></p>}
                                             </button>
                                         </p>
                                     :
                                         <p className="text-right">
                                             <button disabled={sending} type="submit" className="btn btn-lg font-weight-bold btn-primary">
-                                                {(!sending) ? <span><i className="fa fa-truck-loading mr-2"></i> Ingresar lote</span> : <p className="mb-0"><i className="fa fa-spinner fa-spin"></i></p>}
+                                                {(!sending) ? <span><i className="fa fa-truck-loading mr-2"></i> Añadir lote</span> : <p className="mb-0"><i className="fa fa-spinner fa-spin"></i></p>}
                                             </button>
                                         </p>
                                     }
@@ -600,7 +652,7 @@ function AddProductSeller(props) {
         return (
             <div>
                 <h1 className="h4 mb-3 font-weight-bold">
-                    {props.Edit ? 'Actualizar lote' : 'Icorporar lote'}
+                    {props.Edit ? 'Actualizar lote' : 'Nuevo lote'}
                 </h1>
                 <InlineSpinner />
             </div>

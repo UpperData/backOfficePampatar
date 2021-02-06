@@ -27,7 +27,11 @@ function ProductSelect(props) {
                             formattedElement.value = thisElement.id;
             
                             newList.push(formattedElement);
-                        }            
+                        }   
+                        
+                        newList.sort(function (a, b) {
+                            return a.label.toLowerCase().localeCompare(b.label.toLowerCase());
+                        });
             
                         setList(newList);
                         setLoading(false);

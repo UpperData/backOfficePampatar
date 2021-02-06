@@ -20,6 +20,7 @@ import { moneyFormatter } from '../../../utils/helpers';
 function StockMonitorSeller() {
 
     const [product, setproduct] = useState(null);
+    const [service, setservice] = useState(null);
     const [search,  setsearch]  = useState(false);
     const [stock,   setstock]  = useState(null);
     const [dataProduct,   setdataProduct]  = useState(null);
@@ -31,13 +32,24 @@ function StockMonitorSeller() {
     const [variationsmodal, setvariationsModal] = useState(false);
     const [variationsList,  setvariationsList]  = useState(null);
 
+    const [type,      settype]      = useState('product');
+
+    const changeType = (type) => {
+        settype(type);
+        setproduct(null);
+        setservice(null);
+        setsearch(false);
+        setstock(null);
+        setdataProduct(null);
+    }
+
     const toggle = () => setModal(!modal);
     const variationsmodaltoggle = () => setvariationsModal(!variationsmodal);
 
     const getStock = (data) => {
         setproduct(data);
         let url         = '/seller/inventory/lot/sku/list/all/'+data.value;
-        let urlprice    = '/getPriceCurrent/Inventory/sku/'+data.value;
+        let urlprice    = '/seller/inventory/stock/sku/'+data.value+'/'+type;
 
         setsearch(true);
 
@@ -45,16 +57,17 @@ function StockMonitorSeller() {
             console.log(res.data);
 
             let stock = res.data.stock;
-
             setstock(res.data.items);
+
             //setstock(res.data.stock);
 
             axios.get(urlprice).then((res) => {
                 stock.price = res.data.endPrice;
-                console.log(stock);
 
+                console.log(stock);
                 setdataProduct(stock);
                 setsearch(false);
+                
             }).catch((err) => {
                 console.error(err);
                 setsearch(false);
@@ -100,7 +113,7 @@ function StockMonitorSeller() {
 
         axios.get(url)
         .then((res) => {
-            console.log(res.data);
+            //console.log(res.data);
             setdatawarehouse(res.data.data.values[0]);
             setseachdatawarehouse(false);
         }).catch((err) => {
@@ -152,146 +165,173 @@ function StockMonitorSeller() {
             <h1 className="h4 mb-3 font-weight-bold">
                 Stock de productos
             </h1>
-            <form action="">
-                <Card>
-                    <div className="p-3">
-                        <CardTitle>
-                            <i className="mdi mdi-border-all mr-2"></i>Stock por producto
-                        </CardTitle>
-                    </div>
-                    <CardBody className="border-top">
-                        <Row>
-                            <Col xs="12">
-                                <div className="form-group">
-                                    <label htmlFor="">Seleccione un producto</label>
-                                    <ProductSelect value={product} onChange={getStock} />
-                                </div>
-                            </Col>
-                            <Col xs="12">
-                                {(search) &&
-                                    <div className="py-5">
-                                        <InlineSpinner />
-                                    </div>
-                                }
-
-                                {(Array.isArray(stock) && stock.length ===0 && !search) &&
-                                    <div className="alert alert-danger">
-                                        Ningun lote registrado para este producto
-                                    </div>
-                                }
-
-                            </Col>
-                        </Row>
-                    </CardBody>
-                </Card>
-                <div>
-                {(Array.isArray(stock) && stock.length > 0 && !search) &&
-                    <div className="row">
-                        <div className="col col-lg-12">
-                            <Card>
-                                <CardBody>
-                                        <div className="row">
-                                            <div className="col-lg-6">
-                                                <div className="text-center">
-                                                    <div className="stock-circle mb-3">
-                                                        <span className={statusclass}><i className={'mr-2 '+statusicon}></i></span>
-                                                    </div>
-                                                    <h4 className={statusclass +' font-weight-bold h3'}>{dataProduct.statusStock.message}</h4>
-                                                    <h4><span className="h4 font-weight-bold">Precio Actual:</span><span className="font-weight-light ml-2">{moneyFormatter(dataProduct.price)}</span></h4>
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-6">
-                                                <div className="text-center">
-                                                    <div className="text-center">
-                                                        <h5 className="h3 font-weight-bold">Stock Actual</h5> 
-                                                        <div className="stock-circle mb-3">
-                                                            <div>
-                                                                <span className="font-weight-bold">{dataProduct.currentStock}</span>
-                                                                <h5 className="h6 font-weight-bold">Unidades</h5>
-                                                            </div>
-                                                        </div>
-                                                        <h4><span className="h4 font-weight-bold">Stock Mínimo:</span> <span className="font-weight-light ml-2">{dataProduct.minStock}</span></h4> 
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                </CardBody>
-                            </Card>
-                        </div>
-                        <div className="col col-lg-12">
-                            <Card>
+            <Row className="d-none">
+                <Col md="12">
+                    <Card>
                         <div className="p-3">
                             <CardTitle>
-                                <i className="mdi mdi-border-all mr-2"></i>Lotes
+                                <i className="mdi mdi-border-all mr-2"></i>
+                                Consultar stock de:
                             </CardTitle>
                         </div>
                         <CardBody className="border-top">
-                            <Row>
-                                <Col>
-                                    <Table responsive>
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    ID
-                                                </th>
-                                                <th>
-                                                    Nombre del almacen
-                                                </th>
-                                                <th>
-                                                    Fecha
-                                                </th>
-                                                <th>
-                                                    Cantidad
-                                                </th>
-                                                <th>
-                                                    Variaciones
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {(stock.length > 0 && stock.map((item, key) => {
-
-                                                return (
-                                                    <tr key={key}>
-                                                        <td>
-                                                            {item.id}
-                                                        </td>
-                                                        <td>
-                                                            <button onClick={(e) => showwarehouse(e, item.Warehouse.id)} className="btn btn-sm btn-link font-weight-bold">
-                                                                {item.Warehouse.name}
-                                                            </button>
-                                                        </td>
-                                                        <td>
-                                                            {item.createdAt.split('T')[0]}
-                                                        </td>
-                                                        <td>
-                                                            {item.quantity}
-                                                        </td>
-                                                        <td>
-                                                            {
-                                                            (item.variation === null) ? 
-                                                                'Sin variaciones' : 
-                                                                <button type="button" onClick={(e) => showVariation(e, item.id, item.variation)} className="btn btn-sm btn-outline-primary font-weight-bold"><i className="fa fa-paint-brush mr-2"></i>Lista de variaciones</button>
-                                                            }
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            }))}
-                                        </tbody>
-                                    </Table>
-                                </Col>
-                            </Row>
+                            <button disabled={type === 'product'} onClick={() => changeType('product')} className="btn btn-primary">
+                                Un producto
+                            </button>
+                            <button disabled={type === 'service'} onClick={() => changeType('service')} className="btn btn-info ml-2">
+                                Un servicio
+                            </button>
                         </CardBody>
                     </Card>
-                        </div>
+                </Col>
+            </Row>
+
+            {(type !== '') &&
+                <div>
+                    {type === 'product' &&
+                        <form action="">
+                        <Card>
+                            <div className="p-3">
+                                <CardTitle>
+                                    <i className="mdi mdi-border-all mr-2"></i>Stock por producto
+                                </CardTitle>
+                            </div>
+                            <CardBody className="border-top">
+                                <Row>
+                                    <Col xs="12">
+                                        <div className="form-group">
+                                            <label htmlFor="">Seleccione un producto</label>
+                                            <ProductSelect value={product} onChange={getStock} />
+                                        </div>
+                                    </Col>
+                                    <Col xs="12">
+                                        {(search) &&
+                                            <div className="py-5">
+                                                <InlineSpinner />
+                                            </div>
+                                        }
+
+                                        {(Array.isArray(stock) && stock.length ===0 && !search) &&
+                                            <div className="alert alert-warning">
+                                                Ningun lote registrado para este producto
+                                            </div>
+                                        }
+
+                                    </Col>
+                                </Row>
+                            </CardBody>
+                        </Card>
+                        <div>
+                        {(Array.isArray(stock) && stock.length > 0 && !search) &&
+                            <div className="row">
+                                <div className="col col-lg-12">
+                                    <Card>
+                                        <CardBody>
+                                                <div className="row">
+                                                    <div className="col-lg-6">
+                                                        <div className="text-center">
+                                                            <div className="stock-circle mb-3">
+                                                                <span className={statusclass}><i className={'mr-2 '+statusicon}></i></span>
+                                                            </div>
+                                                            <h4 className={statusclass +' font-weight-bold h3'}>{dataProduct.statusStock.message}</h4>
+                                                            <h4 className="d-none"><span className="h4 font-weight-bold">Precio Actual:</span><span className="font-weight-light ml-2">{moneyFormatter(dataProduct.price)}</span></h4>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-lg-6">
+                                                        <div className="text-center">
+                                                            <div className="text-center">
+                                                                <h5 className="h3 font-weight-bold">Stock Actual</h5> 
+                                                                <div className="stock-circle mb-3">
+                                                                    <div>
+                                                                        <span className="font-weight-bold">{dataProduct.currentStock}</span>
+                                                                        <h5 className="h6 font-weight-bold">Unidades</h5>
+                                                                    </div>
+                                                                </div>
+                                                                <h4><span className="h4 font-weight-bold">Stock Mínimo:</span> <span className="font-weight-light ml-2">{dataProduct.minStock}</span></h4> 
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        </CardBody>
+                                    </Card>
+                                </div>
+                                <div className="col col-lg-12">
+                                    <Card>
+                                <div className="p-3">
+                                    <CardTitle>
+                                        <i className="mdi mdi-border-all mr-2"></i>Lotes
+                                    </CardTitle>
+                                </div>
+                                <CardBody className="border-top">
+                                    <Row>
+                                        <Col>
+                                            <Table responsive>
+                                                <thead>
+                                                    <tr>
+                                                        <th>
+                                                            ID
+                                                        </th>
+                                                        <th>
+                                                            Nombre del almacen
+                                                        </th>
+                                                        <th>
+                                                            Fecha
+                                                        </th>
+                                                        <th>
+                                                            Cantidad
+                                                        </th>
+                                                        <th>
+                                                            Variaciones
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {(stock.length > 0 && stock.map((item, key) => {
+
+                                                        return (
+                                                            <tr key={key}>
+                                                                <td>
+                                                                    {item.id}
+                                                                </td>
+                                                                <td>
+                                                                    <button onClick={(e) => showwarehouse(e, item.Warehouse.id)} className="btn btn-sm btn-link font-weight-bold">
+                                                                        {item.Warehouse.name}
+                                                                    </button>
+                                                                </td>
+                                                                <td>
+                                                                    {item.createdAt.split('T')[0]}
+                                                                </td>
+                                                                <td>
+                                                                    {item.quantity}
+                                                                </td>
+                                                                <td>
+                                                                    {
+                                                                    (item.variation === null) ? 
+                                                                        'Sin variaciones' : 
+                                                                        <button type="button" onClick={(e) => showVariation(e, item.id, item.variation)} className="btn btn-sm btn-outline-primary font-weight-bold"><i className="fa fa-paint-brush mr-2"></i>Lista de variaciones</button>
+                                                                    }
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    }))}
+                                                </tbody>
+                                            </Table>
+                                        </Col>
+                                    </Row>
+                                </CardBody>
+                            </Card>
+                                </div>
+                            </div>
+                        }
                     </div>
-                }
+                </form>
+                    }
                 </div>
-            </form>
+            }
 
             <Modal isOpen={modal} toggle={toggle}>
                 <ModalHeader toggle={toggle}>
-                    Ver almacen: {(datawarehouse !== null) ? <strong>{datawarehouse.id}</strong> : ''}
+                    Almacen: {(datawarehouse !== null) ? <strong>{datawarehouse.name}</strong> : ''}
                 </ModalHeader>
                 <ModalBody>
                    {searchdatawarehouse &&
@@ -299,10 +339,16 @@ function StockMonitorSeller() {
                    }
                    {(datawarehouse !== null && !searchdatawarehouse) &&
                         <div>
-                            <h3 className="h4">Nombre: <strong>{datawarehouse.name}</strong></h3>
-                            <hr/>
-                            <h6><span className="font-weight-bold mr-1"><i className="fa mr-2 fa-map-marker-alt"></i>Dirección:</span><span>{dir}</span></h6>
-                            <h6><span className="font-weight-bold mr-1"><i className="fa mr-2 fa-phone"></i>Teléfono:</span><span>{phone}</span></h6>
+                            <h6>
+                                <span className="font-weight-bold mr-1">
+                                    <i className="fa mr-2 fa-map-marker-alt"></i>
+                                    Dirección:</span><span>{dir}</span>
+                                </h6>
+                            <h6>
+                                <span className="font-weight-bold mr-1">
+                                    <i className="fa mr-2 fa-phone"></i>
+                                    Teléfono:</span><span>{phone}</span>
+                                </h6>
                         </div>
                    }
                 </ModalBody>
@@ -324,7 +370,7 @@ function StockMonitorSeller() {
                                         <span className="mb-1  mr-2 h6"><span>Talla:</span><span className="ml-2 font-weight-bold">{item.size}</span></span>
                                         /<span className="mb-1 ml-2 mr-2 h6"><span>Descuento:</span><span className="ml-2 font-weight-bold">{item.discount}%</span></span>
                                         /<span className="mb-1 ml-2 mr-2 h6"><span>Cantidad:</span><span className="ml-2 font-weight-bold">{item.quantity}</span></span>
-                                        /<span className="mb-1 ml-2 mr-2 h6"><span>color:</span><span style={{display: 'inline-block', border: '2px solid #606060', width: '14px', height:'14px', backgroundColor: (item.color !== null ? item.color : '#fff')}} className="ml-2 font-weight-bold"></span></span>
+                                        /<span className="mb-1 ml-2 mr-2 h6"><span>color:</span><span style={{display: 'inline-block', border: '2px solid #606060', width: '14px', height:'14px', backgroundColor: ((item.color !== null)? item.color : '#fff')}} className="ml-2 font-weight-bold"></span></span>
                                     </p>
                                 )
                             })}

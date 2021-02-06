@@ -25,7 +25,7 @@ function DaysSelect(props) {
         }
     }
 
-    console.log(daysSelected);
+    //console.log(daysSelected);
 
     const [list, setList] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -46,7 +46,7 @@ function DaysSelect(props) {
             //console.log(props.value);
             //console.log(props.timesSelected);
             let searchDay = daysSelected.find(day => day === thisElement.id);
-            console.log(searchDay);
+            //console.log(searchDay);
             if(searchDay !== undefined){
 
             }else{
