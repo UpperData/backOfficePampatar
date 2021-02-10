@@ -24,7 +24,8 @@ function ServicesStock() {
     const [product, setproduct] = useState(null);
     const [service, setservice] = useState(null);
     const [search,  setsearch]  = useState(false);
-    const [stock,   setstock]  = useState(null);
+    const [stock,   setstock]   = useState(null);
+    const [data,    setdata]    = useState(null);
     const [dataService,   setdataService]  = useState(null);
 
     const [modal, setModal] = useState(false);
@@ -39,13 +40,14 @@ function ServicesStock() {
         setservice(data);
         
         let url = '/getPriceCurrent/Inventory/sku/'+data.value+'/service';
-        let urlprice    = '/seller/inventory/stock/sku/'+data.value+'/'+type;
+        let urlprice    = '/seller/serVice/StoCk/get/'+data.value;
         setsearch(true);
 
         axios.get(urlprice).then((res) => {
             console.log(res.data);
             //let stock = res.data.stock;
-            setstock(res.data.data.rsInventoryService);
+            setdata(res.data.stock);
+            setstock(res.data.items);
             axios.get(url).then((res) => {
                 console.log(res.data);
                 setdataService(res.data);
@@ -62,6 +64,24 @@ function ServicesStock() {
     }
 
     console.log(dataService);
+
+    let statusclass = '';
+    let statusicon = '';
+
+    if(Array.isArray(stock) && stock.length > 0 && data !== null && !search){
+        console.log(data);
+
+        if(data.statusStock.status === 'Insuficiente'){
+            statusclass = 'text-primary';
+            statusicon = 'fa fa-exclamation-circle';
+        }else if(data.statusStock.status === 'Alarmante'){
+            statusclass = 'text-warning';
+            statusicon = 'fa fa-exclamation-triangle';
+        }else if(data.statusStock.status === 'Holgado'){
+            statusclass = 'text-success';
+            statusicon = 'fa fa-check';
+        }
+    }
 
     return (
         <div>
@@ -112,8 +132,9 @@ function ServicesStock() {
                                                     <div className="col-lg-6">
                                                         <div className="text-center">
                                                             <div className="stock-circle mb-3">
-                                                                <span><i className="fa fa-dollar-sign"></i></span>
+                                                                <span className={statusclass}><i className={'mr-2 '+statusicon}></i></span>
                                                             </div>
+                                                            <h4 className={statusclass +' font-weight-bold h3'}>{data.statusStock.message}</h4>
                                                             <h4><span className="h4 font-weight-bold">Precio Actual:</span><span className="font-weight-light ml-2">{moneyFormatter(dataService.endPrice)}</span></h4>
                                                         </div>
                                                     </div>
@@ -123,9 +144,11 @@ function ServicesStock() {
                                                                 <h5 className="h3 font-weight-bold">Stock Actual</h5> 
                                                                 <div className="stock-circle mb-3">
                                                                     <div>
+                                                                        <span className="font-weight-bold">{data.currentStock}</span>
                                                                         <h5 className="h6 font-weight-bold">Disponibles</h5>
                                                                     </div>
                                                                 </div>
+                                                                <h4><span className="h4 font-weight-bold">Stock Mínimo:</span> <span className="font-weight-light ml-2">{data.minStock}</span></h4> 
                                                             </div>
                                                         </div>
                                                     </div>

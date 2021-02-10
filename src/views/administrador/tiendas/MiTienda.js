@@ -22,8 +22,11 @@ function MiTienda(props) {
     const [loading, setloading]                 = useState(true);
     const [search,  setSearch]                  = useState(true);
     const [shop,    setshop]                    = useState({});
-
+    const [status,  setstatus]                  = useState(null);
     const [sending, setsending]                 = useState(false);
+
+    const [successmessage,  setsuccessmessage]  = useState('');
+    const [errormessage,    seterrormessage]    = useState('');
 
     let id = props.match.params.id;
 
@@ -50,6 +53,64 @@ function MiTienda(props) {
     */
 
     let url = '/setting/seller/shop/general/profile/'+id;
+    let urlstatus = '/sETTiNG/SHOp/statUs/SHOP/'+id;
+
+    const getDataStatus = () => {
+        axios.get(urlstatus).then((res) => {
+            console.log(res.data.data.message);
+            setstatus(res.data.data.message);
+            setloading(false);
+        }).catch((err) => {
+            console.error(err);
+            setloading(false);
+        });
+    }
+
+    const GoUpdateStatus = (e) => {
+        e.preventDefault();
+        let urlChangeStatusToEnable  =  'sEttING/sHOp/statUs/EnaBLe';
+        let urlChangeStatusToDisable =  '/sEtting/shOP/stAtus/DISABle';
+        setsuccessmessage('');
+        seterrormessage('');
+
+        let axiosurl = '';
+
+        if(changeStatusType === 'active'){
+
+            axiosurl = urlChangeStatusToEnable;
+
+        }else if(changeStatusType === 'inactive'){
+
+            axiosurl = urlChangeStatusToDisable;
+        }
+
+        setsending(true);
+        axios({
+            method: 'put',
+            data:{
+                shopId: id
+            },
+            url: axiosurl
+        }).then((res) => {
+
+            console.log(res.data);
+            if(res.data.data.result){
+
+                setsuccessmessage(res.data.data.Message);
+                setModalChangeStatus(false);
+                setsending(false);
+                setloading(true);
+                setSearch(true);
+                
+            }else{
+                seterrormessage(res.data.data.message);
+                setModalChangeStatus(false);
+                setsending(false);
+            }
+        }).catch((err) => {
+            console.error(err);
+        })
+    }
 
     useEffect(() => {
         if(loading){
@@ -60,8 +121,8 @@ function MiTienda(props) {
 
                     console.log(res.data.data.rsAccount);
                     setshop(res.data.data.rsAccount[0]);
-                    setloading(false);
-
+                    getDataStatus();
+                    
                 }).catch((err) => {
                     console.error(err);
                     setloading(false);
@@ -92,6 +153,16 @@ function MiTienda(props) {
                 <h5 className="font-weight-bold mb-3">
                     Ver tienda - <Link to="/admin/shop/all" className="btn btn-sm btn-info">Volver a la lista</Link>
                 </h5>
+                {errormessage !== '' &&
+                    <div className="alert alert-warning">
+                        <p className="mb-0">{errormessage}</p>
+                    </div>
+                }
+                {successmessage !== '' &&
+                    <div className="alert alert-success">
+                        <p className="mb-0">{successmessage}</p>
+                    </div>
+                }
                 <Row>
                     <Col xs="12" md="4" lg="4">
                         <Card>
@@ -137,8 +208,8 @@ function MiTienda(props) {
                         </Card>
                         
                         <div>
-                            <button className="btn btn-block w-100 my-1 btn-info">Ver inventario</button>
-                            <button className="btn btn-block w-100 my-1 btn-warning">Ver estadísticas</button>
+                            <button disabled={true} className="btn btn-block w-100 my-1 btn-info">Ver inventario</button>
+                            <button disabled={true} className="btn btn-block w-100 my-1 btn-warning">Ver estadísticas</button>
                         </div>
                     </Col>
                     <Col xs="12" md="8" lg="8">
@@ -256,12 +327,16 @@ function MiTienda(props) {
                             </Card>
                         }
                         <div>
-                            <button onClick={() => OpenModalChangeStatus('active')} className="btn btn-primary shadow-sm">
-                                Activar
-                            </button>
-                            <button onClick={() => OpenModalChangeStatus('inactive')} className="btn btn-info shadow-sm">
-                                Dar de baja
-                            </button>
+                            {status === 'Activa'  &&
+                                <button onClick={() => OpenModalChangeStatus('inactive')} className="btn btn-info shadow-sm">
+                                    Dar de baja
+                                </button>
+                            }
+                            {status === 'Inactiva'  &&
+                                <button onClick={() => OpenModalChangeStatus('active')} className="btn btn-primary shadow-sm">
+                                    Activar
+                                </button>
+                            }
                         </div>
 
                         <Modal isOpen={modalChangeStatus} toggle={toggle}>
@@ -272,11 +347,13 @@ function MiTienda(props) {
                                 <h6>¿Desea {(changeStatusType === 'active' ? 'Activar' : 'Dar de baja a')} la tienda <strong>{shop.name}</strong>?</h6>
                             </ModalBody>
                             <ModalFooter>
-                            <Button color="info" 
-                            //onClick={(e) => GoUpdateTax(e)}
+                            <button 
+                            disabled={sending}
+                            className="btn btn-info"
+                            onClick={(e) => GoUpdateStatus(e)}
                             >
                                 {(sending) ? <span><i className="fa fa-spin fa-spinner"></i></span> : <span><i className="fa fa-check mr-2"></i>confirmar</span>}
-                            </Button>
+                            </button>
                             <Button color="primary" onClick={toggle}><i className="fa fa-times mr-2"></i>Cancelar</Button>
                             </ModalFooter>
                         </Modal>
