@@ -67,27 +67,28 @@ function ServicesStock() {
 
     let statusclass = '';
     let statusicon = '';
+    let Borderclass = '';
 
     if(Array.isArray(stock) && stock.length > 0 && data !== null && !search){
         console.log(data);
 
         if(data.statusStock.status === 'Insuficiente'){
             statusclass = 'text-primary';
-            statusicon = 'fa fa-exclamation-circle';
+            Borderclass = 'border-primary';
+            statusicon = 'fa fa-bell';
         }else if(data.statusStock.status === 'Alarmante'){
             statusclass = 'text-warning';
-            statusicon = 'fa fa-exclamation-triangle';
+            Borderclass = 'border-warning';
+            statusicon = 'fa fa-exclamation-triangle';;
         }else if(data.statusStock.status === 'Holgado'){
             statusclass = 'text-success';
+            Borderclass = 'border-success';
             statusicon = 'fa fa-check';
         }
     }
 
     return (
         <div>
-            <h1 className="h4 mb-3 font-weight-bold">
-                Stock de servicios
-            </h1>
             {(type !== '') &&
                 <div>
                     {type === 'service' &&
@@ -131,8 +132,8 @@ function ServicesStock() {
                                                 <div className="row">
                                                     <div className="col-lg-6">
                                                         <div className="text-center">
-                                                            <div className="stock-circle mb-3">
-                                                                <span className={statusclass}><i className={'mr-2 '+statusicon}></i></span>
+                                                            <div className={'stock-circle mb-3 '+Borderclass}>
+                                                                <span className={statusclass}><i className={statusicon}></i></span>
                                                             </div>
                                                             <h4 className={statusclass +' font-weight-bold h3'}>{data.statusStock.message}</h4>
                                                             <h4><span className="h4 font-weight-bold">Precio Actual:</span><span className="font-weight-light ml-2">{moneyFormatter(dataService.endPrice)}</span></h4>

@@ -16,6 +16,7 @@ import ProductSelect from '../../../components/selects/ProductSelect';
 import axios from 'axios'
 import InlineSpinner from '../../spinner/InlineSpinner';
 import { moneyFormatter } from '../../../utils/helpers';
+import ServicesStock from './ServicesStock';
 
 function StockMonitorSeller() {
 
@@ -32,7 +33,7 @@ function StockMonitorSeller() {
     const [variationsmodal, setvariationsModal] = useState(false);
     const [variationsList,  setvariationsList]  = useState(null);
 
-    const [type,      settype]      = useState('product');
+    const [type,      settype]      = useState('');
 
     const changeType = (type) => {
         settype(type);
@@ -81,17 +82,21 @@ function StockMonitorSeller() {
     }
 
     let statusclass = '';
+    let Borderclass = '';
     let statusicon = '';
 
     if(Array.isArray(stock) && stock.length > 0 && !search){
         if(dataProduct.statusStock.status === 'Insuficiente'){
             statusclass = 'text-primary';
-            statusicon = 'fa fa-exclamation-circle';
+            Borderclass = 'border-primary';
+            statusicon = 'fa fa-bell';
         }else if(dataProduct.statusStock.status === 'Alarmante'){
             statusclass = 'text-warning';
+            Borderclass = 'border-warning';
             statusicon = 'fa fa-exclamation-triangle';
         }else if(dataProduct.statusStock.status === 'Holgado'){
             statusclass = 'text-success';
+            Borderclass = 'border-success';
             statusicon = 'fa fa-check';
         }
     }
@@ -165,7 +170,7 @@ function StockMonitorSeller() {
             <h1 className="h4 mb-3 font-weight-bold">
                 Stock de productos
             </h1>
-            <Row className="d-none">
+            <Row>
                 <Col md="12">
                     <Card>
                         <div className="p-3">
@@ -186,7 +191,11 @@ function StockMonitorSeller() {
                 </Col>
             </Row>
 
-            {(type !== '') &&
+            {(type === 'service') && 
+                <ServicesStock />
+            }
+
+            {(type === 'product') &&
                 <div>
                     {type === 'product' &&
                         <form action="">
@@ -230,8 +239,8 @@ function StockMonitorSeller() {
                                                 <div className="row">
                                                     <div className="col-lg-6">
                                                         <div className="text-center">
-                                                            <div className="stock-circle mb-3">
-                                                                <span className={statusclass}><i className={'mr-2 '+statusicon}></i></span>
+                                                            <div className={'stock-circle mb-3 '+Borderclass}>
+                                                                <span className={statusclass}><i className={statusicon}></i></span>
                                                             </div>
                                                             <h4 className={statusclass +' font-weight-bold h3'}>{dataProduct.statusStock.message}</h4>
                                                             <h4 className="d-none"><span className="h4 font-weight-bold">Precio Actual:</span><span className="font-weight-light ml-2">{moneyFormatter(dataProduct.price)}</span></h4>
