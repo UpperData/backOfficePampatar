@@ -158,9 +158,9 @@ function CustomFileInput(props) {
             props.onChange(null);
 
             /*
-            if(props.handlePreview){
-                props.handlePreview(null);
-            }
+                if(props.handlePreview){
+                    props.handlePreview(null);
+                }
             */
         }
     }

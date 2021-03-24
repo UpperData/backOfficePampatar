@@ -11,23 +11,28 @@ import {
     SET_NATIONALITIES,
     SET_BANKS,
     SET_ADDRESS_TYPES,
-    SET_GENERAL_DAYS
+    SET_GENERAL_DAYS,
+    SET_BID_TYPES,
+    SET_DISPONIBILITY_TYPES
   } from "../constants";
   
   const INIT_STATE = {
     role: {},
-    menu: null,
-    phoneTypes:     null,
-    storeTypes:     null,
-    salesChannels:  null,
-    documentTypes:  null,
-    peopleTypes:    null,
-    regions:        null,
-    nationalities:  null,
-    genders:        null,
-    banks:          null,
-    addressTypes:    null,
-    generalsDays:    null
+    menu:                       null,
+    phoneTypes:                 null,
+    storeTypes:                 null,
+    salesChannels:              null,
+    documentTypes:              null,
+    peopleTypes:                null,
+    regions:                    null,
+    nationalities:              null,
+    genders:                    null,
+    banks:                      null,
+    addressTypes:               null,
+    generalsDays:               null,
+
+    bidTypes:                   null,
+    disponibilityTypes:         null,
   };
   
   export default (state = INIT_STATE, action) => {
@@ -37,6 +42,19 @@ import {
             ...state,
             role: action.payload
         };
+
+      case SET_BID_TYPES:
+        return {
+            ...state,
+            bidTypes: action.payload
+        };
+        
+      case SET_DISPONIBILITY_TYPES:
+        return {
+            ...state,
+            disponibilityTypes: action.payload
+        };
+        
       case SET_BACKOFFICE_MENU:
         return {
             ...state,

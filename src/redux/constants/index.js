@@ -18,6 +18,9 @@ export const SET_BANKS = "SET_BANKS";
 export const SET_ADDRESS_TYPES = "ADDRESS_TYPES";
 export const SET_GENERAL_DAYS = "GENERAL_DAYS";
 
+export const SET_BID_TYPES = "SET_BID_TYPES";
+export const SET_DISPONIBILITY_TYPES = "SET_DISPONIBILITY_TYPES";
+
 // SETTINGS CONSTANTS
 export const LOGO_BG = "LOGO_BG";
 export const NAVBAR_BG = "NAVBAR_BG";

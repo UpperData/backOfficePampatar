@@ -24,6 +24,8 @@ import {
   set_nationalities,
   set_banks,
   set_address_types,
+  set_bid_types,
+  set_disponibility_types,
 } 
 from "./redux/backoffice/Actions";
 
@@ -242,6 +244,14 @@ const AppRouter = (props) => {
 
           if(backoffice.addressTypes === null){
             dispatch(set_address_types());
+          }
+
+          if(backoffice.bidTypes === null){
+            dispatch(set_bid_types());
+          }
+
+          if(backoffice.disponibilityTypes === null){
+            dispatch(set_disponibility_types());
           }
 
           if(session.storeLogo === null){

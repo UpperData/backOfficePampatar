@@ -11,7 +11,9 @@ import {
     SET_GENDERS,
     SET_BANKS,
     SET_ADDRESS_TYPES,
-    SET_GENERAL_DAYS
+    SET_GENERAL_DAYS,
+    SET_BID_TYPES,
+    SET_DISPONIBILITY_TYPES
 } from '../constants';
 import axios from 'axios'
 
@@ -40,6 +42,42 @@ export const set_general_days = () => {
                 dispatch({
                     type: SET_GENERAL_DAYS,
                     payload: res.data.data
+                })
+            }
+          })
+          .catch(err => console.log(err + "action"))
+    }
+}
+
+export const set_bid_types = () => {
+    let url = '/sKU/types/get';
+    return dispatch => {
+        axios
+          .get(url)
+          .then(res => {
+            console.log(res.data);
+            if(res.data){
+                dispatch({
+                    type: SET_BID_TYPES,
+                    payload: res.data
+                })
+            }
+          })
+          .catch(err => console.log(err + "action"))
+    }
+}
+
+export const set_disponibility_types = () => {
+    let url = '/DispONIBility/GET/alL';
+    return dispatch => {
+        axios
+          .get(url)
+          .then(res => {
+            //console.log(res.data);
+            if(res.data){
+                dispatch({
+                    type: SET_DISPONIBILITY_TYPES,
+                    payload: res.data
                 })
             }
           })

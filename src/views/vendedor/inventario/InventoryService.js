@@ -127,6 +127,30 @@ function InventoryService(props) {
             errorsCount++;
         }
 
+        console.log(days);
+
+        if(days === null || (Array.isArray(days) && days.length === 0)){
+            thiserrors.hours = 'Debe ingresar un horario para su servicio.';
+            errorsCount++;
+        }else{
+            for (let i = 0; i < days.length; i++) {
+                const element = days[i];
+                let start   = moment(element.hours.start);
+                let end     = moment(element.hours.end);
+                
+                if(element.day === null){
+                    thiserrors.hours = 'Recuerde que para asignar un horario es necesario seleccionar un dia de la semana.';
+                    errorsCount++;
+                }else if((element.hours.start === "" || element.hours.start === null) || (element.hours.end === "" || element.hours.end === null)){
+                    thiserrors.hours = 'Recuerde todo horario ingresado debe incluir una hora de comienzo y una de culminacion.';
+                    errorsCount++;
+                }else if(start.isAfter(end)){
+                    thiserrors.hours = 'Recuerde que la hora de culminacion de su servicio debe ser posterior al comienzo.';
+                    errorsCount++;
+                }
+            }
+        }
+
         if(errorsCount > 0){
             console.log(thiserrors);
             seterrors(thiserrors);
@@ -557,6 +581,13 @@ function InventoryService(props) {
                                         </div>
                                     </Col>
                                     <Col md="12">
+                                        {(typeof errors === 'object' && errors.hasOwnProperty('hours')) &&
+                                            <div className="alert alert-danger font-weight-bold">
+                                                <p className="mb-0 small">
+                                                    {errors.hours}
+                                                </p>
+                                            </div>
+                                        }
                                         <div className="form-group">
                                             <label htmlFor="">Horario:</label>
                                             <TimePanel value={days} onChange={setdays} />

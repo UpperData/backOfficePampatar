@@ -2,12 +2,16 @@ import React, {useState, useEffect} from 'react'
 import Select from 'react-select'
 import axios from 'axios'
 
-function PrincipalCategoriesSelect(props) {
+function SkuForBidSelect(props) {
 
     const [list, setList]       = useState([]);
     const [loading, setLoading] = useState(true);
     const [search,  setsearch]  = useState(true);
-    let url = '/menu/cat1';
+
+    let typeBid = props.typeBid;
+    let typeBidName = typeBid === 3 ? 'service' : 'product';
+
+    let url = '/sKU/inventOry/avaIlabLe/gET/'+typeBidName+'/'+typeBid+'';
 
     useEffect(() => {
         if(loading){
@@ -15,12 +19,12 @@ function PrincipalCategoriesSelect(props) {
                 const getData = () => {
                     axios.get(url).then((res) => {
                         console.log(res.data);
-                        let items = res.data.data.menu;
+                        let services = res.data;
                         let newList = [];
             
-                        for(var i=0; i < items.length; i++){
+                        for(var i=0; i < services.length; i++){
                             
-                            let thisElement = items[i];
+                            let thisElement = services[i];
             
                             let formattedElement = {};
                             formattedElement.label = thisElement.name;
@@ -38,7 +42,7 @@ function PrincipalCategoriesSelect(props) {
                 getData();
             }
         }
-    }, [loading,search, url]);
+    }, [loading,search,url]);
 
     const handleSelect = async (selectedOption) => {
         console.log(selectedOption);
@@ -51,26 +55,16 @@ function PrincipalCategoriesSelect(props) {
     if(loading){
         return (
             <Select 
-                placeholder="Cargando categorías"  
+                placeholder="Cargando"  
                 options={[]} 
             />
         )
     }else{
-
-        let elementSelected = null;
-
-        if(props.value !== undefined && props.value !== null && list.length > 0){
-            let findElement = list.find(item => item.value === props.value.value);
-            elementSelected = findElement;
-            //console.log(findElement);
-            //console.log(props.value);
-        }
-
         return (
             <Select 
                 isSearchable={true}
-                placeholder="Categoría" 
-                value={(props.value !== undefined && props.value !== null && list.length > 0) ? elementSelected : null}  
+                placeholder="Tipo" 
+                value={(props.value !== undefined && props.value !== null) ? props.value :null} 
                 onChange={handleSelect} 
                 options={list} 
             />
@@ -78,4 +72,4 @@ function PrincipalCategoriesSelect(props) {
     }
 }
 
-export default PrincipalCategoriesSelect
+export default SkuForBidSelect

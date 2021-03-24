@@ -53,7 +53,7 @@ function ActualizarLote() {
 
         axios(urlGetUpdate+data.value)
         .then((res) => {
-            //console.log(res.data);
+            console.log(res.data);
             setlotes(res.data.items);
             setsearchLotes(false);
         }).catch((err) => {

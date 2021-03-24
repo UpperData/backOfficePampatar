@@ -214,3 +214,103 @@
     align-items: center;
     margin: auto;
 }
+
+.step-list{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    li{
+        width: 200px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        position: relative;
+
+        &:last-of-type{
+            .content-button{
+                
+                &::before{
+                    display: none;
+                    top: 0;
+                    bottom: 0;
+                    left: inherit;
+                    right: calc(50% - 50px);
+                    margin: auto;
+                }
+            }
+        }
+
+        .content-button{
+            text-align: center;
+            position: relative;
+            
+            &::before{
+                content: "";
+                display: block;
+                position: absolute;
+                background-color: $light;
+                height: 4px;
+                width: calc(50% - 25px);
+    
+                top: 0;
+                bottom: 0;
+                left: calc(50% + 50px);
+                margin: auto;
+            }
+        }
+
+        .stepname{
+            display: block;
+            width: 100%;
+            text-align: center;
+            font-size: .8rem;
+            font-weight: bold;
+            padding: 15px;
+            color: $secondary;
+        }
+
+        &.active{
+            .stepname{
+                color: $info;
+            }
+
+            button{
+                background-color: $info;
+                border: 5px solid $info;
+                font-weight: bold;
+                color: $light;
+            }
+        }
+        
+        button{
+            &:active, &:focus{
+                outline: none;
+            }
+            
+            
+            padding: auto;
+            margin: 0;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border: 5px solid $light;
+            font-weight: bold;
+            color: $info;
+            background-color: $light;
+            transition: .4s ease all;
+
+            &:hover{
+                transform: scale(1.1);
+                opacity: .8;
+            }
+        }
+    }
+}

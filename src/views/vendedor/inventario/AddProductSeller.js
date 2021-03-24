@@ -45,6 +45,16 @@ function AddProductSeller(props) {
 
     //Edit
 
+    const reset = () => {
+        setwarehouse(null);
+        setskuId(null);
+        setvariation([]);
+        setnote('');
+        setprice('');
+        setquantity('');
+        setcountvariation(0);
+    }
+
     const changeWarehouse = (data) => {
         setwarehouse(data);
     }
@@ -133,9 +143,19 @@ function AddProductSeller(props) {
                 thiserrors.variations = 'Revise las variaciones y sus parametros, recuerde que debe completar los datos de la variación en su totalidad.';
             }
 
+            if(variation.length < 2){
+                errorsCount++;
+                thiserrors.variations = 'Debe registrar un mínimo de 2 variaciones para ingresar un lote con esta caracteristica.';
+            }
+
             if(Number(variationstotalquantity) > Number(quantity)){
                 errorsCount++;
-                thiserrors.variations = 'Las cantidades de productos por variación no deben exceder a la cantidad de productos ingresados en el lote';
+                thiserrors.variations = 'Las cantidades sumadas de productos por variación no deben exceder a la cantidad de productos ingresados en el lote';
+            }
+
+            if(Number(variationstotalquantity) !== Number(quantity)){
+                errorsCount++;
+                thiserrors.variations = 'Las cantidades sumadas de productos por variación deben ser iguales a la cantidad total del lote';
             }
         }
 
@@ -215,6 +235,7 @@ function AddProductSeller(props) {
                 setsending(false);
                 if(res.data.data.result){
                     window.scrollTo({top: 10, behavior: 'smooth'});
+                    reset();
                     setsuccessmessage('¡Lote creado satisfactoriamente!')
                 }else{
                     window.scrollTo({top: 10, behavior: 'smooth'});
@@ -287,7 +308,7 @@ function AddProductSeller(props) {
         setpricemessage('');
         console.log(value);
 
-        let urlPrice = '/getPriceCurrent/Inventory/sku/'+value.value;
+        let urlPrice = '/getPriceCurrent/Inventory/sku/'+value.value+'/product';
 
         axios.get(urlPrice).then((res) => {
             console.log(res.data);
@@ -573,7 +594,7 @@ function AddProductSeller(props) {
                                                         <Row>
                                                             <Col md="12">
                                                                 <div className="form-group">
-                                                                    <label htmlFor="">Talla:</label>
+                                                                    <label htmlFor="">Talla</label>
                                                                     <SizesCombobox onChange={(data) => changeVariationData(item.id, 'size', data)} list={variationList.TALLAS} value={(activeForm) ? search[0].size : '' } />
                                                                     {/* 
                                                                         <SizesSelect onChange={(data) => changeVariationData(item.id, 'size', data)} value={(activeForm) ? search[0].size : '' } />
@@ -582,7 +603,7 @@ function AddProductSeller(props) {
                                                             </Col>
                                                             <Col md="6">
                                                                 <div className="form-group">
-                                                                    <label htmlFor="">Cantidad:</label>
+                                                                    <label htmlFor="">Cantidad</label>
                                                                     <input 
                                                                         type="number" 
                                                                         placeholder="Cantidad"
@@ -595,7 +616,7 @@ function AddProductSeller(props) {
                                                             </Col>
                                                             <Col md="6">
                                                                 <div className="form-group">
-                                                                    <label htmlFor="">Descuento:</label>
+                                                                    <label htmlFor="">Descuento <i className="fa fa-percent ml-2"></i></label>
                                                                     <input 
                                                                         type="number"
                                                                         placeholder="Descuento"

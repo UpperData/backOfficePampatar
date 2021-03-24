@@ -25,6 +25,7 @@ const UpdateTax     = lazy(()     => import("../views/administrador/impuestos/Up
 //vendedor
 
 const BidsSellerAd    = lazy(()     => import("../views/vendedor/publicaciones/BidsSellerAd"));
+const List            = lazy(()     => import("../views/vendedor/publicaciones/List"));
 
 const ViewWarehouseSeller = lazy(() => import("../views/vendedor/mis-almacenes/ViewWarehouseSeller"));
 const AddWarehouseSeller = lazy(() => import("../views/vendedor/mis-almacenes/AddWarehouseSeller"));
@@ -228,6 +229,12 @@ var ThemeRoutesByRole = [
     path: "/bidsSellerAdd",
     name: "Crear publicacion",
     component: BidsSellerAd,
+    onlyRoute:true
+  },
+  {
+    path: "/bidsSellerList",
+    name: "Ver publicaciones",
+    component: List,
     onlyRoute:true
   },
   //impuestos
