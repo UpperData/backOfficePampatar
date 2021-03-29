@@ -63,7 +63,7 @@ function SkuForBidSelect(props) {
         return (
             <Select 
                 isSearchable={true}
-                placeholder="Tipo" 
+                placeholder="Publicación" 
                 value={(props.value !== undefined && props.value !== null) ? props.value :null} 
                 onChange={handleSelect} 
                 options={list} 

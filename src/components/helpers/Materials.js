@@ -3,24 +3,34 @@ import MaterialOffSelect from '../selects/MaterialOffSelect'
 
 function Materials(props) {
 
-    const [materialslist, setmaterialslist] = useState(props.value === null ? null : props.value);
+    const [materialslist, setmaterialslist] = useState(props.value === null ? [] : props.value);
     const [count, setcount]                 = useState(0);
 
     useEffect(() => {
-        if(props.value !== materialslist){
-            props.onChange(materialslist);
+        if(materialslist.length === 0 && (props.value !== null && props.value.length > 0)){
+            setmaterialslist(props.value);
         }else{
-            //console.log(props.value);
+            if(props.value !== materialslist){
+                props.onChange(materialslist);
+            }else{
+                //console.log(props.value);
+            }
         }
     });
 
     const DeleteItem = (id) => {
         let list                = materialslist;
         let listwithoutItem     = list.filter(item => item.id !== id);
+        console.log(listwithoutItem);
 
-        for (let i = 0; i < listwithoutItem.length; i++) {
-            const item = listwithoutItem[i];
-            item.id = i+1;
+        if(listwithoutItem.length > 0){
+            for (let i = 0; i < listwithoutItem.length; i++) {
+                const item = listwithoutItem[i];
+                item.id = i+1;
+            }
+        }else{
+            listwithoutItem = [];
+            props.onChange(listwithoutItem);
         }
 
         setmaterialslist(listwithoutItem);
@@ -82,7 +92,11 @@ function Materials(props) {
                                         Materiales de fabricación
                                     </label>
                                     <div className="form-group mb-0">
-                                        <MaterialOffSelect value={item.type}  onChange={(value) => changeItem('type', value, item)} />
+                                        {item.type === null || item.type.hasOwnProperty("value") && item.type.value !== "non_id" ?
+                                            <MaterialOffSelect value={item.type}  onChange={(value) => changeItem('type', value, item)} />
+                                        :
+                                            <input className="form-control" value={item.type.label} readOnly />
+                                        }
                                     </div>
                                 </div>
                                 <div className="col-md-4">
@@ -116,7 +130,7 @@ function Materials(props) {
                 </div>
             }
 
-            <button type="button" onClick={() => addMaterial()} className="btn btn-primary my-2 font-weight-bold">
+            <button type="button" onClick={() => addMaterial()} className="btn btn-block btn-primary my-2 font-weight-bold">
                 Añadir material
             </button>
         </div>

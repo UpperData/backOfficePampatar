@@ -7,20 +7,26 @@ import {
 	Card,
 	CardBody,
     CardTitle,
-    CustomInput
+    CustomInput,
+    Button, 
+    Modal, 
+    ModalHeader, 
+    ModalBody, 
+    ModalFooter 
 } from 'reactstrap';
 
 import PrincipalCategoriesSelect from '../../../components/selects/PrincipalCategoriesSelect';
 import MultipleFileInput from '../../../components/files/MultipleFileInput';
 import SkuTypeSelect from '../../../components/selects/SkuTypeSelect';
-import TypeBidSelect from '../../../components/selects/TypeBidSelect';
 import ServicesSelect from '../../../components/selects/servicesSelect';
-import DisponibilitySelect from '../../../components/selects/DisponibilitySelect';
-import Materials from '../../../components/helpers/Materials';
 import MaterialOffSelect from '../../../components/selects/MaterialOffSelect';
-import InputPhotos from '../../../components/files/InputPhotos';
 import CategoriesSelect from '../../../components/selects/CategoriesSelect';
 import ProductSelect from '../../../components/selects/ProductSelect';
+
+import TypeBidSelect from '../../../components/selects/TypeBidSelect';
+import DisponibilitySelect from '../../../components/selects/DisponibilitySelect';
+import Materials from '../../../components/helpers/Materials';
+import InputPhotos from '../../../components/files/InputPhotos';
 import SkuForBidSelect from '../../../components/selects/SkuForBidSelect';
 import BrandSelect from '../../../components/selects/brandSelect';
 import InlineSpinner from '../../spinner/InlineSpinner';
@@ -87,6 +93,12 @@ function BidsSellerAd() {
         depth:   ""
     });
 
+    const [materialName, setmaterialName]               = useState("");
+    const [materialquantity, setmaterialquantity]       = useState("");    
+
+    const [showModalNewMaterial, setShowModalNewMaterial] = useState(false);
+    const toggle = () => setShowModalNewMaterial(!showModalNewMaterial);
+
     let stepName = [
         {name: 'title',             stepname: 'Información comercial'},
         {name: 'media',             stepname: 'Media'},
@@ -114,16 +126,134 @@ function BidsSellerAd() {
         }
     }
 
+    const backStep = () => {
+        let activeStepIndex = steps.indexOf(activeStep);
+        let next = activeStepIndex -1;
+
+        setActiveStep(steps[next]);
+        console.log(activeStepIndex);
+
+        window.scrollTo({top: 50, behavior: 'smooth'});
+    }
+
     const nextStep = () => {
         let activeStepIndex = steps.indexOf(activeStep);
         let next = activeStepIndex + 1;
-        if(steps.length - 1 >= next){
-            setActiveStep(steps[next]);
-            console.log(activeStepIndex);
-        }else{
-            console.log("No es posible realizar esta accion");
+
+        let validate = validateStep();
+
+        if(validate){
+            if(steps.length - 1 >= next){
+                seterrors({});
+                setActiveStep(steps[next]);
+                console.log(activeStepIndex);
+            }else{
+                console.log("No es posible realizar esta accion");
+            }
+            window.scrollTo({top: 50, behavior: 'smooth'});
         }
-        window.scrollTo({top: 300, behavior: 'smooth'});
+    }
+
+    const validateStep = () => {
+        let countErrors = 0;
+        let actualStep = activeStep;
+        let thiserrors = {};
+
+        if(actualStep === "title"){
+            if(title === ''){
+                thiserrors.title = "Debe ingresar un título para la publicación";
+                countErrors++;
+            }else if(title.length < 20){
+                thiserrors.title = "El titulo de su publicacion es demasiado corto";
+                countErrors++;
+            }
+    
+            if(smallDesc === ''){
+                thiserrors.smallDesc = "Debe ingresar una descripcion corta";
+                countErrors++;
+            }else if(smallDesc.length < 20){
+                thiserrors.smallDesc = "La descripción corta debe ser mas amplia";
+                countErrors++;
+            }else if(smallDesc.length > 200){
+                thiserrors.smallDesc = "La descripción corta debe ser menos amplia";
+                countErrors++;
+            }
+        
+            if(longDesc === ''){
+                thiserrors.longDesc = "Debe ingresar una descripcion";
+                countErrors++;
+            }if(longDesc.length < 256){
+                thiserrors.longDesc = "La descripción es muy corta";
+                countErrors++;
+            }else if(longDesc.length > 800){
+                thiserrors.longDesc = "La descripción es muy larga";
+                countErrors++;
+            }
+    
+            if(tags.length === 0){
+                thiserrors.tags = "Ingrese al menos una etiqueta.";
+                countErrors++;
+            }
+            
+            if(disponibilityId === '' || disponibilityId === null){
+                thiserrors.disponibilityId = "Seleccione el tipo de disponibilidad.";
+                countErrors++;
+            }
+    
+            if(bidType.value !== 3){
+                if( categorylvl2 === null || (Array.isArray(categorylvl2) && categorylvl2.length === 0) ){
+                    thiserrors.categorylvl2 = "Seleccione una sub-categoría.";
+                    countErrors++;
+                }
+            }
+        }
+
+        if(actualStep === "details"){
+            if(materials === null || (Array.isArray(materials) && materials.length === 0)){
+                thiserrors.materials = "Debe ingresar un material como mínimo.";
+                countErrors++;
+            }
+    
+            if(brandId === null){
+                thiserrors.brandId = "Seleccione una marca.";
+                countErrors++;
+            }
+
+            if(weight === "" || Number(weight) === 0){
+                thiserrors.weight = "Debe añadir el peso.";
+                countErrors++;
+            }        
+        }
+
+        if(actualStep === "media"){
+            if(photo1 === null){
+                thiserrors.photo1 = "Debe ingresar una foto principal.";
+                countErrors++;
+            }
+    
+            if(photo2 === null){
+                thiserrors.photo2 = "Debe ingresar una foto con angulos.";
+                countErrors++;
+            }
+    
+            if(photo3 === null){
+                thiserrors.photo3 = "Debe ingresar una foto a comparacion de escala";
+                countErrors++;
+            }
+    
+            if(photo4 === null){
+                thiserrors.photo4 = "Debe ingresar una foto siendo usado.";
+                countErrors++;
+            }
+        }
+
+        if(countErrors > 0){
+            window.scrollTo({top: 50, behavior: 'smooth'});
+            seterrors(thiserrors);
+            return false;
+        }else{
+            return true;
+        }
     }
 
     const validate = () => {
@@ -142,8 +272,6 @@ function BidsSellerAd() {
             errorInStep = "title";
         }
 
-        console.log(smallDesc.length);
-
         if(smallDesc === ''){
             thiserrors.smallDesc = "Debe ingresar una descripcion corta";
             countErrors++;
@@ -157,8 +285,6 @@ function BidsSellerAd() {
             countErrors++;
             errorInStep = "title";
         }
-
-        console.log(longDesc.length);
 
         if(longDesc === ''){
             thiserrors.longDesc = "Debe ingresar una descripcion";
@@ -243,6 +369,22 @@ function BidsSellerAd() {
             errorInStep = "media";
         }
 
+        if(photo4 === null){
+            thiserrors.photo4 = "Debe ingresar una foto siendo usado.";
+            countErrors++;
+            errorInStep = "media";
+        }
+
+        if(urlVideos !== ""){
+            console.log("url:"+urlVideos);
+            let regvideo = /^(http(s)??\:\/\/)?(www\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])/;
+            if(!regvideo.test(urlVideos)){
+                thiserrors.video = "La url ingresada debe corresponder a un video de youtube";
+                countErrors++;
+                errorInStep = "media";
+            }
+        }
+
         if(countErrors > 0){
             if(errorInStep !== ''){
                 setActiveStep(errorInStep);
@@ -275,7 +417,7 @@ function BidsSellerAd() {
                     for (let i = 0; i < materials.length; i++) {
                         const material = materials[i];
                         let newMaterial = {};
-                        newMaterial.id    =   material.id;
+                        newMaterial.id    =   material.type.value;
                         newMaterial.name  =   material.type.label;
                         newMaterial.qty   =   material.qty;
 
@@ -343,7 +485,7 @@ function BidsSellerAd() {
                     for (let i = 0; i < materials.length; i++) {
                         const material = materials[i];
                         let newMaterial = {};
-                        newMaterial.id    =   material.id;
+                        newMaterial.id    =   material.type.value;
                         newMaterial.name  =   material.type.label;
                         newMaterial.qty   =   material.qty;
 
@@ -520,7 +662,7 @@ function BidsSellerAd() {
                     if(disableInput){
                         setTimeout(() => {
                             setdisableInput(false);
-                        }, 200);
+                        }, 400);
                     }
                 }
             }
@@ -598,6 +740,39 @@ function BidsSellerAd() {
         });
         setpublished(false);
     }
+    
+    const backTo = () => {
+        if(bidType !== null){
+            if(skuId !== null){
+                //setsteps(null);
+                //setActiveStep(null);
+                setskuId(null);
+            }else{
+                setbidType(null);
+                reset();
+            }
+        }
+    }
+
+    const addMaterial = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let listMaterials = materials !== null ? materials : [];
+        let newMaterial = {
+            id: listMaterials.length + 1,
+            type: {label: materialName, value: "non_id"},
+            qty: materialquantity
+        }
+
+        listMaterials.push(newMaterial);
+        setmaterials(listMaterials);
+        setmaterialName("");
+        setmaterialquantity("");
+        setShowModalNewMaterial(false);
+    }
+
+    //console.log(materials);
 
     if(!loading){
         if(!published){
@@ -606,28 +781,86 @@ function BidsSellerAd() {
                     <h1 className="h4 mb-3 font-weight-bold">
                         Nueva publicación
                     </h1>
+
+                    <Modal isOpen={showModalNewMaterial} toggle={toggle}>
+                        <form onSubmit={(e) => addMaterial(e)} action="">
+                            <ModalHeader toggle={toggle}>
+                                <strong>
+                                    Nuevo material
+                                </strong>
+                            </ModalHeader>
+                            <ModalBody>
+                                <div className="">
+                                    <div className="row">
+                                        <div className="col-lg-7">
+                                            <div className="form-group">
+                                                <label htmlFor="materialname">
+                                                    Nombre del material
+                                                </label>
+                                                <input 
+                                                    required
+                                                    id="materialname"
+                                                    value={materialName}
+                                                    onChange={(e) => setmaterialName(e.target.value)}
+                                                    type="text" 
+                                                    className="form-control"
+                                                    placeholder="Nombre material" 
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-lg-5">
+                                            <div className="form-group">
+                                                <label htmlFor="quantitymaterial">
+                                                    Cantidad de material
+                                                </label>
+                                                <input 
+                                                    required
+                                                    id="quantitymaterial"
+                                                    value={materialquantity}
+                                                    onChange={(e) => setmaterialquantity(e.target.value)}
+                                                    type="number" 
+                                                    className="form-control" 
+                                                    placeholder="0" 
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ModalBody>
+                            <ModalFooter>
+                                <button color="primary" className="btn btn-primary" type="submit">
+                                    Añadir material
+                                </button>
+                                <Button color="secondary" onClick={toggle}>
+                                    Cancel
+                                </Button>
+                            </ModalFooter>
+                        </form>
+                    </Modal>
                     
                     <Card>
-                        <CardBody className="border-bottom">
-                            <CardTitle className="mb-0 font-weight-bold">
-                                <i className="fa fa-list mr-2"></i>
-                                Datos de la publicación: { bidType!==null ? bidType.label : ''}
-                            </CardTitle>
-                        </CardBody>
+                        {(bidType !== null) &&
+                            <CardBody className="border-bottom">
+                                <CardTitle className="mb-0 font-weight-bold">
+                                    <button onClick={() => backTo()} className="btn btn-unstyled mr-3 text-primary px-4">
+                                        <i className="fa fa-angle-left"></i>
+                                    </button>
+                                    Publicación: { bidType!==null ? <span className="text-muted">{bidType.label}</span> : ''} { skuId!==null ? <span className="text-muted">{", tipo: "+skuId.label}</span> : ''}
+                                </CardTitle>
+                            </CardBody>
+                        }
 
-                        <CardBody className="pb-5">
+                        <CardBody>
                             {(bidType === null) &&
-                                <div className="step step1 my-5 ">
+                                <div className="step step1 my-2">
                                     <div className="row justify-content-md-center">
                                         <div className="col col-lg-8">
-                                            <div className="">
+                                            <div className="text-center">
                                                 <h4 className="font-weight-bold">Tipo de publicacion</h4>
-                                                <p>Para comenzar, elija el tipo de publicación que desea crear.</p>
-                                                
-                                                
+                                                <p>Para comenzar, elija el tipo de publicación que desea crear.</p>                                      
                                                 <form id="Form" className="form-horizontal mt-2">
                                                     <div className="form-group content form-block-holder">
-                                                        <TypeBidSelect value={bidType} onChange={changeTypeBid} />
+                                                        <TypeBidSelect icons={true} value={bidType} onChange={changeTypeBid} />
                                                     </div>
                                                 </form>
                                             </div>
@@ -636,14 +869,17 @@ function BidsSellerAd() {
                                 </div>
                             }
 
-                            {(bidType !== null && typeof bidType === 'object' && bidType.hasOwnProperty("value")) &&
-                                <div className="step my-5">
+                            {(bidType !== null && skuId === null && typeof bidType === 'object' && bidType.hasOwnProperty("value")) &&
+                                <div className="step my-2">
                                     <div className="row justify-content-md-center">
                                         <div className="col col-lg-8">
-                                            <div className="">
+                                            <div className="text-center">
                                                 <h4 className="font-weight-bold mb-3">
                                                     <span>{bidType.label}</span> a publicar
                                                 </h4>
+                                                <p>
+                                                    Asocie la publicación con un producto u servicio de su inventario.
+                                                </p>
                                                 <form id="Form" className="form-horizontal mt-2">
                                                     <div className="form-group content form-block-holder">
                                                         <SkuForBidSelect typeBid={bidType.value} value={skuId} onChange={setskuId} />
@@ -660,15 +896,14 @@ function BidsSellerAd() {
                                     
                                     {Array.isArray(steps) && steps.length > 0 &&
                                         <div className="w-100">
-                                            <h6 className="text-center h5 mb-4 font-weight-bold">
-                                                Pasos
-                                            </h6>
                                             <ul className="step-list">
                                                 {steps.map((step, key) => {
                                                     return (
                                                         <li className={activeStep === step ? "active" : ""} key={key}>
                                                             <div className="w-100 content-button">
-                                                                <button onClick={() => setActiveStep(step)}>
+                                                                <button 
+                                                                    //onClick={() => setActiveStep(step)}
+                                                                >
                                                                     {Number(steps.indexOf(step)) + 1}
                                                                 </button>
                                                             </div>
@@ -679,77 +914,82 @@ function BidsSellerAd() {
                                                     )
                                                 })}
                                             </ul>
-                                            <hr/>
                                         </div>
                                     }
 
                                     <form onSubmit={(e) => publish(e)} action="">
                                         {(steps.indexOf('title') !== -1 && activeStep === 'title') &&
-                                            <div className="step mt-5 ">
+                                            <div className="step mt-3 ">
                                                 <div className="row justify-content-md-center">
                                                     <div className="col col-lg-8">
                                                         <div className="">
                                                             <h4 className="font-weight-bold mb-3">Información comercial</h4>
                                                             
-                                                                <div className="form-group content form-block-holder">
-                                                                    <label htmlFor="title" className="control-label">
-                                                                        Título
-                                                                    </label>
-                                                                    <div>
-                                                                        <input 
-                                                                            id="title"
-                                                                            type="text" 
-                                                                            className="form-control"
-                                                                            placeholder="Ingrese el Titulo de la publicación"
-                                                                            value={title}
-                                                                            onChange={(e) => settitle(e.target.value)}
-                                                                        />
-                                                                    </div>
-                                                                    {(typeof errors === 'object' && errors.hasOwnProperty('title')) &&
-                                                                        <div className="help-block text-danger font-weight-bold">
-                                                                            <small>
-                                                                                {errors.title}
-                                                                            </small>
+                                                                <div className="row">
+                                                                    <div className="col-lg-6">
+                                                                        <div className="form-group content form-block-holder">
+                                                                            <label htmlFor="title" className="control-label">
+                                                                                Título
+                                                                            </label>
+                                                                            <div>
+                                                                                <input 
+                                                                                    id="title"
+                                                                                    type="text" 
+                                                                                    className="form-control"
+                                                                                    placeholder="Ingrese el Titulo de la publicación"
+                                                                                    value={title}
+                                                                                    onChange={(e) => settitle(e.target.value)}
+                                                                                />
+                                                                            </div>
+                                                                            {(typeof errors === 'object' && errors.hasOwnProperty('title')) &&
+                                                                                <div className="help-block text-danger font-weight-bold">
+                                                                                    <small>
+                                                                                        {errors.title}
+                                                                                    </small>
+                                                                                </div>
+                                                                            }
                                                                         </div>
-                                                                    }
-                                                                </div>
-                                                                <div className="form-group content form-block-holder">
-                                                                    <label htmlFor="smallDesc" className="control-label">
-                                                                        Descripción corta
-                                                                    </label>
-                                                                    <div>
-                                                                        <input 
-                                                                            type="text" 
-                                                                            id="smallDesc"
-                                                                            className="form-control"
-                                                                            placeholder="Descripción corta"
-                                                                            value={smallDesc}
-                                                                            onChange={(e) => setsmallDesc(e.target.value)}
-                                                                        />
                                                                     </div>
-                                                                    {(typeof errors === 'object' && errors.hasOwnProperty('smallDesc')) &&
-                                                                        <div className="help-block text-danger font-weight-bold">
-                                                                            <small>
-                                                                                {errors.smallDesc}
-                                                                            </small>
+                                                                    <div className="col-lg-6">
+                                                                        <div className="form-group content form-block-holder">
+                                                                            <label htmlFor="smallDesc" className="control-label">
+                                                                                Descripción corta
+                                                                            </label>
+                                                                            <div>
+                                                                                <input 
+                                                                                    type="text" 
+                                                                                    id="smallDesc"
+                                                                                    className="form-control"
+                                                                                    placeholder="Descripción corta"
+                                                                                    value={smallDesc}
+                                                                                    onChange={(e) => setsmallDesc(e.target.value)}
+                                                                                />
+                                                                            </div>
+                                                                            {(typeof errors === 'object' && errors.hasOwnProperty('smallDesc')) &&
+                                                                                <div className="help-block text-danger font-weight-bold">
+                                                                                    <small>
+                                                                                        {errors.smallDesc}
+                                                                                    </small>
+                                                                                </div>
+                                                                            }
                                                                         </div>
-                                                                    }
+                                                                    </div>
                                                                 </div>
+
                                                                 <div className="form-group content form-block-holder">
                                                                     <label htmlFor="longDesc" className="control-label">
                                                                         Descripción
                                                                     </label>
                                                                     <div>
                                                                         <textarea 
-                                                                            name="longDesc" 
-                                                                            id="longDesc" 
-                                                                            cols="30" 
-                                                                            rows="4" 
-                                                                            className="form-control"
-                                                                            placeholder="Descripción"
-                                                                            value={longDesc}
-                                                                            onChange={(e) => setlongDesc(e.target.value)}
-                                                                        ></textarea>
+                                                                        value={longDesc} 
+                                                                        onChange={(e) => setlongDesc(e.target.value)}
+                                                                        name="longDesc" 
+                                                                        id="longDesc" 
+                                                                        cols="30" 
+                                                                        placeholder="Ingrese una descripcion para su publicacion"
+                                                                        className="form-control"
+                                                                        rows="5"></textarea>
                                                                     </div>
                                                                     {(typeof errors === 'object' && errors.hasOwnProperty('longDesc')) &&
                                                                         <div className="help-block text-danger font-weight-bold">
@@ -820,48 +1060,53 @@ function BidsSellerAd() {
                                                                     </div>
                                                                 }
 
-                                                                <div className="form-group">
-                                                                    <label className="control-label">
-                                                                        Disponibilidad
-                                                                    </label>
-                                                                    <DisponibilitySelect value={disponibilityId} onChange={setdisponibilityId} />
-                                                                </div>
-                                                                {(typeof errors === 'object' && errors.hasOwnProperty('disponibilityId')) &&
-                                                                    <div className="help-block text-danger font-weight-bold">
-                                                                        <small>
-                                                                            {errors.disponibilityId}
-                                                                        </small>
+                                                                <div className="row">
+                                                                    <div className="col-lg-6">
+                                                                        <div className="form-group">
+                                                                            <label className="control-label">
+                                                                                Disponibilidad
+                                                                            </label>
+                                                                            <DisponibilitySelect value={disponibilityId} onChange={setdisponibilityId} />
+                                                                            {(typeof errors === 'object' && errors.hasOwnProperty('disponibilityId')) &&
+                                                                                <div className="help-block text-danger font-weight-bold">
+                                                                                    <small>
+                                                                                        {errors.disponibilityId}
+                                                                                    </small>
+                                                                                </div>
+                                                                            }
+                                                                        </div>
                                                                     </div>
-                                                                }
+                                                                    <div className="col-lg-6">
+                                                                        <div className="form-group">
+                                                                            <label htmlFor="">Etiquetas</label>
+                                                                            <TagsInput
+                                                                                className="my-tags-input react-tagsinput"
+                                                                                value={tags}
+                                                                                onChange={(tags) => setTags(tags)}
+                                                                                tagProps={{
+                                                                                    className: "react-tagsinput-tag bg-info text-white rounded",
+                                                                                }}
+                                                                                inputProps={{
+                                                                                    className: 'react-tagsinput-input',
+                                                                                    placeholder: 'Añadir etiqueta'
+                                                                                }}
+                                                                            />
 
-                                                              
-                                                                    <div className="form-group">
-                                                                        <label htmlFor="">Etiquetas</label>
-                                                                        <p className="text-muted small">
-                                                                            Usamos las etiquetas para ayudar a los compradores a encontrar tu publicacion.
-                                                                        </p>
-                                                                        <TagsInput
-                                                                            className="my-tags-input react-tagsinput"
-                                                                            value={tags}
-                                                                            onChange={(tags) => setTags(tags)}
-                                                                            tagProps={{
-                                                                                className: "react-tagsinput-tag bg-info text-white rounded",
-                                                                            }}
-                                                                            inputProps={{
-                                                                                className: 'react-tagsinput-input',
-                                                                                placeholder: 'Añadir etiqueta'
-                                                                            }}
-                                                                        />
-                                                                        {(typeof errors === 'object' && errors.hasOwnProperty('tags')) &&
-                                                                            <div className="help-block text-danger font-weight-bold">
-                                                                                <small>
-                                                                                    {errors.tags}
-                                                                                </small>
-                                                                            </div>
-                                                                        }
+                                                                            {(typeof errors === 'object' && errors.hasOwnProperty('tags')) &&
+                                                                                <div className="help-block my-2 text-danger font-weight-bold">
+                                                                                    <small>
+                                                                                        {errors.tags}
+                                                                                    </small>
+                                                                                </div>
+                                                                            }
+
+                                                                            <p className="text-muted my-2 small">
+                                                                                Usamos las etiquetas para ayudar a los compradores a encontrar tu publicacion.
+                                                                            </p>
+                                            
+                                                                        </div>
                                                                     </div>
-                                                                
-                                                                
+                                                                </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -869,21 +1114,49 @@ function BidsSellerAd() {
                                         }
 
                                         {(steps.indexOf('details') !== -1 && activeStep === 'details') &&
-                                            <div className="step mt-5 ">
+                                            <div className="step mt-3 ">
                                                 <div className="row justify-content-md-center">
                                                     <div className="col col-lg-8">
                                                         <div className="">
                                                             <h4 className="font-weight-bold mb-3">Detalles</h4>
                                                                 
+                                                                <div className="form-group content form-block-holder">
+                                                                    <label htmlFor="brandId" className="control-label">
+                                                                        Marca:
+                                                                    </label>
+                                                                    <BrandSelect value={brandId} onChange={(value) => setbrandId(value)} />
+                                                                    {(typeof errors === 'object' && errors.hasOwnProperty('brandId')) &&
+                                                                        <div className="alert alert-danger help-block text-danger font-weight-bold">
+                                                                            <small>
+                                                                                {errors.brandId}
+                                                                            </small>
+                                                                        </div>
+                                                                    }
+                                                                </div>
+
+                                                                {bidType.value === 1 &&
+                                                                    <div className="form-group">
+                                                                        <label htmlFor="">Razon</label>
+                                                                        <ReasonsSelect onChange={(value) => setreasons(value)} value={reasons} />
+                                                                        {(typeof errors === 'object' && errors.hasOwnProperty('reasons')) &&
+                                                                            <div className="alert alert-danger help-block text-danger font-weight-bold">
+                                                                                <small>
+                                                                                    {errors.reasons}
+                                                                                </small>
+                                                                            </div>
+                                                                        }
+                                                                    </div>
+                                                                }
+                                                                
                                                                 {(bidType.value !== 3) &&
                                                                     <div className="form-group">
-                                                                        <label htmlFor="longDesc" className="control-label">
+                                                                        <label htmlFor="include" className="control-label">
                                                                             El producto incluye:
                                                                         </label>
                                                                         <div>
                                                                             <textarea 
-                                                                                name="longDesc" 
-                                                                                id="longDesc" 
+                                                                                name="include" 
+                                                                                id="include" 
                                                                                 cols="30" 
                                                                                 rows="2" 
                                                                                 className="form-control"
@@ -941,24 +1214,15 @@ function BidsSellerAd() {
                                                                     </div>
                                                                 }
 
-                                                                {bidType.value === 1 &&
-                                                                    <div className="form-group">
-                                                                        <label htmlFor="">Razon</label>
-                                                                        <ReasonsSelect onChange={(value) => setreasons(value)} value={reasons} />
-                                                                        {(typeof errors === 'object' && errors.hasOwnProperty('reasons')) &&
-                                                                            <div className="alert alert-danger help-block text-danger font-weight-bold">
-                                                                                <small>
-                                                                                    {errors.reasons}
-                                                                                </small>
-                                                                            </div>
-                                                                        }
-                                                                    </div>
-                                                                }
+                                                    
 
                                                                 <div className="form-group content form-block-holder">
                                                                     <Materials value={materials} onChange={(value) => setmaterials(value)} />
+                                                                    <button onClick={() => setShowModalNewMaterial(true)} type="button" className="btn font-weight-bold btn-block btn-info">
+                                                                        Nuevo material
+                                                                    </button>
                                                                     {(typeof errors === 'object' && errors.hasOwnProperty('materials')) &&
-                                                                        <div className="alert alert-danger help-block text-danger font-weight-bold">
+                                                                        <div className="alert alert-danger mt-3 help-block text-danger font-weight-bold">
                                                                             <small>
                                                                                 {errors.materials}
                                                                             </small>
@@ -967,56 +1231,6 @@ function BidsSellerAd() {
                                                                 </div>
 
                                                                 
-                                                                <div className="form-group content form-block-holder">
-                                                                    <label htmlFor="longDesc" className="control-label">
-                                                                        Marca:
-                                                                    </label>
-                                                                    <BrandSelect value={brandId} onChange={(value) => setbrandId(value)} />
-                                                                    {(typeof errors === 'object' && errors.hasOwnProperty('brandId')) &&
-                                                                        <div className="alert alert-danger help-block text-danger font-weight-bold">
-                                                                            <small>
-                                                                                {errors.brandId}
-                                                                            </small>
-                                                                        </div>
-                                                                    }
-                                                                </div>
-                                                                
-
-                                                                {(bidType.value !== 3) &&
-                                                                    <div>
-                                                                        <div className="form-group">
-                                                                            <CustomInput 
-                                                                                checked={garanty == true}
-                                                                                onChange={() => setgaranty(!garanty)}
-                                                                                className="d-inline-flex mr-3" 
-                                                                                type="checkbox" 
-                                                                                id={`garanty`} 
-                                                                                name={`garanty`}    
-                                                                                label='Garantía' 
-                                                                            />
-                                                                        </div>
-                                                                        {(garanty === true) &&
-                                                                            <div className="d-flex align-items-center mb-3">
-                                                                                <label htmlFor="garanty_days" className="control-label mr-3 mb-0">
-                                                                                    Días de garantía
-                                                                                </label>
-                                                                                <div>
-                                                                                    <input 
-                                                                                        style={{width: '75px'}}
-                                                                                        type="number" 
-                                                                                        id="garanty_days"
-                                                                                        min="0"
-                                                                                        className="form-control"
-                                                                                        placeholder="Días de garantia"
-                                                                                        value={garantyDays}
-                                                                                        onChange={(e) => setgarantyDays(e.target.value)}
-                                                                                    />
-                                                                                </div>
-                                                                            </div>
-                                                                        }
-                                                                    </div>
-                                                                }
-
                                                                     {(bidType.value !== 3) &&
                                                                         <div className="form-group content form-block-holder">
                                                                             <label className="control-label">
@@ -1063,7 +1277,7 @@ function BidsSellerAd() {
                                                                     }
 
                                                                     <div className="row">
-                                                                        {(bidType.value !== 3) &&
+                                                                        
                                                                             <div className="col-lg-4">
                                                                                 <div className="d-flex align-items-center mb-3">
                                                                                     <label htmlFor="weight" className="control-label mb-0 mr-3">
@@ -1082,14 +1296,21 @@ function BidsSellerAd() {
                                                                                         />
                                                                                     </div>
                                                                                 </div>   
+                                                                                {(typeof errors === 'object' && errors.hasOwnProperty('weight')) &&
+                                                                                    <div className="alert alert-danger help-block text-danger font-weight-bold">
+                                                                                        <small>
+                                                                                            {errors.weight}
+                                                                                        </small>
+                                                                                    </div>
+                                                                                }
                                                                             </div>
-                                                                        }
+                                                                        
 
                                                                     {(bidType.value === 1) &&
                                                                         <div className="col-lg-8">
                                                                             <div className="d-flex align-items-center mb-0">
                                                                                 <label htmlFor="time" className="control-label mb-0 mr-3">
-                                                                                    Duracion de fabricacion:
+                                                                                    Duracion de fabricacion (Días):
                                                                                 </label>
                                                                                 <div>
                                                                                     <input 
@@ -1103,9 +1324,6 @@ function BidsSellerAd() {
                                                                                         onChange={(e) => settime(e.target.value)}
                                                                                     />
                                                                                 </div>
-                                                                                <label htmlFor="time" className="ml-3 mb-0 control-label">
-                                                                                    Días:
-                                                                                </label>
                                                                             </div>
                                                                             <p className="mb-3 d-none small text-muted">
                                                                                 (En caso de que no haya stock)
@@ -1113,9 +1331,9 @@ function BidsSellerAd() {
                                                                         </div>
                                                                     }
                                                                 </div>
-                                                                
-                                                                <div className="">
-                                                                    <div className="form-group">
+                                                                <div className="row align-items-center">
+                                                                <div className="col-lg-5">
+                                                                    <div>
                                                                         <CustomInput 
                                                                             checked={devolution == true}
                                                                             onChange={() => setdevolution(!devolution)}
@@ -1123,8 +1341,51 @@ function BidsSellerAd() {
                                                                             type="checkbox" 
                                                                             id={`customizable`} 
                                                                             name={`Devoluciones`}    
-                                                                            label='Devoluciones' 
+                                                                            label='¿Acepta devoluciones?' 
                                                                         />
+                                                                    </div>
+                                                                </div>
+                                                                    <div className="col-lg-7">
+                                                                    {(bidType.value !== 3) &&
+                                                                    <div className="row align-items-center">
+                                                                        <div className="col-lg-6">
+                                                                            <div>
+                                                                                <CustomInput 
+                                                                                    checked={garanty == true}
+                                                                                    onChange={() => setgaranty(!garanty)}
+                                                                                    className="d-inline-flex mr-3" 
+                                                                                    type="checkbox" 
+                                                                                    id={`garanty`} 
+                                                                                    name={`garanty`}    
+                                                                                    label='¿Posee garantía?' 
+                                                                                />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="col-lg-6">
+                                                                            {(garanty === true) &&
+                                                                                <div>
+                                                                                <div className="d-flex align-items-center">
+                                                                                    <label htmlFor="garanty_days" className="control-label mr-3 mb-0">
+                                                                                        Días
+                                                                                    </label>
+                                                                                    <div>
+                                                                                        <input 
+                                                                                            style={{width: '75px'}}
+                                                                                            type="number" 
+                                                                                            id="garanty_days"
+                                                                                            min="0"
+                                                                                            className="form-control"
+                                                                                            placeholder="Días de garantia"
+                                                                                            value={garantyDays}
+                                                                                            onChange={(e) => setgarantyDays(e.target.value)}
+                                                                                        />
+                                                                                    </div>
+                                                                                </div>
+                                                                                </div>
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                }
                                                                     </div>
                                                                 </div>
                                                         </div>
@@ -1135,7 +1396,7 @@ function BidsSellerAd() {
 
                                         {(steps.indexOf('customization') !== -1 && activeStep === 'customization') &&
                                             <div>
-                                                <div className="step step1 mt-5 ">
+                                                <div className="step step1 mt-3 ">
                                                     <div className="row justify-content-md-center">
                                                         <div className="col col-lg-8">
                                                             <div className="mb-3">
@@ -1168,79 +1429,106 @@ function BidsSellerAd() {
 
                                         {(steps.indexOf('media') !== -1 && activeStep === 'media') &&
                                             <div>
-                                                <div className="step step1 mt-5 ">
+                                                <div className="step step1 mt-3 ">
                                                     <div className="row justify-content-md-center">
                                                         <div className="col col-lg-8">
                                                             <div className="mb-3">
                                                                 <h4 className="font-weight-bold mb-0">Media</h4>
                                                                 <small className="text-muted mb-2">Adjuntar archivos</small>
                                                             </div>
-                                                            <h5 className="mb-3 font-weight-bold">Fotos:</h5>
-                                                            <div className="form-group">
-                                                                <label htmlFor="customize" className="mb-1">
-                                                                    <strong>1.-</strong> Foto principal
-                                                                </label>
-                                                                <p className="mb-2 small text-muted">
-                                                                    La foto que se mostrara en las busquedas y con la cual sera representada la publicacion.
-                                                                </p>
-                                                                <InputPhotos value={photo1} onChange={(photo) => setphoto1(photo)} max={1} />
-                                                                    {(typeof errors === 'object' && errors.hasOwnProperty('photo1')) &&
-                                                                        <div className="alert alert-danger help-block text-danger font-weight-bold">
-                                                                            <small>
-                                                                                {errors.photo1}
-                                                                            </small>
-                                                                        </div>
-                                                                    }
+                                                            <h5 className="mb-1 h6 font-weight-bold">Fotos:</h5>
+
+                                                            <p className="mb-3 small text-muted">
+                                                                La foto que se mostrara en las busquedas y con la cual sera representada la publicacion.
+                                                            </p>
+
+                                                            <div className="row">
+                                                                <div className="col-lg-6">
+                                                                    <div className="form-group">
+                                                                        <label htmlFor="photo1">
+                                                                            <strong className="text-primary">Principal</strong>
+                                                                        </label>
+                                                                        
+                                                                        <InputPhotos value={photo1} onChange={(photo) => setphoto1(photo)} max={1} />
+                                                                            {(typeof errors === 'object' && errors.hasOwnProperty('photo1')) &&
+                                                                                <div className="alert alert-danger help-block text-danger font-weight-bold">
+                                                                                    <small>
+                                                                                        {errors.photo1}
+                                                                                    </small>
+                                                                                </div>
+                                                                            }
+                                                                    </div>
+                                                                </div>
+                                                                <div className="col-lg-6">
+                                                                    <div className="form-group">
+                                                                        <label htmlFor="photo2">
+                                                                            <strong>Con angulos</strong>
+                                                                        </label>
+                                                                        <InputPhotos value={photo2} onChange={(photo) => setphoto2(photo)} max={1} />
+                                                                            {(typeof errors === 'object' && errors.hasOwnProperty('photo2')) &&
+                                                                                <div className="alert alert-danger help-block text-danger font-weight-bold">
+                                                                                    <small>
+                                                                                        {errors.photo2}
+                                                                                    </small>
+                                                                                </div>
+                                                                            }
+                                                                    </div>
+                                                                </div>
+                                                                <div className="col-lg-6">
+                                                                    <div className="form-group">
+                                                                        <label htmlFor="photo3">
+                                                                            <strong>Comparacion de escala</strong>
+                                                                        </label>
+                                                                        <InputPhotos value={photo3} onChange={(photo) => setphoto3(photo)} max={1} />
+                                                                            {(typeof errors === 'object' && errors.hasOwnProperty('photo3')) &&
+                                                                                <div className="alert alert-danger help-block text-danger font-weight-bold">
+                                                                                    <small>
+                                                                                        {errors.photo3}
+                                                                                    </small>
+                                                                                </div>
+                                                                            }
+                                                                    </div>
+                                                                </div>
+                                                                <div className="col-lg-6">
+                                                                    <div className="form-group">
+                                                                        <label htmlFor="photo4">
+                                                                            <strong>Siendo usado</strong>
+                                                                        </label>
+                                                                        <InputPhotos value={photo4} onChange={(photo) => setphoto4(photo)} max={1} />
+                                                                            {(typeof errors === 'object' && errors.hasOwnProperty('photo4')) &&
+                                                                                <div className="alert alert-danger help-block text-danger font-weight-bold">
+                                                                                    <small>
+                                                                                        {errors.photo4}
+                                                                                    </small>
+                                                                                </div>
+                                                                            }
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                            <div className="form-group">
-                                                                <label htmlFor="customize">
-                                                                    <strong>2.-</strong> Foto con angulos
-                                                                </label>
-                                                                <InputPhotos value={photo2} onChange={(photo) => setphoto2(photo)} max={1} />
-                                                                    {(typeof errors === 'object' && errors.hasOwnProperty('photo2')) &&
-                                                                        <div className="alert alert-danger help-block text-danger font-weight-bold">
-                                                                            <small>
-                                                                                {errors.photo2}
-                                                                            </small>
-                                                                        </div>
-                                                                    }
-                                                            </div>
-                                                            <div className="form-group">
-                                                                <label htmlFor="customize">
-                                                                    <strong>3.-</strong> Foto a comparacion de escala
-                                                                </label>
-                                                                <InputPhotos value={photo3} onChange={(photo) => setphoto3(photo)} max={1} />
-                                                                    {(typeof errors === 'object' && errors.hasOwnProperty('photo3')) &&
-                                                                        <div className="alert alert-danger help-block text-danger font-weight-bold">
-                                                                            <small>
-                                                                                {errors.photo3}
-                                                                            </small>
-                                                                        </div>
-                                                                    }
-                                                            </div>
-                                                            <div className="form-group">
-                                                                <label htmlFor="customize">
-                                                                    <strong>4.-</strong> Foto siendo usado
-                                                                </label>
-                                                                <InputPhotos value={photo4} onChange={(photo) => setphoto4(photo)} max={1} />
-                                                                    {(typeof errors === 'object' && errors.hasOwnProperty('photo4')) &&
-                                                                        <div className="alert alert-danger help-block text-danger font-weight-bold">
-                                                                            <small>
-                                                                                {errors.photo4}
-                                                                            </small>
-                                                                        </div>
-                                                                    }
-                                                            </div>
+                                                            
                                                             {(bidType !== null) &&
                                                                 <div className="form-group">
-                                                                    <label htmlFor="customize">Añadir video</label>
+                                                                    <label htmlFor="video">Añadir video 
+                                                                        (<span className="text-muted font-weight-bold">
+                                                                            url de youtube
+                                                                        </span>)
+                                                                    </label>
                                                                     <input 
+                                                                        value={urlVideos}
+                                                                        onChange={(e) => seturlVideos(e.target.value)}
                                                                         id="video"
                                                                         type="text" 
                                                                         name="video"
                                                                         className="form-control" 
                                                                         placeholder="Url del video"
                                                                     />
+                                                                    {(typeof errors === 'object' && errors.hasOwnProperty('video')) &&
+                                                                        <div className="alert alert-danger help-block text-danger my-2 font-weight-bold">
+                                                                            <small>
+                                                                                {errors.video}
+                                                                            </small>
+                                                                        </div>
+                                                                    }
                                                                 </div>
                                                             }
                                                         </div>
@@ -1248,10 +1536,23 @@ function BidsSellerAd() {
                                                 </div>
                                             </div>
                                         }
-
+                                        <hr/>
                                         <div className="row pt-3 justify-content-center">
                                         <div className="col-8">
-                                            <div className="text-right">
+                                            <div className="d-flex align-items-center justify-content-between">
+                                                {(steps.indexOf(activeStep) + 1) <= (Number(steps.length)) && ((steps.indexOf(activeStep) + 1) > 1) ?
+                                                    <button 
+                                                        type="button"
+                                                        disabled={sending}
+                                                        onClick={() => backStep()}
+                                                        className="btn btn-lg btn-light px-4 font-weight-bold"
+                                                    >
+                                                        <i className="fa fa-angle-left mr-3"></i>Atras
+                                                    </button>
+                                                    :
+                                                    <div></div>
+                                                }
+
                                                 {(steps.indexOf(activeStep) + 1) < (Number(steps.length))
                                                 ?
                                                     <button 
@@ -1260,7 +1561,7 @@ function BidsSellerAd() {
                                                         onClick={() => nextStep()}
                                                         className="btn btn-lg btn-info px-4 font-weight-bold"
                                                     >
-                                                        Siguiente
+                                                        Siguiente<i className="fa fa-angle-right ml-3"></i>
                                                     </button>
                                                 :
                                                     <button 

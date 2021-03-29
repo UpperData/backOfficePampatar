@@ -57,24 +57,53 @@ function BidTypesSelect(props) {
             />
         )
     }else{
-        let elementSelected = null;
+        if(props.icons){
+            return (
+                <div>
+                    <ul className="list-style-none pt-3 bid-type-list justify-content-center align-items-center flex-wrap d-flex p-0 m-0">
+                        {(list.map((item, key) => {
+                            let icon = "";
 
-        if(props.value !== undefined && props.value !== null && list.length > 0){
-            let findElement = list.find(item => item.value === props.value.value);
-            elementSelected = findElement;
-            //console.log(findElement);
-            //console.log(props.value);
+                            if(item.value === 1){
+                                icon = "fa fa-hand-holding-heart";
+                            }else if(item.value === 2){
+                                icon = "fa fa-boxes";
+                            }else if(item.value === 3){
+                                icon = "fa fa-paper-plane";
+                            }
+
+                            return (
+                                <li key={key} className="inline-flex justify-content-center px-4">
+                                    <button onClick={() => props.onChange(item)} className="d-flex mx-auto">
+                                        <i className={`${icon}`}></i>
+                                    </button>
+                                    <h5 className="pt-4 text-center h6 font-weight-bold">
+                                        {item.label}
+                                    </h5>
+                                </li>
+                            )
+                        }))}
+                    </ul>
+                </div>
+            )
+        }else{
+            let elementSelected = null;
+
+            if(props.value !== undefined && props.value !== null && list.length > 0){
+                let findElement = list.find(item => item.value === props.value.value);
+                elementSelected = findElement;
+            }
+
+            return (
+                <Select 
+                    isSearchable={true}
+                    placeholder="Tipo de publicacion" 
+                    value={(props.value !== undefined && props.value !== null && list.length > 0) ? elementSelected : null} 
+                    onChange={handleSelect} 
+                    options={list} 
+                />
+            )
         }
-
-        return (
-            <Select 
-                isSearchable={true}
-                placeholder="Tipo de publicacion" 
-                value={(props.value !== undefined && props.value !== null && list.length > 0) ? elementSelected : null} 
-                onChange={handleSelect} 
-                options={list} 
-            />
-        )
     }
 }
 

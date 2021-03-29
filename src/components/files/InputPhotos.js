@@ -123,24 +123,15 @@ function InputPhotos(props) {
                                 return (
                                     <li key={key} className="shadow-sm d-block my-2">
                                         <div className="row">
-                                            <div className="col-md-4">
+                                            <div className="col-md-12">
                                                 <img src={item.url} className="img-fluid shadow-sm" alt="Preview" />
                                             </div>
-                                            <div className="col-md-8 py-2 px-3">
-                                                <div className="container-fluid">
-                                                    <div className="d-flex align-center justify-content-between">
-                                                        <h6 className="font-weight-bold mb-1">Nombre:</h6>
-                                                        <button type="button" onClick={() => deleteFile(item.id)} className="btn btn-sm p-0 m-0">
-                                                            <i className="fa fa-times"></i>
-                                                        </button>
-                                                    </div>
-                                                    <small>
-                                                        {item.name}
-                                                    </small>
-                                                    <h3 className="text-info h3 font-weight-bold">
-                                                        .{item.type}
-                                                    </h3>
-                                                </div>
+                                            <div className="col-md-12">
+                                                <button type="button" 
+                                                onClick={() => deleteFile(item.id)} 
+                                                className="btn btn-block w-100 btn-sm py-2 btn-danger m-0">
+                                                    <i className="fa fa-times"></i>
+                                                </button>
                                             </div>
                                         </div>
                                     </li>
