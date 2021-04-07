@@ -73,7 +73,7 @@ function SizesCombobox(props) {
     return (
         <div>
             <div className="row">
-                <div className="col-lg-8">
+                <div className="col-lg-6">
                     <label htmlFor="">
                         Categoría:
                     </label>
@@ -86,7 +86,7 @@ function SizesCombobox(props) {
                         options={categoriesList} 
                     />
                 </div>
-                <div className="col-lg-4">
+                <div className="col-lg-6">
                     {(sizesList) &&
                         <Fragment>
                             <label htmlFor="">

@@ -18,6 +18,9 @@ const RepairContract        = lazy(()     => import("../views/administrador/cont
 const MisTiendas    = lazy(()     => import("../views/administrador/tiendas/MisTiendas"));
 const MiTienda      = lazy(()     => import("../views/administrador/tiendas/MiTienda"));
 
+const Consultar    = lazy(()      => import("../views/administrador/publicaciones/Consultar"));
+const Procesar      = lazy(()     => import("../views/administrador/publicaciones/Procesar"));
+
 const CurrentTaxes  = lazy(()     => import("../views/administrador/impuestos/CurrentTaxes"));
 const ShowTax       = lazy(()     => import("../views/administrador/impuestos/ShowTax"));
 const UpdateTax     = lazy(()     => import("../views/administrador/impuestos/UpdateTax"));
@@ -235,6 +238,18 @@ var ThemeRoutesByRole = [
     path: "/bidsSellerList",
     name: "Ver publicaciones",
     component: List,
+    onlyRoute:true
+  },
+  {
+    path: "/admIn/pUBLICATIONS/proCEsss",
+    name: "Procesar publicaciones",
+    component: Procesar,
+    onlyRoute:true
+  },
+  {
+    path: "/admIn/pUBLICATIONS/ListAll",
+    name: "Consultar publicaciones",
+    component: Consultar,
     onlyRoute:true
   },
   //impuestos

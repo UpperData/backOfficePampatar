@@ -45,10 +45,10 @@ function SkuForBidSelect(props) {
     }, [loading,search,url]);
 
     const handleSelect = async (selectedOption) => {
-        console.log(selectedOption);
+        //console.log(selectedOption);
         //props.setRegion({});
         //props.setCity({});
-        console.log(selectedOption);
+        //console.log(selectedOption);
         props.onChange(selectedOption); 
     };
 

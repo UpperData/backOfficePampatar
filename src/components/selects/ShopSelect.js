@@ -48,8 +48,6 @@ function ShopSelect(props) {
     //console.log(list);
     //console.log(props.value);
 
-    let searchData = (props.value !== null) ? list.filter(option => option.value === props.value.value)[0] : null;
-
     if(loading){
         return (
             <Select 
@@ -59,6 +57,9 @@ function ShopSelect(props) {
             />
         )
     }else{
+
+        let searchData = (props.value !== null && Array.isArray(list)) ? list.filter(option => option.value === props.value.value)[0] : null;
+        
         return (
             <Select 
                 placeholder="Seleccione una tienda" 

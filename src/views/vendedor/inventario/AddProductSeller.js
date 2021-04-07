@@ -365,7 +365,7 @@ function AddProductSeller(props) {
                     {((!props.Edit) || (props.Edit && warehouse !== null)) &&
                         <form onSubmit={(e) => goToAddProductSeller(e)} action="">
                             <Row>
-                                <Col md="7">
+                                <Col md="12">
                                     <Card>
                                         <div className="p-3">
                                             <CardTitle>
@@ -400,42 +400,6 @@ function AddProductSeller(props) {
                                                             }
                                                         </div>
                                                     </Col>
-                                                    {/* 
-                                                    <Col md="12">
-                                                        
-                                                        <div className="form-group">
-                                                            <label htmlFor="">¿Incluir en el precio promedio?</label>
-                                                            <div className="my-2">
-                                                                <CustomInput 
-                                                                    className="d-inline-flex mr-3" 
-                                                                    checked={(inPrice === true)} 
-                                                                    onChange={() => setinPrice(true)}  
-                                                                    type="radio" 
-                                                                    id={`inPrice-y`} 
-                                                                    name={`inPrice`}    
-                                                                    label='Si' 
-                                                                />
-                                                                <CustomInput 
-                                                                    className="d-inline-flex mr-3" 
-                                                                    checked={(inPrice === false)} 
-                                                                    onChange={() => setinPrice(false)}  
-                                                                    type="radio" 
-                                                                    id={`inPrice-n`} 
-                                                                    name={`inPrice`}    
-                                                                    label='No' 
-                                                                />
-                                                            </div>
-                                                            {(typeof errors === 'object' && errors.hasOwnProperty('inPrice')) &&
-                                                                <div className="help-block text-danger font-weight-bold">
-                                                                    <small>
-                                                                        {errors.inPrice}
-                                                                    </small>
-                                                                </div>
-                                                            }
-                                                        </div>
-                                                        
-                                                    </Col>
-                                                    */}
                                                     {(skuId !== null) &&
                                                         <Col md="12">
                                                             <div className="form-group">
@@ -559,94 +523,6 @@ function AddProductSeller(props) {
                                                         </div>
                                                     </Col>
                                                 </Row>
-                                        </CardBody>
-                                    </Card>
-                                </Col>
-                                <Col md="5">
-                                    <Card>
-                                        <div className="p-3">
-                                            <CardTitle>
-                                                <i className="mdi mdi-border-all mr-2"></i>Variaciones: {(variation.length === 0 ? 'no aplica' : variation.length)}
-                                            </CardTitle>
-                                        </div>
-                                        <CardBody className="border-top">
-                                            {(typeof errors === 'object' && errors.hasOwnProperty('variations')) ?
-                                                <div className="alert alert-danger font-weight-bold">
-                                                    <p className="mb-0 small">
-                                                        {errors.variations}
-                                                    </p>
-                                                </div>
-                                                :
-                                                <div className="alert alert-info">
-                                                    <p className="mb-0 small">
-                                                        <strong>Nota:</strong> Las variaciones se utilizan para definir algunas características de las prendas de vestir.
-                                                    </p>
-                                                </div>
-                                            }
-                                            {variation.length > 0 && variation.length && variation.map((item, key) => {
-                                                let search = variation.filter(data => data.id === item.id);
-                                                let activeForm = search.length > 0;
-                                                
-                                                return (
-                                                    <div className="content-variation" key={key}>
-                                                        <h6 className="font-weight-bold">Variación #{item.id} <button type="button" onClick={() => deleteVariation(item.id)} className="btn ml-3 btn-primary btn-sm">Eliminar</button></h6>
-                                                        <hr/>
-                                                        <Row>
-                                                            <Col md="12">
-                                                                <div className="form-group">
-                                                                    <label htmlFor="">Talla</label>
-                                                                    <SizesCombobox onChange={(data) => changeVariationData(item.id, 'size', data)} list={variationList.TALLAS} value={(activeForm) ? search[0].size : '' } />
-                                                                    {/* 
-                                                                        <SizesSelect onChange={(data) => changeVariationData(item.id, 'size', data)} value={(activeForm) ? search[0].size : '' } />
-                                                                    */}
-                                                                </div>
-                                                            </Col>
-                                                            <Col md="6">
-                                                                <div className="form-group">
-                                                                    <label htmlFor="">Cantidad</label>
-                                                                    <input 
-                                                                        type="number" 
-                                                                        placeholder="Cantidad"
-                                                                        min="0"
-                                                                        onChange={(e) => changeVariationData(item.id, 'quantity', e.target.value)}
-                                                                        value={(activeForm) ? search[0].quantity : '' }
-                                                                        className="form-control"
-                                                                    />
-                                                                </div>
-                                                            </Col>
-                                                            <Col md="6">
-                                                                <div className="form-group">
-                                                                    <label htmlFor="">Descuento <i className="fa fa-percent ml-2"></i></label>
-                                                                    <input 
-                                                                        type="number"
-                                                                        placeholder="Descuento"
-                                                                        min="0" 
-                                                                        onChange={(e) => changeVariationData(item.id, 'discount', e.target.value)}
-                                                                        value={(activeForm) ? search[0].discount : '' }
-                                                                        className="form-control"
-                                                                    />
-                                                                </div>
-                                                            </Col>
-                                                            <Col xs="12">
-                                                                <div className="form-group">
-                                                                    <label htmlFor="">Color:</label>
-                                                                    <CheckColors id={item.id} onChange={(data) => changeVariationData(item.id, 'color', data)} value={(activeForm) ? search[0].color : '' } list={variationList.COLORES} />
-                                                                </div>
-                                                            </Col>
-                                                        </Row>
-                                                    </div>
-                                                )
-                                            })}
-
-                                            {(variation.length < maxVariations) &&
-                                                <button 
-                                                    type="button" 
-                                                    onClick={() => addVariation()} 
-                                                    className="btn btn-outline-info font-weight-bold btn-block w-100"
-                                                >
-                                                    <i className="fa fa-plus mr-2"></i>Añadir variación
-                                                </button>
-                                            }
                                         </CardBody>
                                     </Card>
                                     {props.Edit 

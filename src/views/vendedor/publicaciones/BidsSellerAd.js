@@ -12,7 +12,9 @@ import {
     Modal, 
     ModalHeader, 
     ModalBody, 
-    ModalFooter 
+    ModalFooter,
+    Row,
+    Col 
 } from 'reactstrap';
 
 import PrincipalCategoriesSelect from '../../../components/selects/PrincipalCategoriesSelect';
@@ -22,6 +24,9 @@ import ServicesSelect from '../../../components/selects/servicesSelect';
 import MaterialOffSelect from '../../../components/selects/MaterialOffSelect';
 import CategoriesSelect from '../../../components/selects/CategoriesSelect';
 import ProductSelect from '../../../components/selects/ProductSelect';
+
+import CheckColors from '../../../components/helpers/CheckColors';
+import SizesCombobox from '../../../components/helpers/SizesCombobox';
 
 import TypeBidSelect from '../../../components/selects/TypeBidSelect';
 import DisponibilitySelect from '../../../components/selects/DisponibilitySelect';
@@ -93,29 +98,108 @@ function BidsSellerAd() {
         depth:   ""
     });
 
+    //variations
+    const [variationList,    setvariationList]          = useState([]);
+    const [variation,        setvariation]              = useState([]);
+    const [countvariation,   setcountvariation]         = useState(0);
+    const maxVariations = 5;
+    const [stock,            setstock]                  = useState(null);
+    
+
     const [materialName, setmaterialName]               = useState("");
-    const [materialquantity, setmaterialquantity]       = useState("");    
+    const [materialquantity, setmaterialquantity]       = useState("");   
+
+    const session = useSelector(state => state.session);
+    let shopId = session.userData.shop.id;
+    
+    //==================================================================================
 
     const [showModalNewMaterial, setShowModalNewMaterial] = useState(false);
     const toggle = () => setShowModalNewMaterial(!showModalNewMaterial);
+
+    const addVariation = () => {
+        console.log('Añadiendo variacion');
+        let id = variation.length + 1;
+        let variationList = variation;
+        let newVariation = 
+        {
+                id,
+                size: null,
+                quantity:"",
+                discount:'',
+                color:""
+        };
+
+        variationList.push(newVariation);
+        console.log(variationList);
+
+        setvariation(variationList);
+        setcountvariation(countvariation + 5);
+    }
+
+    //console.log(variation);
+    //console.log(variation.length);
+
+    const changeVariationData = (id, keyName, value) => {
+        let variationList = variation;
+        for (let i = 0; i < variationList.length; i++) {
+            const element = variationList[i];
+            if(element.id === id){
+                console.log('Cambiando:'+keyName+' a:'+value);
+                element[keyName] = value;
+            }
+        }
+
+        setvariation(variationList);
+        setcountvariation(countvariation + 5);
+    }
+
+    const deleteVariation = (id) => {
+        //alert(phoneNumber);
+        let variationList = variation;
+        variationList.splice(id - 1, 1);
+        let newVariationList = [];
+        console.log(variationList);
+
+        for (let i = 0; i < variationList.length; i++) {
+            let format = variationList[i];
+            format.id = i + 1;
+            newVariationList.push(format);
+        }
+
+        console.log(newVariationList);
+        setvariation(newVariationList);
+        setcountvariation(countvariation + 5);
+    }
 
     let stepName = [
         {name: 'title',             stepname: 'Información comercial'},
         {name: 'media',             stepname: 'Media'},
         {name: 'details',           stepname: 'Detalles'},
+        {name: 'variations',        stepname: 'Variaciones'},
         {name: 'customization',     stepname: 'Personalización'},
     ];
 
     const changeTypeBid = (value) => {
-        if(value.value === 2){
+        if(value.value === 1){
             setsteps([
                 'title',
                 'details',
+                "variations",
                 'media'
             ]);
             setActiveStep('title');
             setbidType(value);
-        }else{
+        }else if(value.value === 2){
+            setsteps([
+                'title',
+                'details',
+                "variations",
+                'media'
+            ]);
+            setActiveStep('title');
+            setbidType(value);
+        }else if(value.value === 3){
             setsteps([
                 'title',
                 'details',
@@ -223,6 +307,56 @@ function BidsSellerAd() {
                 thiserrors.weight = "Debe añadir el peso.";
                 countErrors++;
             }        
+        }
+
+        if(actualStep === "variations"){
+            if(variation.length > 0){
+                let variationList = variation;
+                let variationErrorsCount = 0;
+                let variationstotalquantity = 0;
+    
+                for (let i = 0; i < variationList.length; i++) {
+                    const variation = variationList[i];
+    
+                    if(variation.size === null){
+                        variationErrorsCount++;
+                    }
+    
+                    if(variation.quantity === '' || Number(variation.quantity) === 0){
+                        variationErrorsCount++;
+                    }
+    
+                    if(variation.quantity === '' || Number(variation.quantity) === 0){
+                        variationErrorsCount++;
+                    }else{
+                        variationstotalquantity = Number(variationstotalquantity) + Number(variation.quantity);
+                    }
+    
+                    if(variation.color === ''){
+                        variationErrorsCount++;
+                    }
+                }
+    
+                if(variationErrorsCount > 0){
+                    countErrors++;
+                    thiserrors.variations = 'Revise las variaciones y sus parametros, recuerde que debe completar los datos de la variación en su totalidad.';
+                }
+
+                if(Number(variationstotalquantity) > Number(stock)){
+                    countErrors++;
+                    thiserrors.variations = 'Las cantidades sumadas de productos por variación no deben exceder a la cantidad de productos ingresados en el lote';
+                }
+                
+                if(Number(variationstotalquantity) !== Number(stock)){
+                    countErrors++;
+                    thiserrors.variations = 'Las cantidades sumadas de productos por variación deben ser iguales a la cantidad total del lote '+stock+'';
+                }  
+    
+                if(variation.length < 2){
+                    countErrors++;
+                    thiserrors.variations = 'Debe registrar un mínimo de 2 variaciones para ingresar un lote con esta caracteristica.';
+                }
+            }
         }
 
         if(actualStep === "media"){
@@ -555,6 +689,31 @@ function BidsSellerAd() {
                             photo4[0].type+","+photo4[0].url
                         ]
                     }
+
+                    if(variation.length > 0){
+                        let variationList = variation;
+                        let newvariationList = [];
+        
+                        for (let i = 0; i < variationList.length; i++) {
+                            const element = variationList[i];
+                            let formatVariation = {};
+                            console.log(element.size.value);
+        
+                            formatVariation.size        = element.size.value;
+                            formatVariation.quantity    = element.quantity;
+                            formatVariation.discount    = element.discount;
+                            formatVariation.color       = element.color;
+        
+                            newvariationList.push(formatVariation);
+                        }
+        
+                        console.log(newvariationList);
+                        data.variations = newvariationList;
+        
+                    }else{
+                        data.variations = null;
+                    }
+
                     setsending(true);
                     console.log(data);
                     
@@ -617,6 +776,31 @@ function BidsSellerAd() {
                             photo4[0].type+","+photo4[0].url
                         ]
                     }
+
+                    if(variation.length > 0){
+                        let variationList = variation;
+                        let newvariationList = [];
+        
+                        for (let i = 0; i < variationList.length; i++) {
+                            const element = variationList[i];
+                            let formatVariation = {};
+                            console.log(element.size.value);
+        
+                            formatVariation.size        = element.size.value;
+                            formatVariation.quantity    = element.quantity;
+                            formatVariation.discount    = element.discount;
+                            formatVariation.color       = element.color;
+        
+                            newvariationList.push(formatVariation);
+                        }
+        
+                        console.log(newvariationList);
+                        data.variations = newvariationList;
+        
+                    }else{
+                        data.variations = null;
+                    }
+
                     setsending(true);
                     console.log(data);
                     
@@ -645,11 +829,23 @@ function BidsSellerAd() {
     useEffect(() => {
         if(loading){
             if(search){
+                setsearch(false);
                 let url = '/menu';
+                let urlGetVariations = 'https://intimi.vps.co.ve/inner/pampatarStatic/data/variations.json';
 
                 axios.get(url).then((res) => {
                     setmenuCats(res.data.data.menu);
-                    setloading(false);
+
+                    axios.get(urlGetVariations)
+                    .then((res) => {
+                        //console.log('variations');
+                        //console.log(res.data);
+                        setvariationList(res.data);
+                        setloading(false);
+                    }).catch((err) => {
+                        console.error(err);
+                    });
+
                 });
             }
         }else{
@@ -774,6 +970,26 @@ function BidsSellerAd() {
 
     //console.log(materials);
 
+    const setsku = (val) => {
+        console.log(bidType);
+        console.log(val);
+
+        if(bidType.value === 3){
+            setskuId(val);
+        }else{
+            console.log("Buscando stock del producto/material");
+            let urlstock = '/stock/GET/AlL/byPrO-Ser/'+val.value+'/product/'+shopId+'';
+            setskuId(val);
+
+            axios.get(urlstock).then((res) => {
+                console.log("stock encontrado!:",res.data.data.stock);
+                setstock(res.data.data.stock);
+            }).catch((err) => {
+                console.error(err);
+            });
+        }
+    }
+
     if(!loading){
         if(!published){
             return (
@@ -882,7 +1098,7 @@ function BidsSellerAd() {
                                                 </p>
                                                 <form id="Form" className="form-horizontal mt-2">
                                                     <div className="form-group content form-block-holder">
-                                                        <SkuForBidSelect typeBid={bidType.value} value={skuId} onChange={setskuId} />
+                                                        <SkuForBidSelect typeBid={bidType.value} value={skuId} onChange={(val) => setsku(val)} />
                                                     </div>
                                                 </form>
                                             </div>
@@ -1394,33 +1610,106 @@ function BidsSellerAd() {
                                             </div>
                                         }
 
-                                        {(steps.indexOf('customization') !== -1 && activeStep === 'customization') &&
+                                        {(steps.indexOf('variations') !== -1 && activeStep === 'variations') &&
                                             <div>
                                                 <div className="step step1 mt-3 ">
                                                     <div className="row justify-content-md-center">
                                                         <div className="col col-lg-8">
                                                             <div className="mb-3">
-                                                                <h4 className="font-weight-bold">Personalización</h4>
+                                                                <h4 className="font-weight-bold">Variaciones</h4>
                                                             </div>
-                                                            <div className="form-group">
-                                                                <CustomInput 
-                                                                    className="d-inline-flex mr-3" 
-                                                                    type="checkbox" 
-                                                                    id={`customizable`} 
-                                                                    name={`customizable`}    
-                                                                    label='Producto personalizable' 
-                                                                />
-                                                            </div>    
-                                                            <div className="form-group">
-                                                                <label htmlFor="customize">Tipo de Personalización</label>
-                                                                <input 
-                                                                    id="customize"
-                                                                    type="text" 
-                                                                    name="customize"
-                                                                    className="form-control" 
-                                                                    placeholder="Describa la personalización"
-                                                                />
-                                                            </div>          
+                                                            <div className="mb-3 alert alert-info">
+                                                                <p className="mb-0 font-weight-bold">
+                                                                    Stock del articulo: {stock}
+                                                                </p>
+                                                            </div>
+                                                            {(typeof errors === 'object' && errors.hasOwnProperty('variations')) ?
+                                                                <div className="alert alert-danger font-weight-bold">
+                                                                    <p className="mb-0 small">
+                                                                        {errors.variations}
+                                                                    </p>
+                                                                </div>
+                                                                :
+                                                                <div className="alert alert-info">
+                                                                    <p className="mb-0 small">
+                                                                        <strong>Nota:</strong> Las variaciones se utilizan para definir algunas características de las prendas de vestir.
+                                                                    </p>
+                                                                </div>
+                                                            }
+
+                                                            {variation.length > 0 && variation.length && variation.map((item, key) => {
+                                                                let search = variation.filter(data => data.id === item.id);
+                                                                let activeForm = search.length > 0;
+                                                                
+                                                                return (
+                                                                    <div className="content-variation" key={key}>
+                                                                        <div className="d-flex align-items-center justify-content-between">
+                                                                            <h6 className="font-weight-bold mb-0">
+                                                                                Variación #{item.id} 
+                                                                            </h6>
+                                                                            <button 
+                                                                            type="button" onClick={() => deleteVariation(item.id)} 
+                                                                            className="btn ml-3 btn-primary btn-sm">
+                                                                                <i className="fa fa-times"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                        <hr/>
+                                                                        <Row>
+                                                                            <Col md="12">
+                                                                                <div className="form-group">
+                                                                                    <label htmlFor="">Talla</label>
+                                                                                    <SizesCombobox onChange={(data) => changeVariationData(item.id, 'size', data)} list={variationList.TALLAS} value={(activeForm) ? search[0].size : '' } />
+                                                                                    {/* 
+                                                                                        <SizesSelect onChange={(data) => changeVariationData(item.id, 'size', data)} value={(activeForm) ? search[0].size : '' } />
+                                                                                    */}
+                                                                                </div>
+                                                                            </Col>
+                                                                            <Col md="6">
+                                                                                <div className="form-group">
+                                                                                    <label htmlFor="">Cantidad</label>
+                                                                                    <input 
+                                                                                        type="number" 
+                                                                                        placeholder="Cantidad"
+                                                                                        min="0"
+                                                                                        onChange={(e) => changeVariationData(item.id, 'quantity', e.target.value)}
+                                                                                        value={(activeForm) ? search[0].quantity : '' }
+                                                                                        className="form-control"
+                                                                                    />
+                                                                                </div>
+                                                                            </Col>
+                                                                            <Col md="6">
+                                                                                <div className="form-group">
+                                                                                    <label htmlFor="">Descuento <i className="fa fa-percent ml-2"></i></label>
+                                                                                    <input 
+                                                                                        type="number"
+                                                                                        placeholder="Descuento"
+                                                                                        min="0" 
+                                                                                        onChange={(e) => changeVariationData(item.id, 'discount', e.target.value)}
+                                                                                        value={(activeForm) ? search[0].discount : '' }
+                                                                                        className="form-control"
+                                                                                    />
+                                                                                </div>
+                                                                            </Col>
+                                                                            <Col xs="12">
+                                                                                <div className="form-group">
+                                                                                    <label htmlFor="">Color:</label>
+                                                                                    <CheckColors id={item.id} onChange={(data) => changeVariationData(item.id, 'color', data)} value={(activeForm) ? search[0].color : '' } list={variationList.COLORES} />
+                                                                                </div>
+                                                                            </Col>
+                                                                        </Row>
+                                                                    </div>
+                                                                )
+                                                            })}
+
+                                                            {(variation.length < maxVariations) &&
+                                                                <button 
+                                                                    type="button" 
+                                                                    onClick={() => addVariation()} 
+                                                                    className="btn btn-outline-info font-weight-bold btn-block w-100"
+                                                                >
+                                                                    <i className="fa fa-plus mr-2"></i>Añadir variación
+                                                                </button>
+                                                            }          
                                                         </div>
                                                     </div>
                                                 </div>

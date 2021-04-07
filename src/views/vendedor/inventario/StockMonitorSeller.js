@@ -65,6 +65,7 @@ function StockMonitorSeller() {
             axios.get(urlprice).then((res) => {
                 stock.price = res.data.endPrice;
 
+                console.log(res.data);
                 console.log(stock);
                 setdataProduct(stock);
                 setsearch(false);

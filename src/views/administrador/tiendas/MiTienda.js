@@ -56,6 +56,7 @@ function MiTienda(props) {
     let urlstatus = '/sETTiNG/SHOp/statUs/SHOP/'+id;
 
     const getDataStatus = () => {
+        console.log("search status data");
         axios.get(urlstatus).then((res) => {
             console.log(res.data.data.message);
             setstatus(res.data.data.message);
