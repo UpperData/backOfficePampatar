@@ -221,6 +221,7 @@ function FindContract() {
                                     <tbody>
                                         {(list.length > 0 && list.map((item, key) => {
                                             //let date = item.createdAt.split(' ');
+                                            //item.shopRequest.Account.accountRoles[0].Status.name
                                             return (
                                                 <tr key={key}>
                                                     <td>
@@ -230,7 +231,7 @@ function FindContract() {
                                                         <strong>{item.name}</strong>
                                                     </td>
                                                     <td>
-                                                        {item.Status.name}
+                                                       
                                                     </td>
                                                     <td className="text-right">
                                                         <Link to={'/findContract/shop/'+item.id} className="btn btn-primary btn-sm">

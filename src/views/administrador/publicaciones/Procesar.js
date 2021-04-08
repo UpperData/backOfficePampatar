@@ -29,6 +29,7 @@ function Procesar() {
     const [searchdatabid, setsearchdatabid]     = useState(false);
     const [databid, setdatabid]                 = useState(null);
     const [bidSelected, setbidSelected]         = useState(null);
+    const [photos, setphotos]                   = useState(null);
 
     const [filterBySearchShop, setFilterBySearchShop]   = useState("");
 
@@ -131,12 +132,25 @@ function Procesar() {
         setbidSelected(id);
         setModal(true);
         let urlBid = `/sEtTiNg/BiD/GET/OnE/${shopSelected.id}/${id}`;
+        let urlPhotos = `/bID/GET/IMge/byBID/${id}`;
 
         axios.get(urlBid)
         .then((res) => {
+
             console.log(res.data);
-            setsearchdatabid(false);
+            //setsearchdatabid(false);
             setdatabid(res.data);
+
+            axios.get(urlPhotos)
+            .then((res) => {
+                console.log(res.data);
+                setsearchdatabid(false);
+                setphotos(res.data);
+            }).catch((err) => {
+                console.error(err);
+                setsearchdatabid(false);
+            });
+
         }).catch((err) => {
             console.error(err);
             setsearchdatabid(false);
@@ -416,7 +430,7 @@ function Procesar() {
                                                 className={activeTab === '1' ? "active font-weight-bold" : ""}
                                                 onClick={() =>  toggleTab('1')}
                                             >
-                                                Titulo
+                                                Informacion comercial
                                             </NavLink>
                                         </NavItem>
                                         <NavItem>
@@ -425,6 +439,14 @@ function Procesar() {
                                                 onClick={() =>  toggleTab('2')}
                                             >
                                                 Detalles
+                                            </NavLink>
+                                        </NavItem>
+                                        <NavItem>
+                                            <NavLink
+                                                className={activeTab === '3' ? "active font-weight-bold" : ""}
+                                                onClick={() =>  toggleTab('3')}
+                                            >
+                                                Media
                                             </NavLink>
                                         </NavItem>
                                     </Nav>
@@ -458,7 +480,7 @@ function Procesar() {
                                                         <p>
                                                             {Array.isArray(databid.tags) && databid.tags.length > 0 && databid.tags.map((item, key) => {
                                                                 return (
-                                                                    <span className="badge badge-info ml-2" key={key}>
+                                                                    <span className="badge badge-info mr-2" key={key}>
                                                                         {item}
                                                                     </span>
                                                                 )
@@ -468,63 +490,89 @@ function Procesar() {
                                                     {(databid.skuTypeId !== 3) &&
                                                         <>
                                                             <div className="col-lg-12">
-                                                                <h6 className="font-weight-bold">Categorias:</h6>
+                                                                <h6 className="font-weight-bold">Subcategorias:</h6>
                                                             </div>
                                                             <div className="col-lg-6">
-                                                                <p className="mb-1">
-                                                                    <span className="text">
-                                                                        <strong className="mr-2">Nivel 1:</strong>
-                                                                    </span>
+                                                                <span className="text">
+                                                                    <span className="mr-2 font-weight-bold">Nivel 1:</span>
+                                                                </span>
+                                                                <p className="mb-3">
                                                                     {Array.isArray(databid.category.cat1s.subCat.subCat1) && databid.category.cat1s.subCat.subCat1.length > 0 && databid.category.cat1s.subCat.subCat1.map((item, key) => {
                                                                         return (
-                                                                            <span className="badge badge-info ml-2" key={key}>
+                                                                            <span className="badge badge-info mr-2" key={key}>
                                                                                 {item.name}
                                                                             </span>
                                                                         )
                                                                     })}
+
+                                                                    {Array.isArray(databid.category.cat1s.subCat.subCat1) && databid.category.cat1s.subCat.subCat1.length === 0 &&
+                                                                        <span>
+                                                                            No aplica
+                                                                        </span>
+                                                                    }
                                                                 </p>
                                                             </div>
                                                             <div className="col-lg-6">
-                                                            <p className="mb-1">
-                                                                    <span className="text">
-                                                                        <strong className="mr-2">Nivel 2:</strong>
+                                                                <span className="text">
+                                                                    <span className="mr-2 font-weight-bold">
+                                                                        Nivel 2:
                                                                     </span>
+                                                                </span>
+                                                                <p className="mb-3">
                                                                     {Array.isArray(databid.category.cat1s.subCat.subCat2) && databid.category.cat1s.subCat.subCat2.length > 0 && databid.category.cat1s.subCat.subCat2.map((item, key) => {
                                                                         return (
-                                                                            <span className="badge badge-info ml-2" key={key}>
+                                                                            <span className="badge badge-info mr-2" key={key}>
                                                                                 {item.name}
                                                                             </span>
                                                                         )
                                                                     })}
+
+                                                                    {Array.isArray(databid.category.cat1s.subCat.subCat2) && databid.category.cat1s.subCat.subCat2.length === 0 &&
+                                                                        <span>
+                                                                            No aplica
+                                                                        </span>
+                                                                    }
                                                                 </p>
                                                             </div>
                                                             <div className="col-lg-6">
-                                                                <p className="mb-1">
-                                                                    <span className="text">
-                                                                        <strong className="mr-2">Nivel 3:</strong>
-                                                                    </span>
+                                                                <span className="text">
+                                                                    <span className="mr-2 font-weight-bold">Nivel 3:</span>
+                                                                </span>
+                                                                <p className="mb-3">
                                                                     {Array.isArray(databid.category.cat1s.subCat.subCat3) && databid.category.cat1s.subCat.subCat3.length > 0 && databid.category.cat1s.subCat.subCat3.map((item, key) => {
                                                                         return (
-                                                                            <span className="badge badge-info ml-2" key={key}>
+                                                                            <span className="badge badge-info mr-2" key={key}>
                                                                                 {item.name}
                                                                             </span>
                                                                         )
                                                                     })}
+
+                                                                    {Array.isArray(databid.category.cat1s.subCat.subCat3) && databid.category.cat1s.subCat.subCat3.length === 0 &&
+                                                                        <span>
+                                                                            No aplica
+                                                                        </span>
+                                                                    }
                                                                 </p>
                                                             </div>
                                                             <div className="col-lg-6">
-                                                            <p className="mb-1">
                                                                 <span className="text">
-                                                                    <strong className="mr-2">Nivel 4:</strong>
+                                                                    <span className="mr-2 font-weight-bold">Nivel 4:</span>
                                                                 </span>
-                                                                {Array.isArray(databid.category.cat1s.subCat.subCat4) && databid.category.cat1s.subCat.subCat4.length > 0 && databid.category.cat1s.subCat.subCat4.map((item, key) => {
-                                                                    return (
-                                                                        <span className="badge badge-info ml-2" key={key}>
-                                                                            {item.name}
+                                                                <p className="mb-3">
+                                                                    {Array.isArray(databid.category.cat1s.subCat.subCat4) && databid.category.cat1s.subCat.subCat4.length > 0 && databid.category.cat1s.subCat.subCat4.map((item, key) => {
+                                                                        return (
+                                                                            <span className="badge badge-info mr-2" key={key}>
+                                                                                {item.name}
+                                                                            </span>
+                                                                        )
+                                                                    })}
+
+                                                                    {Array.isArray(databid.category.cat1s.subCat.subCat4) && databid.category.cat1s.subCat.subCat4.length === 0 &&
+                                                                        <span>
+                                                                            No aplica
                                                                         </span>
-                                                                    )
-                                                                })}
-                                                            </p>
+                                                                    }
+                                                                </p>
                                                         </div>
                                                         </>
                                                     }
@@ -533,9 +581,29 @@ function Procesar() {
                                         </TabPane>
                                         <TabPane tabId="2">
                                             <div className="py-4">
+                                                {(databid.price) &&
+                                                    <div className="alert alert-success">
+                                                        <h3 className="font-weight-bold mb-0">
+                                                            Precio: CLP ${databid.price.price}
+                                                        </h3>
+                                                    </div>
+                                                }
+                                                {(databid.stock && databid.stock !== null) &&
+                                                    <div className="alert alert-info">
+                                                        <h3 className="font-weight-bold mb-0">
+                                                            Stock: {databid.stock.data.total}
+                                                        </h3>
+                                                    </div>
+                                                }
                                                 <div className="row">
-                                                    <div className="col-lg-6 mb-2">
-                                                        <h6><strong>Marca:</strong> {databid.Brand.name}</h6>
+                                                    <div className="col-lg-12 mb-2">
+                                                        <h6 className="font-weight-bold mb-1">
+                                                            <strong>Marca:</strong>
+                                                        </h6>
+                                                        <h2 className="font-weight-bold text-primary mb-2">
+                                                            {databid.Brand.name}
+                                                        </h2>
+                                                        <hr/>
                                                     </div>
                                                     {(databid.skuTypeId !== 3) &&
                                                         <>
@@ -568,28 +636,104 @@ function Procesar() {
                                                             <h6><strong>Tiempo de elaboracion:</strong> {databid.time} dias</h6>
                                                         </div>
                                                     }
-                                                    {(databid.skuTypeId !== 3) &&
-                                                        <div className="col-lg-12">
-                                                               {(databid.materials !== null) &&
-                                                                    <div>
-                                                                        <div className="alert alert-info mb-3">
-                                                                            <h6 className="mb-0 font-weight-bold">
-                                                                                Materiales
-                                                                            </h6>
-                                                                        </div>
-                                                                        <ul className="px-0 mx-0 list-unstyled">
-                                                                            {Array.isArray(databid.materials) && databid.materials.length > 0 && databid.materials.map((item, key) => {
-                                                                                return (
-                                                                                    <li key={key}>
-                                                                                        - {item.name} - {item.qty}
-                                                                                    </li>
-                                                                                );
-                                                                            })}
-                                                                        </ul>
-                                                                    </div>
-                                                               } 
+                                                    {(databid.weight) &&
+                                                        <div className="col-lg-6 mb-2">
+                                                            <h6>
+                                                                <strong>Peso:</strong> {databid.weight}
+                                                            </h6>
                                                         </div>
                                                     }
+                                                    {(databid.skuTypeId !== 3) &&
+                                                        <>
+                                                            <div className="col-lg-12">
+                                                                {(databid.materials !== null) &&
+                                                                        <div>
+                                                                            <div className="mb-2">
+                                                                                <h6 className="mb-0 font-weight-bold">
+                                                                                    Materiales
+                                                                                    {Array.isArray(databid.materials) && databid.materials.length > 0 && databid.materials.map((item, key) => {
+                                                                                        return (
+                                                                                            <span key={key} className="mb-2 mx-2 badge badge-info font-weight-bold">
+                                                                                                {item.name} - {item.qty}
+                                                                                            </span>
+                                                                                        );
+                                                                                    })}
+                                                                                </h6>
+                                                                            </div>
+                                                                        </div>
+                                                                } 
+                                                            </div>
+                                                            <div className="col-lg-12">
+                                                                {(databid.dimension !== null) &&
+                                                                    <div>
+                                                                        {Array.isArray(databid.dimension) &&
+                                                                            <div className="mb-2">
+                                                                                <h6 className="mb-0 mb-3 font-weight-bold">
+                                                                                    Dimensiones:
+                                                                                </h6>
+                                                                                <div className="row">
+                                                                                    <div className="col-lg-auto">
+                                                                                        <h6>
+                                                                                            <strong>Ancho:</strong> {databid.dimension[0].width} cm
+                                                                                        </h6>
+                                                                                    </div>
+                                                                                    <div className="col-lg-auto">
+                                                                                        <h6>
+                                                                                            <strong>Alto:</strong> {databid.dimension[0].height} cm
+                                                                                        </h6>
+                                                                                    </div>
+                                                                                    <div className="col-lg-auto">
+                                                                                        <h6>
+                                                                                            <strong>Profundidad:</strong> {databid.dimension[0].width} cm
+                                                                                        </h6>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        }
+                                                                    </div>
+                                                                } 
+                                                            </div>
+                                                        </>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </TabPane>
+                                        <TabPane tabId="3">
+                                            <div className="py-4">
+                                                <h3 className="font-weight-bold mb-3">
+                                                    Imagenes de la publicacion
+                                                </h3>
+                                                <div className="row">
+                                                    {Array.isArray(photos) && photos.length > 1 && photos.map((item, key) => {
+                                                        let imagen = "";
+                                                        let type = "";
+                                                        
+                                                            if(Array.isArray(item.img.data)){
+                                                                imagen = item.img.data.reduce(
+                                                                    function (data, byte) {
+                                                                        return data + String.fromCharCode(byte);
+                                                                    },
+                                                                    ''
+                                                                );
+
+                                                                let separator = imagen.split(",");
+                                                                type    = separator[0];
+                                                                imagen  = separator[separator.length - 1];
+                                                            }
+                                                        
+                                                        console.log(type);
+                                                        console.log(imagen);
+
+                                                        return (
+                                                            <div className="col-lg-6 mb-3">
+                                                                <img 
+                                                                    className="img-fluid"
+                                                                    //style='display:block; width:100px;height:100px;'                
+                                                                    src={`data:image/${type};base64,${imagen}`}
+                                                                />
+                                                            </div>
+                                                        )
+                                                    })}
                                                 </div>
                                             </div>
                                         </TabPane>

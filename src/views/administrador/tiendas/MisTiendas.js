@@ -66,12 +66,14 @@ function MisTiendas() {
     const searchShop = (text) => {
         axios.get(urlsearch+text).then((res) => {
             let newlist = res.data.data.rsShopName;
+            console.log(newlist);
+            console.log(res.data);
 
             setlist(newlist);
             setsearchByText(false);
             filterBy('sort', filterByStatus, 'status');
 
-            console.log(newlist);
+            
         }).catch((err) => {
             console.log(err);
         })
@@ -112,7 +114,7 @@ function MisTiendas() {
 
                     if(key === 'status'){
                         console.log('filter by status');
-                        filterbysort = list.sort((a,b) => a.Status.name > b.Status.name ? 1 : -1);
+                        filterbysort = list.sort((a,b) => a.shopRequest.Account.accountRoles[0].Status.name > b.shopRequest.Account.accountRoles[0].Status.name ? 1 : -1);
                     }else{
                         filterbysort = list.sort((a,b) => a[key] > b[key] ? 1 : -1);
                     }
@@ -123,7 +125,7 @@ function MisTiendas() {
                 }else if (value === 'asc'){
                     if(key === 'status'){
                         console.log('filter by status');
-                        filterbysort = list.sort((a,b) => a.Status.name < b.Status.name ? 1 : -1);
+                        filterbysort = list.sort((a,b) => a.shopRequest.Account.accountRoles[0].Status.name < b.shopRequest.Account.accountRoles[0].Status.name ? 1 : -1);
                     }else{
                         filterbysort = list.sort((a,b) => a[key] < b[key] ? 1 : -1);
                     }
@@ -254,7 +256,7 @@ function MisTiendas() {
                                                             </strong>
                                                         </h2>
                                                         <h5 className="text-muted text-center font-weight-normal">
-                                                            {item.Status.name}
+                                                            {item.shopRequest.Account.accountRoles[0].Status.name}
                                                         </h5>
                                                     </div>
                                                 </div>

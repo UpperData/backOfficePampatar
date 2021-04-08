@@ -57,14 +57,17 @@ function MiTienda(props) {
 
     const getDataStatus = () => {
         console.log("search status data");
-        axios.get(urlstatus).then((res) => {
-            console.log(res.data.data.message);
-            setstatus(res.data.data.message);
-            setloading(false);
-        }).catch((err) => {
-            console.error(err);
-            setloading(false);
-        });
+        setloading(false);
+        /*
+            axios.get(urlstatus).then((res) => {
+                console.log(res.data.data.message);
+                setstatus(res.data.data.message);
+                setloading(false);
+            }).catch((err) => {
+                console.error(err);
+                setloading(false);
+            });
+        */
     }
 
     const GoUpdateStatus = (e) => {
@@ -119,7 +122,7 @@ function MiTienda(props) {
                 setSearch(false);
 
                 axios.get(url).then((res) => {
-
+                    console.log(res.data);
                     console.log(res.data.data.rsAccount);
                     setshop(res.data.data.rsAccount[0]);
                     getDataStatus();
@@ -328,12 +331,12 @@ function MiTienda(props) {
                             </Card>
                         }
                         <div>
-                            {status === 'Activa'  &&
+                            {shop.Status.name === 'Activo'  &&
                                 <button onClick={() => OpenModalChangeStatus('inactive')} className="btn btn-info shadow-sm">
                                     Dar de baja
                                 </button>
                             }
-                            {status === 'Inactiva'  &&
+                            {shop.Status.name === 'Inactivo'  &&
                                 <button onClick={() => OpenModalChangeStatus('active')} className="btn btn-primary shadow-sm">
                                     Activar
                                 </button>
