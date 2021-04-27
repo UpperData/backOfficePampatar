@@ -6,6 +6,8 @@ import {
     Card,
     CardBody,
     CardTitle,
+    Breadcrumb, 
+    BreadcrumbItem
 } from 'reactstrap';
 import axios from 'axios';
 import CustomFileInput from '../../../components/files/CustomFileInput';
@@ -110,19 +112,26 @@ function AttachmentLogo() {
         
         return (
             <div>
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Configuraciones</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Agregar logo</BreadcrumbItem>
+                </Breadcrumb>
+
                 <h1 className="h4 mb-3 font-weight-bold">Agregar logo</h1>
+
                 {(successmessage !== '') &&
                     <div className="mb-2 alert alert-success">
                         {successmessage}
                     </div>
                 }
+
                 <form onSubmit={(e) => changeLogo(e)} action="">
                     <Row>
                         <Col md="12">
                             <Card>
                                 <div className="p-3">
                                     <CardTitle>
-                                        <i className="mdi mdi-border-all mr-2"></i> Logo de la tienda
+                                        Logo de la tienda
                                     </CardTitle>
                                 </div>
                                 <CardBody className="border-top">
@@ -132,7 +141,7 @@ function AttachmentLogo() {
                                             </Col>
                                             <Col sm="5">
                                                 <CustomFileInput returnFileType='base64' showPreview={true} value={logo} setBinary={setbinarylogo} onChange={setlogo} />
-                                                <small><strong>Nota:</strong> solo puede subir archivos png/jpg/jpeg</small>
+                                                <small className="pt-3"><strong>Nota:</strong> solo archivos png/jpg/jpeg</small>
                                             </Col>
                                         </Row>
                                 </CardBody>
@@ -140,7 +149,7 @@ function AttachmentLogo() {
                         </Col>
                     </Row>
                     <div className="text-right">
-                        <button disabled={sending} className="btn btn-primary">
+                        <button disabled={sending} className="btn btn-lg font-weight-bold btn-primary">
                             {(sending) ? <span><i className="mr-2 fa fa-spin fa-spinner"></i>Guardando</span> : 'Guardar cambios'}
                         </button>
                     </div>
@@ -150,8 +159,12 @@ function AttachmentLogo() {
     }else{
         return (
             <div>
-                 <h1 className="h4 mb-3 font-weight-bold">Agregar logo</h1>
-                 <InlineSpinner />
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Configuraciones</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Agregar logo</BreadcrumbItem>
+                </Breadcrumb>
+                <h1 className="h4 mb-3 font-weight-bold">Agregar logo</h1>
+                <InlineSpinner />
             </div>
         )
     }

@@ -5,11 +5,15 @@ import {
     Card,
     CardBody,
     CardTitle,
+    Breadcrumb, 
+    BreadcrumbItem
 } from 'reactstrap';
+
 import axios from 'axios'
 import InlineSpinner from '../../spinner/InlineSpinner';
 import ProductsSelect from '../../../components/selects/productsSelect';
 import SkuTypeSelect from '../../../components/selects/SkuTypeSelect';
+import {Link} from "react-router-dom"
 
 function AddProduct(props) {
 
@@ -134,6 +138,10 @@ function AddProduct(props) {
                         setloading(true);
                         setsuccessmessage('¡Producto actualizado satisfactoriamente!')
                         reset();
+
+                        setTimeout(() => {
+                            setsuccessmessage("");
+                        }, 1000);
                     }else{
                         seterrormessage(res.data.data.message);
                         reset();
@@ -161,6 +169,10 @@ function AddProduct(props) {
                         //setloading(true);
                         setsuccessmessage('¡Producto creado satisfactoriamente!');
                         reset();
+
+                        setTimeout(() => {
+                            setsuccessmessage("");
+                        }, 1000);
                     }else{
                         seterrormessage(res.data.data.message);
                         reset();
@@ -177,9 +189,23 @@ function AddProduct(props) {
     if(loading){
         return (
             <div>
+                {props.Edit
+                ?
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Mis Productos</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Actualizar producto</BreadcrumbItem>
+                    </Breadcrumb>
+                :
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Mis Productos</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Nuevo producto</BreadcrumbItem>
+                    </Breadcrumb>
+                }
+
                 <h1 className="h4 mb-3 font-weight-bold">
                     {props.Edit ? 'Actualizar producto' : 'Nuevo producto'}
                 </h1>
+
                 {(errormessage !== '') &&
                     <div className="alert alert-warning">
                         {errormessage}
@@ -198,9 +224,33 @@ function AddProduct(props) {
     }else{
         return (
             <div>
-                <h1 className="h4 mb-3 font-weight-bold">
-                    {props.Edit ? 'Actualizar producto' : 'Nuevo producto'}
-                </h1>
+                    {props.Edit
+                    ?
+                        <Breadcrumb listClassName="px-0">
+                            <BreadcrumbItem><a href="##">Mis Productos</a></BreadcrumbItem>
+                            <BreadcrumbItem active>Actualizar servicio</BreadcrumbItem>
+                        </Breadcrumb>
+                    :
+                        <Breadcrumb listClassName="px-0">
+                            <BreadcrumbItem><a href="##">Mis Productos</a></BreadcrumbItem>
+                            <BreadcrumbItem active>Nuevo producto</BreadcrumbItem>
+                        </Breadcrumb>
+                    }
+                    <div className="row align-items-center justify-content-between mb-3">
+                            <div className="col col-lg-auto">
+                                <h1 className="h4 mb-0 font-weight-bold">
+                                    {props.Edit ? 'Actualizar producto' : 'Nuevo producto'}
+                                </h1>
+                            </div>
+                            {!props.Edit &&
+                                <div className="col col-lg-auto">
+                                    <Link to="/viewProducts" className="btn btn-info">
+                                        Listado de productos
+                                    </Link>
+                                </div>
+                            }
+                    </div>
+
                     {(errormessage !== '') &&
                         <div className="alert alert-warning">
                             {errormessage}
@@ -220,7 +270,7 @@ function AddProduct(props) {
                                     <Card>
                                         <div className="p-3">
                                             <CardTitle>
-                                                <i className="mdi mdi-border-all mr-2"></i>Seleccione un producto.
+                                                Seleccione un producto.
                                             </CardTitle>
                                         </div>
                                         <CardBody className="border-top">
@@ -242,7 +292,7 @@ function AddProduct(props) {
                                     <Card>
                                         <div className="p-3">
                                             <CardTitle>
-                                                <i className="mdi mdi-border-all mr-2"></i>Datos del producto
+                                                Datos del producto
                                             </CardTitle>
                                         </div>
                                         <CardBody className="border-top">
@@ -288,13 +338,13 @@ function AddProduct(props) {
                                     {(props.Edit) 
                                     ?
                                     <p className="text-right">
-                                        <button type="submit" disabled={sending} className="btn btn-warning">
+                                        <button type="submit" disabled={sending} className="btn btn-lg font-weight-bold btn-warning">
                                             {(sending) ? <span>Cargando<i className="fa fa-spin fa-spinner ml-2"></i></span> : 'Actualizar producto'}
                                         </button>
                                     </p>
                                     :
                                     <p className="text-right">
-                                        <button type="submit" disabled={sending} className="btn btn-primary">
+                                        <button type="submit" disabled={sending} className="btn btn-lg font-weight-bold btn-primary">
                                             {(sending) ? <span>Cargando<i className="fa fa-spin fa-spinner ml-2"></i></span> : 'Añadir producto'}
                                         </button>
                                     </p>

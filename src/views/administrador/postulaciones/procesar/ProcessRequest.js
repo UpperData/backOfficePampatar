@@ -96,6 +96,10 @@ const ProcessRequest = () => {
         if(seeItem === null){
             return (
                 <div>
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Postulaciones</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Procesar</BreadcrumbItem>
+                    </Breadcrumb>
                     <h1 className="h4 mb-3 font-weight-bold">Procesar postulaciones</h1>
                     {(successmessage !== '') &&
                         <div className="alert alert-success">
@@ -108,7 +112,9 @@ const ProcessRequest = () => {
                         <Col md="12">
                             <Card>
                                 <div className="p-3">
-                                    <CardTitle><i className="mdi mdi-border-all mr-2"></i>Lista de postulaciones</CardTitle>
+                                    <CardTitle>
+                                        <i className="fa fa-list-alt mr-2"></i>Lista de postulaciones
+                                    </CardTitle>
                                 </div>
                                 <CardBody className="border-top">
                                     <Table responsive>
@@ -147,7 +153,11 @@ const ProcessRequest = () => {
                                                             {item.createdAt.split('T')[0]}
                                                         </td>
                                                         <td>
-                                                            <button onClick={() => seeDetails(item) } className="border-0 btn-sm btn btn-info">
+                                                            <button 
+                                                            onClick={() => seeDetails(item) } 
+                                                            className="border-0 btn-sm btn btn-info shadow-sm"
+                                                            >
+                                                                <i className="fa fa-eye mr-2"></i>
                                                                 Ver detalles
                                                             </button>
                                                         </td>
@@ -192,38 +202,48 @@ const ProcessRequest = () => {
                         <Col md="5">
                             <Card>
                                 <div className="p-3">
-                                    <CardTitle><i className="mdi mdi-account mr-2"></i>Datos del postulante</CardTitle>
+                                    <CardTitle>
+                                        Datos del postulante
+                                    </CardTitle>
                                 </div>
                                 <CardBody className="border-top">
-                                    <h4><span className="font-weight-bold">Nombre</span>: {item.Account.Person.firstName+' '+item.Account.Person.lastName}</h4>
                                     <h6>
-                                        <span>Género: {gender.name}</span>
+                                        <span className="font-weight-bold">Nombre</span>:
+                                    </h6>
+                                    <h3 className="font-weight-bold mb-3">
+                                        <i className="far fa-user mr-2"></i>
+                                        {item.Account.Person.firstName+' '+item.Account.Person.lastName}
+                                    </h3>
+                                    <h6>
+                                        <span className="font-weight-bold">Género:</span> <span className="badge badge-info">{gender.name}</span>
                                     </h6>
                                     <h6>
-                                        <span>Nacionalidad: {item.Account.Person.Nationality.name}</span>
+                                        <span className="font-weight-bold">Nacionalidad:</span> <span className="badge badge-info">{item.Account.Person.Nationality.name}</span>
                                     </h6>
                                     <hr/>
                                     <h6>
-                                        <span>Email: {item.Account.email}</span>
+                                        <span className="font-weight-bold">Email:</span> {item.Account.email}
                                     </h6>
                                     <div>
                                         {(Array.isArray(preference)) ?
                                             <Fragment>
-                                                <h6 className="font-weight-bold">Preferencias:</h6>
-                                                {preference.length > 0 && preference.map((subitem, subkey) => {
-                                                    return (
-                                                        <Badge key={subkey} color="info" className="mx-r">
-                                                            {subitem.name}
-                                                        </Badge>
-                                                    )
-                                                })}
+                                                <h6 className="font-weight-bold">
+                                                    Preferencias:
+                                                    {preference.length > 0 && preference.map((subitem, subkey) => {
+                                                        return (
+                                                            <Badge key={subkey} color="info" className="mx-2">
+                                                                {subitem.name}
+                                                            </Badge>
+                                                        )
+                                                    })}
+                                                    </h6>
                                             </Fragment>
                                             :
                                             <Fragment>
                                                 <h6 className="font-weight-bold">
                                                     Preferencia:
                                                 </h6>
-                                                <Badge color="info" className="mx-r">
+                                                <Badge color="info" className="mr-3">
                                                     {preference.name}
                                                 </Badge>
                                             </Fragment>
@@ -235,18 +255,28 @@ const ProcessRequest = () => {
                         <Col md="7">
                             <Card>
                                 <div className="p-3">
-                                    <CardTitle><i className="mdi mdi-store mr-2"></i>Datos de la tienda</CardTitle>
+                                    <CardTitle>
+                                        <i class="fas fa-store-alt"></i>
+                                        Datos de la tienda
+                                    </CardTitle>
                                 </div>
                                 <CardBody className="border-top">
-                                    <h4><span className="font-weight-bold">Nombre de la tienda</span>: {item.marca}</h4>
+                                    <h6>
+                                        <span className="font-weight-bold">
+                                            Nombre de la tienda
+                                        </span>
+                                    </h6>
+                                    <h3 className="font-weight-bold text-primary">
+                                        {item.marca}
+                                    </h3>
                                     <p>
-                                        Descripción: {item.descShop}
+                                        <span className="font-weight-bold">Descripción:</span> {item.descShop}
                                     </p>
                                     <hr/>
 
                                     {(Array.isArray(affirmations)) ?
                                         <Fragment>
-                                            <h6 className="font-weight-bold">Afirmaciones:</h6>
+                                            <h6 className="font-weight-bold mb-3">Afirmaciones:</h6>
                                             {affirmations.length > 0 && affirmations.map((subitem, subkey) => {
                                                 return (
                                                     <p key={subkey} className="mx-1">
@@ -257,12 +287,9 @@ const ProcessRequest = () => {
                                         </Fragment>
                                         :
                                         <Fragment>
-                                            <h6 className="font-weight-bold">
-                                                Afirmación:
+                                            <h6 className="mb-3">
+                                                <span className="font-weight-bold">Afirmación:</span> {affirmations.name}
                                             </h6>
-                                            <p>
-                                                {affirmations.name}
-                                            </p>
                                         </Fragment>
                                     }
 
@@ -286,17 +313,16 @@ const ProcessRequest = () => {
                                                             })}
                                     </h6>
                                     <hr/>
-                                    <h6 className="font-weight-bold">Contacto</h6>
-                                        <Fragment>
-                                            <h6 className="font-weight-bold">Teléfonos:</h6>
-                                            {item.phone.length > 0 && item.phone.map((subitem, subkey) => {
-                                                return (
-                                                    <p key={subkey} className="mb-0">
-                                                        <i className="fa fa-phone mr-2"></i>{subitem.phoneNmber}
-                                                    </p>
-                                                )
-                                            })}
-                                        </Fragment>
+                                    <Fragment>
+                                        <h6 className="font-weight-bold">Teléfonos:</h6>
+                                        {item.phone.length > 0 && item.phone.map((subitem, subkey) => {
+                                            return (
+                                                <p key={subkey} className="mb-0">
+                                                    <i className="fa fa-phone mr-2"></i>{subitem.phoneNmber}
+                                                </p>
+                                            )
+                                        })}
+                                    </Fragment>
                                     
 
                                     {/*typeof shop.phone === 'array' &&
@@ -316,7 +342,7 @@ const ProcessRequest = () => {
                             <div className="my-2">
                                 {(!sending) &&
                                     <Fragment>
-                                        <button onClick={() => handlePostulationRequest('pre')} className="btn btn-info">
+                                        <button onClick={() => handlePostulationRequest('pre')} className="btn btn-info mr-3">
                                             <i className="fa fa-check mr-2"></i>Aceptar
                                         </button>
                                         <button onClick={() => handlePostulationRequest('deny')} className="btn btn-primary">
@@ -336,6 +362,10 @@ const ProcessRequest = () => {
     }else{
         return (
             <div>
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Postulaciones</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Procesar</BreadcrumbItem>
+                </Breadcrumb>
                 <h1 className="h4 font-weight-bold">Procesar postulaciones</h1>
                 <InlineSpinner />
             </div>

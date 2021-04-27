@@ -5,10 +5,13 @@ import {
     Card,
     CardBody,
     CardTitle,
+    Breadcrumb, 
+    BreadcrumbItem
 } from 'reactstrap';
 import axios from 'axios'
 import InlineSpinner from '../../spinner/InlineSpinner';
 import ServicesSelect from '../../../components/selects/servicesSelect';
+import {Link} from "react-router-dom"
 
 function AddService(props) {
 
@@ -110,6 +113,10 @@ function AddService(props) {
                         setsuccessmessage('¡Servicio actualizado satisfactoriamente!')
                         setloading(true);
                         reset();
+                        window.scrollTo({top: 10, behavior: 'smooth'});
+                        setTimeout(() => {
+                            setsuccessmessage("");
+                        }, 1000);
                     }else{
                         seterrormessage(res.data.data.message);
                         reset();
@@ -135,6 +142,10 @@ function AddService(props) {
                     if(res.data.data.result){
                         setsuccessmessage('¡Servicio creado satisfactoriamente!');
                         reset();
+                        window.scrollTo({top: 10, behavior: 'smooth'});
+                        setTimeout(() => {
+                            setsuccessmessage("");
+                        }, 1000);
                     }else{
                         seterrormessage(res.data.data.message);
                         reset();
@@ -150,6 +161,18 @@ function AddService(props) {
     if(loading){
         return (
             <div>
+                {props.Edit
+                ?
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Mis Servicios</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Actualizar servicio</BreadcrumbItem>
+                    </Breadcrumb>
+                :
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Mis Servicios</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Nuevo servicio</BreadcrumbItem>
+                    </Breadcrumb>
+                }
                 <h1 className="h4 mb-3 font-weight-bold">
                     {props.Edit ? 'Actualizar servicio' : 'Nuevo servicio'}
                 </h1>
@@ -170,9 +193,33 @@ function AddService(props) {
     }else{
         return (
             <div>
-                <h1 className="h4 mb-3 font-weight-bold">
-                    {props.Edit ? 'Actualizar servicio' : 'Nuevo servicio'}
-                </h1>
+                    {props.Edit
+                    ?
+                        <Breadcrumb listClassName="px-0">
+                            <BreadcrumbItem><a href="##">Mis Servicios</a></BreadcrumbItem>
+                            <BreadcrumbItem active>Actualizar servicio</BreadcrumbItem>
+                        </Breadcrumb>
+                    :
+                        <Breadcrumb listClassName="px-0">
+                            <BreadcrumbItem><a href="##">Mis Servicios</a></BreadcrumbItem>
+                            <BreadcrumbItem active>Nuevo servicio</BreadcrumbItem>
+                        </Breadcrumb>
+                    }
+
+                    <div className="row align-items-center justify-content-between mb-3">
+                        <div className="col col-lg-auto">
+                            <h1 className="h4 mb-0 font-weight-bold">
+                                {props.Edit ? 'Actualizar servicio' : 'Nuevo servicio'}
+                            </h1>
+                        </div>
+                        {!props.Edit &&
+                            <div className="col col-lg-auto">
+                                <Link to="/viewServices" className="btn btn-info">
+                                    Listado de servicios
+                                </Link>
+                            </div>
+                        }
+                    </div>
                     {(errormessage !== '') &&
                         <div className="alert alert-warning">
                             {errormessage}
@@ -210,11 +257,11 @@ function AddService(props) {
                     {((!props.Edit) || (props.Edit && service !== null && !loadingservice)) &&
                         <form onSubmit={(e) => addWarehouse(e)} action="">
                             <Row>
-                                <Col md="7">
+                                <Col md="12">
                                     <Card>
                                         <div className="p-3">
                                             <CardTitle>
-                                                <i className="mdi mdi-border-all mr-2"></i>Datos del servicio
+                                                Datos del servicio
                                             </CardTitle>
                                         </div>
                                         <CardBody className="border-top">
@@ -246,13 +293,13 @@ function AddService(props) {
                                     {(props.Edit) 
                                     ?
                                     <p className="text-right">
-                                        <button type="submit" disabled={sending} className="btn btn-warning">
+                                        <button type="submit" disabled={sending} className="btn btn-lg font-weight-bold btn-warning">
                                             {(sending) ? <span>Cargando<i className="fa fa-spin fa-spinner ml-2"></i></span> : 'Actualizar servicio'}
                                         </button>
                                     </p>
                                     :
                                     <p className="text-right">
-                                        <button type="submit" disabled={sending} className="btn btn-primary">
+                                        <button type="submit" disabled={sending} className="btn btn-lg font-weight-bold btn-primary">
                                             {(sending) ? <span>Cargando<i className="fa fa-spin fa-spinner ml-2"></i></span> : 'Añadir servicio'}
                                         </button>
                                     </p>

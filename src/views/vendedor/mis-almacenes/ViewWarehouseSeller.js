@@ -7,7 +7,9 @@ import {
     CardBody,
     CardTitle,
     UncontrolledTooltip,
-    Table
+    Table,
+    Breadcrumb, 
+    BreadcrumbItem
 } from 'reactstrap';
 import InlineSpinner from '../../spinner/InlineSpinner';
 import {Link} from 'react-router-dom'
@@ -55,13 +57,17 @@ function ViewWarehouseSeller() {
         return (
             <div>
                 <div>
-                    <div className="row pb-3">
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Mis almacenes</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Listar almacenes</BreadcrumbItem>
+                    </Breadcrumb>
+                    <div className="row align-items-center pb-3 mb-3">
                         <div className="col-md-6">
-                            <h1 className="h4 mb-3 font-weight-bold">Listar almacenes</h1>
+                            <h1 className="h4 mb-0 font-weight-bold">Listar almacenes</h1>
                         </div>
                         <div className="col-md-6">
                             <div className="text-md-right">
-                                <Link to="/addWarehouseSeller" className="btn btn-info btn-sm">
+                                <Link to="/addWarehouseSeller" className="btn btn-info">
                                     Nuevo almacen
                                 </Link>
                             </div>
@@ -83,7 +89,7 @@ function ViewWarehouseSeller() {
                             <Card>
                                 <div className="p-3">
                                     <CardTitle>
-                                        <i className="mdi mdi-border-all mr-2"></i>Almacenes disponibles
+                                        Almacenes disponibles
                                     </CardTitle>
                                 </div>
                                 <CardBody className="border-top">
@@ -174,6 +180,10 @@ function ViewWarehouseSeller() {
     }else{
         return(
             <div>
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Mis almacenes</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Listar almacenes</BreadcrumbItem>
+                </Breadcrumb>
                 <h1 className="h4 mb-3 font-weight-bold">Listar almacenes</h1>
                 <InlineSpinner />
             </div>

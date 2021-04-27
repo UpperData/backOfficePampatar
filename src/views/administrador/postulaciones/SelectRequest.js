@@ -220,6 +220,10 @@ function SelectRequest() {
         if(store === null){
             return (
                 <div>
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Postulaciones</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Consultar postulaciones</BreadcrumbItem>
+                    </Breadcrumb>
                     <h1 className="h4 mb-3 font-weight-bold">Consulta Postulaciones</h1>
                     <div className="filters bg-light py-3 mb-3 px-3">
                         <form action="">
@@ -541,6 +545,10 @@ function SelectRequest() {
     }else{
         return (
             <div>
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Postulaciones</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Consultar postulaciones</BreadcrumbItem>
+                </Breadcrumb>
                 <h1 className="h4 mb-3 font-weight-bold">Consulta Postulaciones</h1>
                 <InlineSpinner />
             </div>

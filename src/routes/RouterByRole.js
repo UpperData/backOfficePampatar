@@ -18,8 +18,10 @@ const RepairContract        = lazy(()     => import("../views/administrador/cont
 const MisTiendas    = lazy(()     => import("../views/administrador/tiendas/MisTiendas"));
 const MiTienda      = lazy(()     => import("../views/administrador/tiendas/MiTienda"));
 
-const Consultar    = lazy(()      => import("../views/administrador/publicaciones/Consultar"));
-const Procesar      = lazy(()     => import("../views/administrador/publicaciones/Procesar"));
+const Consultar         = lazy(()     => import("../views/administrador/publicaciones/Consultar"));
+const ConsultarTienda   = lazy(()     => import("../views/administrador/publicaciones/ConsultarTienda"));
+const Procesar          = lazy(()     => import("../views/administrador/publicaciones/Procesar"));
+const Actualizar        = lazy(()     => import("../views/administrador/publicaciones/Actualizar"));
 
 const CurrentTaxes  = lazy(()     => import("../views/administrador/impuestos/CurrentTaxes"));
 const ShowTax       = lazy(()     => import("../views/administrador/impuestos/ShowTax"));
@@ -29,6 +31,7 @@ const UpdateTax     = lazy(()     => import("../views/administrador/impuestos/Up
 
 const BidsSellerAd    = lazy(()     => import("../views/vendedor/publicaciones/BidsSellerAd"));
 const List            = lazy(()     => import("../views/vendedor/publicaciones/List"));
+const UpdateBid       = lazy(()     => import("../views/vendedor/publicaciones/UpdateBid"));
 
 const ViewWarehouseSeller = lazy(() => import("../views/vendedor/mis-almacenes/ViewWarehouseSeller"));
 const AddWarehouseSeller = lazy(() => import("../views/vendedor/mis-almacenes/AddWarehouseSeller"));
@@ -241,6 +244,18 @@ var ThemeRoutesByRole = [
     onlyRoute:true
   },
   {
+    path: "/bidsSellerUpdate",
+    name: "Actualizar publicacion",
+    component: UpdateBid,
+    onlyRoute:true
+  },
+  {
+    path: "/bidsSellerUpdate/:id",
+    name: "Actualizar publicacion",
+    component: UpdateBid,
+    onlyRoute:true
+  },
+  {
     path: "/admIn/pUBLICATIONS/proCEsss",
     name: "Procesar publicaciones",
     component: Procesar,
@@ -250,6 +265,18 @@ var ThemeRoutesByRole = [
     path: "/admIn/pUBLICATIONS/ListAll",
     name: "Consultar publicaciones",
     component: Consultar,
+    onlyRoute:true
+  },
+  {
+    path: "/admIn/pUBLICATIONS/ListAll/Shop/:id",
+    name: "Consultar publicaciones",
+    component: ConsultarTienda,
+    onlyRoute:true
+  },
+  {
+    path: "/ADmin/publicatioNS/PROCESSUpdate",
+    name: "Actualizar publicaciones",
+    component: Actualizar,
     onlyRoute:true
   },
   //impuestos

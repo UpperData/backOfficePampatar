@@ -10,6 +10,8 @@ import {
     ModalHeader, 
     ModalBody, 
     ModalFooter,
+    Breadcrumb, 
+    BreadcrumbItem
 } from 'reactstrap';
 import axios from 'axios'
 import TaxesSelect from '../../../components/selects/TaxesSelect';
@@ -86,6 +88,10 @@ function UpdateTax() {
 
     return (
         <div>
+            <Breadcrumb listClassName="px-0">
+                <BreadcrumbItem><a href="##">Impuestos</a></BreadcrumbItem>
+                <BreadcrumbItem active>Actualizar impuesto</BreadcrumbItem>
+            </Breadcrumb>
             <h1 className="h4 mb-3 font-weight-bold">
                 Actualizar impuesto
             </h1>
@@ -105,7 +111,7 @@ function UpdateTax() {
                     <Card>
                         <div className="p-3">
                             <CardTitle>
-                                <i className="mdi mdi-border-all mr-2"></i>Seleccione un impuesto
+                                Seleccione un impuesto
                             </CardTitle>
                         </div>
                         <CardBody className="border-top">
@@ -127,7 +133,7 @@ function UpdateTax() {
                         <Card>
                             <div className="p-3">
                                 <CardTitle>
-                                    <i className="mdi mdi-border-all mr-2"></i>Datos <span className="text-muted">{(data !== null) ? 'Actualizado por ultima vez el '+data.taxValues[0].createdAt.split('T')[0] : ''}</span>
+                                    Datos <span className="text-muted">({(data !== null) ? 'Actualizado por ultima vez el '+data.taxValues[0].createdAt.split('T')[0] : ''})</span>
                                 </CardTitle>
                             </div>
                             <CardBody className="border-top">

@@ -161,12 +161,10 @@ export const set_people_types = () => {
         axios
           .get(urlPeopleType)
           .then(res => {
-            if(res.data.data.result){
                 dispatch({
                     type: SET_PEOPLE_TYPES,
-                    payload: res.data.data
+                    payload: res.data
                 })
-            }
           })
           .catch(err => console.log(err + "action"))
     }

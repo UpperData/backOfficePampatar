@@ -98,7 +98,7 @@ function InputPhotos(props) {
                         onChange={(e) => handleImageUpload(e)} 
                         type="file" 
                         className="custom-file-input" 
-                        id="customFile1" 
+                        //id="customFile1" 
                         multiple
                     />
                     <label className="custom-file-label" htmlFor="customFile1">
@@ -120,12 +120,28 @@ function InputPhotos(props) {
                     <div>
                         <ul className="list-unstyled">
                             {files.map((item, key) => {
+                                //console.log(item);
                                 return (
                                     <li key={key} className="shadow-sm d-block my-2">
                                         <div className="row">
-                                            <div className="col-md-12">
-                                                <img src={item.url} className="img-fluid shadow-sm" alt="Preview" />
-                                            </div>
+                                            {(item.url !== null)
+                                            ?
+                                                <div className="col-md-12">
+                                                    <img src={item.url} className="img-fluid shadow-sm" alt="Preview" />
+                                                </div>
+                                            :
+                                                <div className="col-md-12">
+                                                   <div className="d-flex shadow-sm align-items-center bg-light justify-content-center p-3">
+                                                        <h6 className="font-weight-bold text-center">
+                                                            <i className="fa fa-2x fa-file-image mr-3 mb-3 d-block w-100"></i>
+                                                            <small className="font-weight-bold pt-5">
+                                                                No es posible visualizar esta imagen
+                                                            </small>
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                                            }
+                                            
                                             <div className="col-md-12">
                                                 <button type="button" 
                                                 onClick={() => deleteFile(item.id)} 

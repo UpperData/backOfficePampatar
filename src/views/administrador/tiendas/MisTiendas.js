@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import InlineSpinner from '../../spinner/InlineSpinner';
 import axios from 'axios'
+import {Breadcrumb, BreadcrumbItem} from "reactstrap"
 
 function MisTiendas() {
 
@@ -168,7 +169,7 @@ function MisTiendas() {
             //setsearchByText(false);
             filterBy('search', value);
             //filterBy('text', value);
-        }, 500);
+        }, 200);
     }
 
     const cleanFilters = () => {
@@ -184,6 +185,10 @@ function MisTiendas() {
     if(!loading){
         return (
             <div>
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Tiendas</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Mis tiendas</BreadcrumbItem>
+                </Breadcrumb>
                 <h1 className="h4 mb-3 font-weight-bold">Mis tiendas</h1>
                 <div className="filters bg-light py-3 mb-3 px-3">
                     <form action="">
@@ -273,6 +278,10 @@ function MisTiendas() {
     }else{
         return (
             <div>
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Tiendas</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Mis tiendas</BreadcrumbItem>
+                </Breadcrumb>
                 <h1 className="h4 mb-3 font-weight-bold">Mis tiendas</h1>
                 <InlineSpinner />
             </div>

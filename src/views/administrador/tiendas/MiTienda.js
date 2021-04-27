@@ -12,7 +12,9 @@ import {
     ModalHeader, 
     ModalBody, 
     ModalFooter,
-    Button
+    Button,
+    Breadcrumb, 
+    BreadcrumbItem
   } from "reactstrap";
 import moment from 'moment'
 import InlineSpinner from '../../spinner/InlineSpinner';
@@ -154,8 +156,19 @@ function MiTienda(props) {
 
         return (
             <div className="py-3">
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Tiendas</a></BreadcrumbItem>
+                    <BreadcrumbItem>
+                        <Link to="/admin/shop/all">
+                            Mis tiendas
+                        </Link>
+                    </BreadcrumbItem>
+                    <BreadcrumbItem active>Ver tienda</BreadcrumbItem>
+                </Breadcrumb>
                 <h5 className="font-weight-bold mb-3">
-                    Ver tienda - <Link to="/admin/shop/all" className="btn btn-sm btn-info">Volver a la lista</Link>
+                    <Link to="/admin/shop/all" className="mr-3">
+                        <i className="fa fa-angle-left text-info"></i>
+                    </Link>Ver tienda 
                 </h5>
                 {errormessage !== '' &&
                     <div className="alert alert-warning">
@@ -415,7 +428,20 @@ function MiTienda(props) {
     }else{
         return (
             <div>
-                <h5 className="font-weight-bold">Ver tienda</h5>
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Tiendas</a></BreadcrumbItem>
+                    <BreadcrumbItem>
+                        <Link to="/admin/shop/all">
+                            Mis tiendas
+                        </Link>
+                    </BreadcrumbItem>
+                    <BreadcrumbItem active>Ver tienda</BreadcrumbItem>
+                </Breadcrumb>
+                <h5 className="font-weight-bold mb-3">
+                    <Link to="/admin/shop/all" className="mr-3">
+                        <i className="fa fa-angle-left text-info"></i>
+                    </Link>Ver tienda 
+                </h5>
                 <InlineSpinner />
             </div>
         )

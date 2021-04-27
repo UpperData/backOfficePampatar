@@ -6,6 +6,8 @@ import {
     CardBody,
     CardTitle,
     FormGroup,
+    Breadcrumb, 
+    BreadcrumbItem
 } from 'reactstrap';
 import TagsInput from "react-tagsinput";
 import Datetime from "react-datetime";
@@ -32,7 +34,7 @@ var valid = function (current) {
 function CreateContrat() {
 
     const [loading, setloading]                     = useState(true);
-    const [search, setsearch]                     = useState(true);
+    const [search, setsearch]                       = useState(true);
     const [sending, setsending]                     = useState(false);
     const [success, setsuccess]                     = useState(false);
     const [errors, seterrors]                       = useState({});
@@ -114,11 +116,14 @@ function CreateContrat() {
             errorsCount++;
         }
 
+
+        let newDate = new Date();
+
         //inicio
         if(inicio === null || inicio === ''){
             thiserrors.inicio = 'Indique la fecha de inicio del contrato';
             errorsCount++;
-        }else if(moment().isAfter(moment(inicio))){
+        }else if(moment(newDate).isAfter(moment(inicio))){
             thiserrors.inicio = 'La fecha debe ser igual ó superior a la fecha de hoy';
             errorsCount++;
         }
@@ -195,7 +200,9 @@ function CreateContrat() {
     const sendData = (e) => {
         e.stopPropagation();
         e.preventDefault();
+
         seterrorMessage('');
+        seterrors({});
 
         let urlSend = '/setting/seller/shopContract';
         let validation = validate();
@@ -295,6 +302,12 @@ function CreateContrat() {
         if(!success){
             return (
                 <div>
+
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Contratos</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Nuevo contrato</BreadcrumbItem>
+                    </Breadcrumb>
+
                     <h1 className="h4 mb-3 font-weight-bold">Nuevo contrato</h1>
 
                     {(errorMessage !== '') &&
@@ -311,7 +324,7 @@ function CreateContrat() {
                             <Card>
                                 <div className="p-3">
                                     <CardTitle>
-                                        <i className="mdi mdi-border-all mr-2"></i>Seleccione una tienda
+                                        Seleccione una tienda
                                     </CardTitle>
                                 </div>
                                 <CardBody className="border-top">
@@ -329,12 +342,17 @@ function CreateContrat() {
                             <Card>
                                 <div className="p-3">
                                     <CardTitle>
-                                        <i className="mdi mdi-border-all mr-2"></i>Datos del contrato
+                                        Datos del contrato de <span>{shopRequestId.label}</span>
                                     </CardTitle>
                                 </div>
                                 <CardBody className="border-top">
                                     <Row>
-                                        <Col md="4">
+                                        <Col md="12">
+                                            <h6 className="font-weight-bold mb-3">
+                                                General
+                                            </h6>
+                                        </Col>
+                                        <Col md="12">
                                             <div className="form-group">
                                                 <label htmlFor="">Número de contrato:</label>
                                                 <input 
@@ -354,7 +372,7 @@ function CreateContrat() {
                                                 }
                                             </div>
                                         </Col>
-                                        <Col md="4">
+                                        <Col md="6">
                                             <div className="form-group">
                                                 <label htmlFor="">Inicio del contrato:</label>
                                                 <Datetime
@@ -374,7 +392,7 @@ function CreateContrat() {
                                                 }
                                             </div>
                                         </Col>
-                                        <Col md="4">
+                                        <Col md="6">
                                             <div className="form-group">
                                                 <label htmlFor="">Fin del contrato:</label>
                                                 <Datetime
@@ -394,7 +412,36 @@ function CreateContrat() {
                                                 }
                                             </div>
                                         </Col>
-                                        <Col md="4">
+                                        <Col md="12">
+                                            <div className="form-group">
+                                                <label htmlFor="">Etiquetas:</label>
+                                                <TagsInput
+                                                    className="my-tags-input react-tagsinput"
+                                                    value={tags}
+                                                    onChange={(tags) => setTags(tags)}
+                                                    tagProps={{
+                                                        className: "react-tagsinput-tag bg-info text-white rounded",
+                                                    }}
+                                                    inputProps={{
+                                                        className: 'react-tagsinput-input',
+                                                        placeholder: 'Añadir etiqueta'
+                                                    }}
+                                                />
+                                                {(typeof errors === 'object' && errors.hasOwnProperty('tags')) &&
+                                                    <div className="help-block text-danger font-weight-bold">
+                                                        <small>
+                                                            {errors.tags}
+                                                        </small>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </Col>
+                                        <Col md="12">
+                                            <h6 className="font-weight-bold mb-3">
+                                                Servicios
+                                            </h6>
+                                        </Col>
+                                        <Col md="6">
                                             <div className="form-group">
                                                 <label htmlFor="">Número de servicios que proveerá la tienda</label>
                                                 <input 
@@ -413,6 +460,31 @@ function CreateContrat() {
                                                     </div>
                                                 }
                                             </div>
+                                        </Col>
+                                        <Col md="6">
+                                            <div className="form-group">
+                                                <label htmlFor="">Porcentaje por servicio</label>
+                                                <input 
+                                                    type="number"
+                                                    value={serPercen}
+                                                    onChange={(e) => setserPercen(e.target.value)}
+                                                    min="0" 
+                                                    placeholder="Porcentaje 2" 
+                                                    className={((typeof errors === 'object' && errors.hasOwnProperty('serPercen') ? 'is-invalid' : '') +' form-control')}
+                                                />
+                                                {(typeof errors === 'object' && errors.hasOwnProperty('serPercen')) &&
+                                                    <div className="help-block text-danger font-weight-bold">
+                                                        <small>
+                                                            {errors.serPercen}
+                                                        </small>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </Col>
+                                        <Col md="12">
+                                            <h6 className="font-weight-bold mb-3">
+                                                Productos
+                                            </h6>
                                         </Col>
                                         <Col md="4">
                                             <div className="form-group">
@@ -454,27 +526,7 @@ function CreateContrat() {
                                                 }
                                             </div>
                                         </Col>
-                                        <Col md="6">
-                                            <div className="form-group">
-                                                <label htmlFor="">Porcentaje por servicio</label>
-                                                <input 
-                                                    type="number"
-                                                    value={serPercen}
-                                                    onChange={(e) => setserPercen(e.target.value)}
-                                                    min="0" 
-                                                    placeholder="Porcentaje 2" 
-                                                    className={((typeof errors === 'object' && errors.hasOwnProperty('serPercen') ? 'is-invalid' : '') +' form-control')}
-                                                />
-                                                {(typeof errors === 'object' && errors.hasOwnProperty('serPercen')) &&
-                                                    <div className="help-block text-danger font-weight-bold">
-                                                        <small>
-                                                            {errors.serPercen}
-                                                        </small>
-                                                    </div>
-                                                }
-                                            </div>
-                                        </Col>
-                                        <Col md="6">
+                                        <Col md="4">
                                             <div className="form-group">
                                                 <label htmlFor="">Porcentaje por producto</label>
                                                 <input 
@@ -494,7 +546,9 @@ function CreateContrat() {
                                                 }
                                             </div>
                                         </Col>
+                                    
                                         <Col md="12">
+                                            <hr/>
                                             <div className="mb-3">
                                                 <FormGroup>
                                                     <label htmlFor="">Adjuntar archivo:</label>
@@ -507,30 +561,6 @@ function CreateContrat() {
                                                     <div className="help-block text-danger font-weight-bold">
                                                         <small>
                                                             {errors.binaryData}
-                                                        </small>
-                                                    </div>
-                                                }
-                                            </div>
-                                        </Col>
-                                        <Col md="12">
-                                            <div className="form-group">
-                                                <label htmlFor="">Etiquetas:</label>
-                                                <TagsInput
-                                                    className="my-tags-input react-tagsinput"
-                                                    value={tags}
-                                                    onChange={(tags) => setTags(tags)}
-                                                    tagProps={{
-                                                        className: "react-tagsinput-tag bg-info text-white rounded",
-                                                    }}
-                                                    inputProps={{
-                                                        className: 'react-tagsinput-input',
-                                                        placeholder: 'Añadir etiqueta'
-                                                    }}
-                                                />
-                                                {(typeof errors === 'object' && errors.hasOwnProperty('tags')) &&
-                                                    <div className="help-block text-danger font-weight-bold">
-                                                        <small>
-                                                            {errors.tags}
                                                         </small>
                                                     </div>
                                                 }
@@ -578,7 +608,11 @@ function CreateContrat() {
         }else{
             return (
                 <div>
-                    <h1 className="h4 mb-3 font-weight-bold">Crear contrato</h1>
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Contratos</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Nuevo contrato</BreadcrumbItem>
+                    </Breadcrumb>
+                    <h1 className="h4 mb-3 font-weight-bold">Nuevo contrato</h1>
                     <div className="alert alert-success mb-3">
                         ¡Contrato registrado con exito!
                     </div>
@@ -592,6 +626,10 @@ function CreateContrat() {
         if(errorMessage !== ''){
             return(
                 <div>
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Contratos</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Nuevo contrato</BreadcrumbItem>
+                    </Breadcrumb>
                     <h1 className="h4 mb-3 font-weight-bold">Crear contrato</h1>
                     <div className="alert alert-warning">
                         <p className="mb-0">
@@ -603,6 +641,10 @@ function CreateContrat() {
         }else{
             return(
                 <div>
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Contratos</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Nuevo contrato</BreadcrumbItem>
+                    </Breadcrumb>
                     <h1 className="h4 mb-3 font-weight-bold">Nuevo contrato</h1>
                     <InlineSpinner />
                 </div>

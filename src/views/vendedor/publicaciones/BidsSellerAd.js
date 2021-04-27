@@ -14,7 +14,10 @@ import {
     ModalBody, 
     ModalFooter,
     Row,
-    Col 
+    Col,
+    Progress,
+    Breadcrumb, 
+    BreadcrumbItem
 } from 'reactstrap';
 
 import PrincipalCategoriesSelect from '../../../components/selects/PrincipalCategoriesSelect';
@@ -40,9 +43,11 @@ import CategoriesLvlThree from '../../../components/selects/categorieslist/Categ
 import CategoriesLvlFour from '../../../components/selects/categorieslist/CategoriesLvlFour';
 import ReasonsSelect from '../../../components/selects/ReasonsSelect';
 
-function BidsSellerAd() {
+function BidsSellerAd(props) {
 
-    //Crear publicacion
+    const [isEdit, setisEdit] = useState(props.edit ? true : false);
+    const [bidToEdit, setbidToEdit] = useState(props.bidSelectedByEdit ? props.bidSelectedByEdit : null);
+
     const [loading,     setloading]                     = useState(true);
     const [search,      setsearch]                      = useState(true);
     const [published,   setpublished]                   = useState(false);
@@ -60,11 +65,13 @@ function BidsSellerAd() {
 
     const [skuId,   setskuId]                           = useState(null);
     const [bidType, setbidType]                         = useState(null);
+    const [BidId,   setBidId]                           = useState(null);
+
     const [title,   settitle]                           = useState('');
     const [brandId, setbrandId]                         = useState(null);
 
-    const [longDesc,        setlongDesc]                = useState(''); //ENTRE 256-800 CARACTERES (SIN CONTAR ESPACIOS)
-    const [smallDesc,       setsmallDesc]               = useState(''); // ENTRE 20-200 CARACTERES (SIN CONTAR ESPACIOS)
+    const [longDesc,        setlongDesc]                = useState(''); 
+    const [smallDesc,       setsmallDesc]               = useState(''); 
     const [disponibilityId, setdisponibilityId]         = useState(null);
     const [time,            settime]                    = useState(0);
     const [devolution,      setdevolution]              = useState(true);
@@ -74,7 +81,7 @@ function BidsSellerAd() {
     const [categorylvl3,    setcategorylvl3]            = useState(null);
     const [categorylvl4,    setcategorylvl4]            = useState(null);
 
-    const [include,         setinclude]                 = useState(''); //ENTRE 20-200 CARACTERES (SIN CONTAR ESPACIOS
+    const [include,         setinclude]                 = useState(''); 
     const [customize,       setcustomize]               = useState("");
     const [customizable,    setcustomizable]            = useState(false);
     const [garanty,         setgaranty]                 = useState(false);
@@ -98,25 +105,33 @@ function BidsSellerAd() {
         depth:   ""
     });
 
-    //variations
     const [variationList,    setvariationList]          = useState([]);
     const [variation,        setvariation]              = useState([]);
     const [countvariation,   setcountvariation]         = useState(0);
     const maxVariations = 5;
     const [stock,            setstock]                  = useState(null);
-    
 
     const [materialName, setmaterialName]               = useState("");
     const [materialquantity, setmaterialquantity]       = useState("");   
 
-    const session = useSelector(state => state.session);
-    let shopId = session.userData.shop.id;
-    
-    //==================================================================================
+    const [progress, setprogress]                       = useState(0);
+    const [count, setcount]                             = useState(0);
 
     const [showModalNewMaterial, setShowModalNewMaterial] = useState(false);
     const toggle = () => setShowModalNewMaterial(!showModalNewMaterial);
 
+    const session = useSelector(state => state.session);
+    let shopId = session.userData.shop.id;
+
+    let stepName = [
+        {name: 'title',             stepname: 'Información comercial'},
+        {name: 'media',             stepname: 'Media'},
+        {name: 'details',           stepname: 'Detalles'},
+        {name: 'variations',        stepname: 'Variaciones'},
+        {name: 'customization',     stepname: 'Personalización'},
+    ];
+
+    //VARIATIONS======================================================================
     const addVariation = () => {
         console.log('Añadiendo variacion');
         let id = variation.length + 1;
@@ -136,9 +151,6 @@ function BidsSellerAd() {
         setvariation(variationList);
         setcountvariation(countvariation + 5);
     }
-
-    //console.log(variation);
-    //console.log(variation.length);
 
     const changeVariationData = (id, keyName, value) => {
         let variationList = variation;
@@ -171,15 +183,9 @@ function BidsSellerAd() {
         setvariation(newVariationList);
         setcountvariation(countvariation + 5);
     }
+    // ==============================================================================
 
-    let stepName = [
-        {name: 'title',             stepname: 'Información comercial'},
-        {name: 'media',             stepname: 'Media'},
-        {name: 'details',           stepname: 'Detalles'},
-        {name: 'variations',        stepname: 'Variaciones'},
-        {name: 'customization',     stepname: 'Personalización'},
-    ];
-
+    //CHANGE STEPS ==========================================================
     const changeTypeBid = (value) => {
         if(value.value === 1){
             setsteps([
@@ -237,6 +243,7 @@ function BidsSellerAd() {
             window.scrollTo({top: 50, behavior: 'smooth'});
         }
     }
+    //===========================================================================
 
     const validateStep = () => {
         let countErrors = 0;
@@ -303,7 +310,9 @@ function BidsSellerAd() {
                 countErrors++;
             }
 
-            if(weight === "" || Number(weight) === 0){
+            if(weight === "" 
+            //|| Number(weight) === 0
+            ){
                 thiserrors.weight = "Debe añadir el peso.";
                 countErrors++;
             }        
@@ -455,15 +464,15 @@ function BidsSellerAd() {
         }
 
         //details
-
         /*
-        if(bidType.value === 1){
-            if(reasons === null || (Array.isArray(reasons) && reasons.length === 0)){
-                thiserrors.reasons = "Seleccione una razon.";
-                countErrors++;
-                errorInStep = "details";
+            if(bidType.value === 1){
+                if(reasons === null || (Array.isArray(reasons) && reasons.length === 0)){
+                    thiserrors.reasons = "Seleccione una razon.";
+                    countErrors++;
+                    errorInStep = "details";
+                }
             }
-        }*/
+        */
 
         if(materials === null || (Array.isArray(materials) && materials.length === 0)){
             thiserrors.materials = "Debe ingresar un material como mínimo.";
@@ -531,51 +540,217 @@ function BidsSellerAd() {
         }
     }
 
-    const publish = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+    //FORMAT ARRAYS ==================================================================
+    const formatArrayToEdit = (arrayData) => {
+        let newData = [];
+        if(arrayData.length > 0){
+            for (let i = 0; i < arrayData.length; i++) {
+                const element = arrayData[i];
+                let newItemData      = {};
+                newItemData.value    = element.id;
+                newItemData.label    = element.name;
 
-        setsuccessmessage("");
-        seterrormessage("");
+                newData.push(newItemData);
+            }
+        }
 
+        return newData;
+    }
+
+    const formatArraySelect = (arrayData) => {
+        let newData = [];
+        if(arrayData.length > 0){
+            for (let i = 0; i < arrayData.length; i++) {
+                const element = arrayData[i];
+                let newItemData     = {};
+                newItemData.id      = element.value;
+                newItemData.name    = element.label;
+
+                newData.push(newItemData);
+            }
+        }
+
+        return newData;
+    }
+    //==========================================================================
+
+    const publishService = () => {
         let url = "/seller/puBLIctIons/bid/aDd";
-        console.log("publish");
+        
+        if(isEdit){
+            url = "/SElLeR/BidUpDAte/requeST";
+        }
 
-        if(bidType.value === 3){
-            let isValid = validate();
+        //creacion de servicio
+        let formattedMaterials = [];
+        if(materials !== null && materials.length > 0){
+            for (let i = 0; i < materials.length; i++) {
+                const material = materials[i];
+                let newMaterial = {};
+                newMaterial.id    =   material.type.value;
+                newMaterial.name  =   material.type.label;
+                newMaterial.qty   =   material.qty;
 
-            if(isValid){
-                //creacion de servicio
-                let formattedMaterials = [];
-                if(materials !== null && materials.length > 0){
-                    for (let i = 0; i < materials.length; i++) {
-                        const material = materials[i];
-                        let newMaterial = {};
-                        newMaterial.id    =   material.type.value;
-                        newMaterial.name  =   material.type.label;
-                        newMaterial.qty   =   material.qty;
+                formattedMaterials.push(newMaterial);
+            }
+        }
 
-                        formattedMaterials.push(newMaterial);
-                    }
+        let data = {};
+
+        if(!isEdit){
+            data = {
+                bidType: bidType.value,
+                skuId: skuId.value,
+                BrandId: brandId.value,
+
+                title,
+                smallDesc,
+                longDesc, 
+                category: {},
+                disponibilityId: disponibilityId.value,
+
+                garanty: Number(garantyDays),
+                devolution,
+                materials: formattedMaterials,
+
+                tags,
+                weight,
+
+                photos: [
+                    photo1[0].type+","+photo1[0].url, 
+                    photo2[0].type+","+photo2[0].url, 
+                    photo3[0].type+","+photo3[0].url, 
+                    photo4[0].type+","+photo4[0].url
+                ]
+            }
+        }else{
+            data.bidId  = BidId;
+            data.change = {
+                //bidType: bidType.value,
+                skuId: skuId.value,
+                BrandId: brandId.value,
+
+                title,
+                smallDesc,
+                longDesc, 
+                category: {},
+                disponibilityId: disponibilityId.value,
+
+                garanty: Number(garantyDays),
+                devolution,
+                materials: formattedMaterials,
+
+                tags,
+                weight,
+
+                photos: [
+                    photo1[0].type+","+photo1[0].url, 
+                    photo2[0].type+","+photo2[0].url, 
+                    photo3[0].type+","+photo3[0].url, 
+                    photo4[0].type+","+photo4[0].url
+                ]
+            }
+        }
+
+        console.log(data);
+        setsending(true);
+        
+        axios({
+            method: isEdit ? "post" : "post",
+            data,
+            url,
+            onUploadProgress: function(progressEvent) {
+                var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+                console.log(percentCompleted);
+                setprogress( percentCompleted );
+                setcount(count * percentCompleted);
+            }
+        }).then((res) => {
+            console.log(res.data);
+            if(res.data.data.result){
+                setsending(false);
+                setprogress(0);
+
+                if(!isEdit){
+                    setpublished(true);
+                    setsuccessmessage(res.data.data.message);
+                }else{
+                    props.reset(res.data.data.message);
+                    window.scrollTo({top: 50, behavior: 'smooth'});
                 }
+            }else{
+                setsending(false);
+                setprogress(0);
+                seterrormessage(res.data.data.message);
+                window.scrollTo({top: 50, behavior: 'smooth'});
+            }
+        }).catch((err) => {
+            console.error(err);
+            setsending(false);
+        });
+    }
 
-                let data = {
+    const publishProduct = () => {
+        let url = "/seller/puBLIctIons/bid/aDd";
+
+        if(isEdit){
+            url = "/SElLeR/BidUpDAte/requeST";
+        }
+
+        let formattedMaterials = [];
+        if(materials !== null && materials.length > 0){
+            for (let i = 0; i < materials.length; i++) {
+                const material = materials[i];
+                let newMaterial = {};
+                newMaterial.id    =   material.type.value;
+                newMaterial.name  =   material.type.label;
+                newMaterial.qty   =   material.qty;
+
+                formattedMaterials.push(newMaterial);
+            }
+        }
+
+        let formattedReasons = [];
+        if(reasons !== null && reasons.length > 0){
+            for (let i = 0; i < reasons.length; i++) {
+                const reason = reasons[i];
+                let newItem = {};
+                newItem.id    =   reason.value;
+                newItem.name  =   reason.label;
+
+                formattedReasons.push(newItem);
+            }
+        }
+
+        let data = {}
+
+        if(bidType.value === 2){
+
+            //Materiales --------------------------------
+            if(!isEdit){
+                data = {
                     bidType: bidType.value,
                     skuId: skuId.value,
                     BrandId: brandId.value,
-
+    
                     title,
                     smallDesc,
                     longDesc, 
-                    category: {},
                     disponibilityId: disponibilityId.value,
-
+                    category: {
+                        subCat1: categorylvl2 !== null ? formatArraySelect(categorylvl2) : [],
+                        subCat2: categorylvl3 !== null ? formatArraySelect(categorylvl3) : [],
+                        subCat3: categorylvl4 !== null ? formatArraySelect(categorylvl4) : [],
+                        subCat4: []
+                    },
+    
                     garanty: Number(garantyDays),
                     devolution,
                     materials: formattedMaterials,
-
                     tags,
                     weight,
+                    include,
+                    dimension: [dimension],
     
                     photos: [
                         photo1[0].type+","+photo1[0].url, 
@@ -584,247 +759,391 @@ function BidsSellerAd() {
                         photo4[0].type+","+photo4[0].url
                     ]
                 }
-
-                console.log(data);
-                setsending(true);
-                
-                axios({
-                    method: "post",
-                    data,
-                    url
-                }).then((res) => {
-                    console.log(res.data);
-                    if(res.data.data.result){
-                        setsending(false);
-                        setpublished(true);
-                        setsuccessmessage(res.data.data.message);
-                    }else{
-                        setsending(false);
-                    }
-                }).catch((err) => {
-                    console.error(err);
-                    setsending(false);
-                });
-
-                //success
-
+            }else{
+                data.bidId = BidId;
+                data.change = {
+                    //bidType: bidType.value,
+                    skuId: skuId.value,
+                    BrandId: brandId.value,
+    
+                    title,
+                    smallDesc,
+                    longDesc, 
+                    disponibilityId: disponibilityId.value,
+                    category: {
+                        subCat1: categorylvl2 !== null ? formatArraySelect(categorylvl2) : [],
+                        subCat2: categorylvl3 !== null ? formatArraySelect(categorylvl3) : [],
+                        subCat3: categorylvl4 !== null ? formatArraySelect(categorylvl4) : [],
+                        subCat4: []
+                    },
+    
+                    garanty: Number(garantyDays),
+                    devolution,
+                    materials: formattedMaterials,
+                    tags,
+                    weight,
+                    include,
+                    dimension: [dimension],
+    
+                    photos: [
+                        photo1[0].type+","+photo1[0].url, 
+                        photo2[0].type+","+photo2[0].url, 
+                        photo3[0].type+","+photo3[0].url, 
+                        photo4[0].type+","+photo4[0].url
+                    ]
+                }
             }
-        }else if(bidType.value !== 3){
-            let isValid = validate();
 
-            if(isValid){
-                //creacion de material
-                let formattedMaterials = [];
-                if(materials !== null && materials.length > 0){
-                    for (let i = 0; i < materials.length; i++) {
-                        const material = materials[i];
-                        let newMaterial = {};
-                        newMaterial.id    =   material.type.value;
-                        newMaterial.name  =   material.type.label;
-                        newMaterial.qty   =   material.qty;
+        }else if(bidType.value === 1){
 
-                        formattedMaterials.push(newMaterial);
-                    }
-                }
+            //Phm ---------------------------------------
+            if(!isEdit){
+                data = {
+                    bidType: bidType.value,
+                    skuId: skuId.value,
+                    BrandId: brandId.value,
 
-                let formattedReasons = [];
-                if(reasons !== null && reasons.length > 0){
-                    for (let i = 0; i < reasons.length; i++) {
-                        const reason = reasons[i];
-                        let newItem = {};
-                        newItem.id    =   reason.value;
-                        newItem.name  =   reason.label;
+                    title,
+                    smallDesc,
+                    longDesc, 
+                    disponibilityId: disponibilityId.value,
+                    category: {
+                        subCat1: categorylvl2 !== null ? formatArraySelect(categorylvl2) : [],
+                        subCat2: categorylvl3 !== null ? formatArraySelect(categorylvl3) : [],
+                        subCat3: categorylvl4 !== null ? formatArraySelect(categorylvl4) : [],
+                        subCat4: []
+                    },
 
-                        formattedReasons.push(newItem);
-                    }
-                }
+                    garanty: Number(garantyDays),
+                    materials: formattedMaterials,
 
-                const formatArraySelect = (arrayData) => {
-                    let newData = [];
-                    if(arrayData.length > 0){
-                        for (let i = 0; i < arrayData.length; i++) {
-                            const element = arrayData[i];
-                            let newItemData     = {};
-                            newItemData.id      = element.value;
-                            newItemData.name    = element.label;
-
-                            newData.push(newItemData);
-                        }
-                    }
-
-                    return newData;
-                }
-
-                //materials
-                if(bidType.value === 2){
-
-                    let data = {
-                        bidType: bidType.value,
-                        skuId: skuId.value,
-                        BrandId: brandId.value,
-
-                        title,
-                        smallDesc,
-                        longDesc, 
-                        disponibilityId: disponibilityId.value,
-                        category: {
-                            subCat1: categorylvl2 !== null ? formatArraySelect(categorylvl2) : [],
-                            subCat2: categorylvl3 !== null ? formatArraySelect(categorylvl3) : [],
-                            subCat3: categorylvl4 !== null ? formatArraySelect(categorylvl4) : [],
-                            subCat4: []
-                        },
-
-                        garanty: Number(garantyDays),
-                        devolution,
-                        materials: formattedMaterials,
-                        tags,
-                        weight,
-                        include,
-                        dimension: [dimension],
-
-                        photos: [
-                            photo1[0].type+","+photo1[0].url, 
-                            photo2[0].type+","+photo2[0].url, 
-                            photo3[0].type+","+photo3[0].url, 
-                            photo4[0].type+","+photo4[0].url
-                        ]
-                    }
-
-                    if(variation.length > 0){
-                        let variationList = variation;
-                        let newvariationList = [];
-        
-                        for (let i = 0; i < variationList.length; i++) {
-                            const element = variationList[i];
-                            let formatVariation = {};
-                            console.log(element.size.value);
-        
-                            formatVariation.size        = element.size.value;
-                            formatVariation.quantity    = element.quantity;
-                            formatVariation.discount    = element.discount;
-                            formatVariation.color       = element.color;
-        
-                            newvariationList.push(formatVariation);
-                        }
-        
-                        console.log(newvariationList);
-                        data.variations = newvariationList;
-        
-                    }else{
-                        data.variations = null;
-                    }
-
-                    setsending(true);
-                    console.log(data);
+                    tags,
+                    devolution,
                     
-                    axios({
-                        method: "post",
-                        data,
-                        url
-                    }).then((res) => {
-                        console.log(res.data);
-                        if(res.data.data.result){
-                            setsending(false);
-                            setpublished(true);
-                            setsuccessmessage(res.data.data.message);
-                        }else{
-                            setsending(false);
-                        }
-                    }).catch((err) => {
-                        console.error(err);
-                        setsending(false);
-                    });
-
-                }else if(bidType.value === 1){
-
-                    //hecho a mano
-                    let data = {
-                        bidType: bidType.value,
-                        skuId: skuId.value,
-                        BrandId: brandId.value,
-
-                        title,
-                        smallDesc,
-                        longDesc, 
-                        disponibilityId: disponibilityId.value,
-                        category: {
-                            subCat1: categorylvl2 !== null ? formatArraySelect(categorylvl2) : [],
-                            subCat2: categorylvl3 !== null ? formatArraySelect(categorylvl3) : [],
-                            subCat3: categorylvl4 !== null ? formatArraySelect(categorylvl4) : [],
-                            subCat4: []
-                        },
-
-                        garanty: Number(garantyDays),
-                        materials: formattedMaterials,
-
-                        tags,
-                        devolution,
-                        
-                        time,
-                        weight,
-                        include,
-                        
-                        customizable,
-                        customize,
-                        reasons: formattedReasons,
-                        dimension: [dimension],
-                        
-                        photos: [
-                            photo1[0].type+","+photo1[0].url, 
-                            photo2[0].type+","+photo2[0].url, 
-                            photo3[0].type+","+photo3[0].url, 
-                            photo4[0].type+","+photo4[0].url
-                        ]
-                    }
-
-                    if(variation.length > 0){
-                        let variationList = variation;
-                        let newvariationList = [];
-        
-                        for (let i = 0; i < variationList.length; i++) {
-                            const element = variationList[i];
-                            let formatVariation = {};
-                            console.log(element.size.value);
-        
-                            formatVariation.size        = element.size.value;
-                            formatVariation.quantity    = element.quantity;
-                            formatVariation.discount    = element.discount;
-                            formatVariation.color       = element.color;
-        
-                            newvariationList.push(formatVariation);
-                        }
-        
-                        console.log(newvariationList);
-                        data.variations = newvariationList;
-        
-                    }else{
-                        data.variations = null;
-                    }
-
-                    setsending(true);
-                    console.log(data);
+                    time,
+                    weight,
+                    include,
                     
-                    axios({
-                        method: "post",
-                        data,
-                        url
-                    }).then((res) => {
-                        console.log(res.data);
-                        if(res.data.data.result){
-                            setsending(false);
-                            setpublished(true);
-                            setsuccessmessage(res.data.data.message);
-                        }else{
-                            setsending(false);
-                        }
-                    }).catch((err) => {
-                        console.error(err);
-                        setsending(false);
-                    });
+                    customizable,
+                    customize,
+                    reasons: formattedReasons,
+                    dimension: [dimension],
+                    
+                    photos: [
+                        photo1[0].type+","+photo1[0].url, 
+                        photo2[0].type+","+photo2[0].url, 
+                        photo3[0].type+","+photo3[0].url, 
+                        photo4[0].type+","+photo4[0].url
+                    ]
+                }
+            }else{
+                data.bidId  = BidId;
+                data.change = {
+                    //bidType: bidType.value,
+                    skuId: skuId.value,
+                    BrandId: brandId.value,
+
+                    title,
+                    smallDesc,
+                    longDesc, 
+                    disponibilityId: disponibilityId.value,
+                    category: {
+                        subCat1: categorylvl2 !== null ? formatArraySelect(categorylvl2) : [],
+                        subCat2: categorylvl3 !== null ? formatArraySelect(categorylvl3) : [],
+                        subCat3: categorylvl4 !== null ? formatArraySelect(categorylvl4) : [],
+                        subCat4: []
+                    },
+
+                    garanty: Number(garantyDays),
+                    materials: formattedMaterials,
+
+                    tags,
+                    devolution,
+                    
+                    time,
+                    weight,
+                    include,
+                    
+                    customizable,
+                    customize,
+                    reasons: formattedReasons,
+                    dimension: [dimension],
+                    
+                    photos: [
+                        photo1[0].type+","+photo1[0].url, 
+                        photo2[0].type+","+photo2[0].url, 
+                        photo3[0].type+","+photo3[0].url, 
+                        photo4[0].type+","+photo4[0].url
+                    ]
                 }
             }
         }
+
+        if(variation.length > 0){
+            let variationList = variation;
+            let newvariationList = [];
+
+            for (let i = 0; i < variationList.length; i++) {
+                const element = variationList[i];
+                let formatVariation = {};
+                console.log(element.size.value);
+
+                formatVariation.size        = element.size.value;
+                formatVariation.quantity    = element.quantity;
+                formatVariation.discount    = element.discount;
+                formatVariation.color       = element.color;
+
+                newvariationList.push(formatVariation);
+            }
+
+            console.log(newvariationList);
+
+            if(!isEdit){
+                data.variations = newvariationList;
+            }else{
+                data.change.variations = newvariationList;
+            }
+
+        }else{
+            if(!isEdit){
+                data.variations         = null;
+            }else{
+                data.change.variations  = null;
+            }
+        }
+
+        setsending(true);
+        console.log(data);
+        
+        axios({
+            method: isEdit ? "post" : "post",
+            data,
+            url,
+            onUploadProgress: function(progressEvent) {
+                var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+                console.log(percentCompleted);
+                setprogress( percentCompleted );
+                setcount(count * percentCompleted);
+            }
+        }).then((res) => {
+            console.log(res.data);
+            if(res.data.data.result){
+                setsending(false);
+
+                if(!isEdit){
+                    setpublished(true);
+                    setsuccessmessage(res.data.data.message);
+                }else{
+                    props.reset(res.data.data.message);
+                }
+
+            }else{
+                seterrormessage(res.data.data.message);
+                setprogress(0);
+                window.scrollTo({top: 50, behavior: 'smooth'});
+                setsending(false);
+            }
+        }).catch((err) => {
+            console.error(err);
+            setsending(false);
+        });
+    }
+
+    const publish = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        setsuccessmessage("");
+        seterrormessage("");
+
+        let url = "/seller/puBLIctIons/bid/aDd";
+
+        if(bidType.value === 3){
+
+            let isValid = validate();
+            if(isValid){
+                publishService();
+            }
+
+        }else if(bidType.value !== 3){
+            let isValid = validate();
+            if(isValid){
+                publishProduct();
+            }
+        }
     }      
+
+    const getDataByEdit = () => {
+        let urlBid = `/sEtTiNg/BiD/GET/OnE/${shopId}/${props.bidSelectedByEdit}`;
+        let urlPhotos = `/bID/GET/IMge/byBID/${props.bidSelectedByEdit}`;
+
+        axios.get(urlBid)
+        .then((res) => {
+            console.log(res.data);
+            let bid = res.data;
+            let skutypeIdData = {value: bid.skuType.id, label: bid.skuType.name};
+
+            setBidId(bid.id);
+
+            setskuId(skutypeIdData);
+            setbidType({value: bid.skuId, label: bid.title});
+
+            changeTypeBid(skutypeIdData);
+
+            //title
+
+            settitle(bid.title);
+            setsmallDesc(bid.smallDesc);
+            setlongDesc(bid.longDesc);
+
+            setTags(bid.tags);
+            setdisponibilityId({label: bid.disponibility.name, value: bid.disponibility.id})
+
+            if(Number(bid.skuTypeId) !== 3){
+                let subcat1 = (bid.category.cat1s.subCat.subCat1 !== null && Array.isArray(bid.category.cat1s.subCat.subCat1)) ? formatArrayToEdit(bid.category.cat1s.subCat.subCat1) : [];
+                let subcat2 = (bid.category.cat1s.subCat.subCat2 !== null && Array.isArray(bid.category.cat1s.subCat.subCat2)) ? formatArrayToEdit(bid.category.cat1s.subCat.subCat2) : [];
+                let subcat3 = (bid.category.cat1s.subCat.subCat3 !== null && Array.isArray(bid.category.cat1s.subCat.subCat3)) ? formatArrayToEdit(bid.category.cat1s.subCat.subCat3) : [];
+                let subcat4 = (bid.category.cat1s.subCat.subCat4 !== null && Array.isArray(bid.category.cat1s.subCat.subCat4)) ? formatArrayToEdit(bid.category.cat1s.subCat.subCat4) : [];
+            
+                setcategorylvl2(subcat1);
+                setcategorylvl3(subcat2);
+                setcategorylvl4(subcat3);
+
+                setstock(bid.stock.total);
+            }else{
+                setcategorylvl2([]);
+                setcategorylvl3([]);
+                setcategorylvl4([]);
+
+                setstock(bid.stock.total);
+            }
+
+            //details
+
+            console.log(bid.Brand);
+
+            setbrandId({label: bid.Brand.name, value: bid.Brand.id});
+            setinclude(bid.include ? bid.include : "");
+
+            setdevolution(bid.devolution);
+            if(bid.garanty !== null && Number(bid.garanty) > 0){
+                setgaranty(true);
+                setgarantyDays(Number(bid.garanty));
+            }else{
+                setgaranty(false);
+            }
+
+            settime(bid.time);
+            setweight(bid.weight ? bid.weight : 0);
+
+            let formatMaterial = [];
+
+            if(Array.isArray(bid.materials) && bid.materials.length > 0){
+
+                let materialit = 0;
+
+                for (let i = 0; i < bid.materials.length; i++) {
+                    const material = bid.materials[i];
+
+                    let newMaterial     = {};
+                    newMaterial.id      = materialit + 1;
+                    newMaterial.qty     = material.qty;
+                    newMaterial.type    = {label: material.name, value: material.id}
+
+                    formatMaterial.push(newMaterial);
+                    materialit++;
+                }
+            }
+
+            if(Number(bid.skuTypeId) !== 3){
+                if(bid.dimension !== null && Array.isArray(bid.dimension)){
+                    setdimension({
+                        depth:  bid.dimension[0].depth, 
+                        width:  bid.dimension[0].width, 
+                        height: bid.dimension[0].height
+                    });
+                }
+            }
+
+            console.log(formatMaterial);
+            setmaterials(formatMaterial);
+
+            function isBase64(str) {
+                if (str ==='' || str.trim() ===''){ return false; }
+                try {
+                    return btoa(atob(str)) == str;
+                } catch (err) {
+                    return false;
+                }
+            }
+
+            //SET PHOTOS------------------------------------
+            axios.get(urlPhotos)
+            .then((res) => {
+
+                let newPhotos = [];
+
+                if(Array.isArray(res.data)){
+                    for (let i = 0; i < res.data.length; i++) {
+                        const item = res.data[i];
+                        if(Array.isArray(item.img.data)){
+                            let imagen = item.img.data.reduce(
+                                function (data, byte) {
+                                    return data + String.fromCharCode(byte);
+                                },
+                                ''
+                            );
+
+                            let separator = imagen.split(",");
+                            let type      = separator[0];
+                            imagen        = separator[separator.length - 1];
+
+                            //console.log(separator);
+                            //console.log(imagen);
+                            //console.log(type);
+
+                            let newItem = {}
+
+                            if(isBase64(imagen)){
+                                newItem = {
+                                    id:newPhotos.length+1,
+                                    name: "imagen_"+newPhotos.length,
+                                    type: type,
+                                    url:  separator[1]+","+separator[2]
+                                };
+                            }else{
+                                newItem = {
+                                    id:newPhotos.length+1,
+                                    name: "imagen_"+newPhotos.length,
+                                    type: null,
+                                    url:  null
+                                };
+                            }
+
+                            newPhotos.push(newItem);
+                        }
+                    }
+                }
+
+                //console.log(newPhotos);
+
+                setphoto1([newPhotos[0]]);
+                setphoto2([newPhotos[1]]);
+                setphoto3([newPhotos[2]]);
+                setphoto4([newPhotos[3]]);
+
+                
+
+                setloading(false);
+
+            }).catch((err) => {
+                console.error(err);
+            });
+
+        }).catch((err) => {
+            console.error(err);
+        });
+    }
     
     useEffect(() => {
         if(loading){
@@ -832,23 +1151,34 @@ function BidsSellerAd() {
                 setsearch(false);
                 let url = '/menu';
                 let urlGetVariations = 'https://intimi.vps.co.ve/inner/pampatarStatic/data/variations.json';
-
+                
                 axios.get(url).then((res) => {
                     setmenuCats(res.data.data.menu);
-
                     axios.get(urlGetVariations)
                     .then((res) => {
                         //console.log('variations');
                         //console.log(res.data);
                         setvariationList(res.data);
-                        setloading(false);
+                        if(!isEdit){
+                            setloading(false);
+                        }else{
+                            //BUSCANDO DATOS PARA EDICION
+                            getDataByEdit();
+                        }
                     }).catch((err) => {
                         console.error(err);
                     });
-
                 });
             }
         }else{
+            if(bidToEdit !== props.bidSelectedByEdit && isEdit){
+                console.log(props.bidSelectedByEdit);
+
+                setbidToEdit(props.bidSelectedByEdit);
+                setloading(true);
+                getDataByEdit();
+            }
+
             if(steps !== null){   
                 if((steps.indexOf(activeStep) + 1) < (Number(steps.length))){
                     if(!disableInput){
@@ -935,6 +1265,8 @@ function BidsSellerAd() {
             depth:   ""
         });
         setpublished(false);
+        setprogress(0);
+        setcount(0);
     }
     
     const backTo = () => {
@@ -994,9 +1326,19 @@ function BidsSellerAd() {
         if(!published){
             return (
                 <div>
-                    <h1 className="h4 mb-3 font-weight-bold">
-                        Nueva publicación
-                    </h1>
+                    {(!isEdit) &&
+                        <Breadcrumb listClassName="px-0">
+                            <BreadcrumbItem><a href="##">Publicaciones</a></BreadcrumbItem>
+                            <BreadcrumbItem active>Nueva publicación</BreadcrumbItem>
+                        </Breadcrumb>
+                    }
+
+
+                    {(!isEdit) &&
+                        <h1 className="h4 mb-3 font-weight-bold">
+                            Nueva publicación
+                        </h1>
+                    }
 
                     <Modal isOpen={showModalNewMaterial} toggle={toggle}>
                         <form onSubmit={(e) => addMaterial(e)} action="">
@@ -1054,20 +1396,31 @@ function BidsSellerAd() {
                         </form>
                     </Modal>
                     
+                    {(errormessage !== "") &&
+                        <div className="alert alert-danger shadow-sm">
+                            <p className="mb-0 font-weight-bold">
+                                {errormessage}
+                            </p>
+                        </div>
+                    }
+
                     <Card>
                         {(bidType !== null) &&
                             <CardBody className="border-bottom">
                                 <CardTitle className="mb-0 font-weight-bold">
-                                    <button onClick={() => backTo()} className="btn btn-unstyled mr-3 text-primary px-4">
-                                        <i className="fa fa-angle-left"></i>
-                                    </button>
-                                    Publicación: { bidType!==null ? <span className="text-muted">{bidType.label}</span> : ''} { skuId!==null ? <span className="text-muted">{", tipo: "+skuId.label}</span> : ''}
+                                    {(!isEdit) &&
+                                        <button onClick={() => backTo()} className="btn btn-unstyled mr-3 text-primary px-4">
+                                            <i className="fa fa-angle-left"></i>
+                                        </button>
+                                    }
+                                    Publicación: 
+                                    <h3>{ bidType!==null ? <span className="text-info font-weight-bold">{bidType.label}</span> : ''} { skuId!==null ? <span className="text-muted font-weight-bold">{", "+skuId.label}</span> : ''}</h3>
                                 </CardTitle>
                             </CardBody>
                         }
 
                         <CardBody>
-                            {(bidType === null) &&
+                            {(bidType === null && !isEdit) &&
                                 <div className="step step1 my-2">
                                     <div className="row justify-content-md-center">
                                         <div className="col col-lg-8">
@@ -1826,6 +2179,9 @@ function BidsSellerAd() {
                                             </div>
                                         }
                                         <hr/>
+                                        { (progress > 0) &&
+                                            <Progress striped color="success" value={progress} />
+                                        }
                                         <div className="row pt-3 justify-content-center">
                                         <div className="col-8">
                                             <div className="d-flex align-items-center justify-content-between">
@@ -1841,25 +2197,52 @@ function BidsSellerAd() {
                                                     :
                                                     <div></div>
                                                 }
-
-                                                {(steps.indexOf(activeStep) + 1) < (Number(steps.length))
+                                                
+                                                {!isEdit 
                                                 ?
-                                                    <button 
-                                                        type="button"
-                                                        disabled={sending}
-                                                        onClick={() => nextStep()}
-                                                        className="btn btn-lg btn-info px-4 font-weight-bold"
-                                                    >
-                                                        Siguiente<i className="fa fa-angle-right ml-3"></i>
-                                                    </button>
+                                                    <>
+                                                        {(steps.indexOf(activeStep) + 1) < (Number(steps.length))
+                                                        ?
+                                                            <button 
+                                                                type="button"
+                                                                disabled={sending}
+                                                                onClick={() => nextStep()}
+                                                                className="btn btn-lg btn-info px-4 font-weight-bold"
+                                                            >
+                                                                Siguiente<i className="fa fa-angle-right ml-3"></i>
+                                                            </button>
+                                                        :
+                                                            <button 
+                                                                disabled={disableInput || sending}
+                                                                type="submit"
+                                                                className="btn btn-lg btn-primary px-4 font-weight-bold"
+                                                            >
+                                                                {!sending    ? "Publicar" : <i className="fa-spin fa-spinner fa"></i>}
+                                                            </button>
+                                                        }
+                                                    </>
                                                 :
-                                                    <button 
-                                                        disabled={disableInput || sending}
-                                                        type="submit"
-                                                        className="btn btn-lg btn-primary px-4 font-weight-bold"
-                                                    >
-                                                        {!sending    ? "Publicar" : <i className="fa-spin fa-spinner fa"></i>}
-                                                    </button>
+                                                    <>
+                                                        {(steps.indexOf(activeStep) + 1) < (Number(steps.length))
+                                                        ?
+                                                            <button 
+                                                                type="button"
+                                                                disabled={sending}
+                                                                onClick={() => nextStep()}
+                                                                className="btn btn-lg btn-info px-4 font-weight-bold"
+                                                            >
+                                                                Siguiente<i className="fa fa-angle-right ml-3"></i>
+                                                            </button>
+                                                        :
+                                                            <button 
+                                                                disabled={disableInput || sending}
+                                                                type="submit"
+                                                                className="btn btn-lg btn-warning px-4 font-weight-bold"
+                                                            >
+                                                                {!sending    ? "Editar publicación" : <i className="fa-spin fa-spinner fa"></i>}
+                                                            </button>
+                                                        }
+                                                    </>
                                                 }
                                             </div>
                                         </div>
@@ -1874,6 +2257,12 @@ function BidsSellerAd() {
         }else{
             return (
                 <div>
+                    {(!isEdit) &&
+                        <Breadcrumb listClassName="px-0">
+                            <BreadcrumbItem><a href="##">Publicaciones</a></BreadcrumbItem>
+                            <BreadcrumbItem active>Nueva publicación</BreadcrumbItem>
+                        </Breadcrumb>
+                    }
                     <h1 className="h4 mb-3 font-weight-bold">
                         Nueva publicación
                     </h1>
@@ -1895,9 +2284,17 @@ function BidsSellerAd() {
     }else{
         return (
             <div>
-                <h1 className="h4 mb-3 font-weight-bold">
-                    Nueva publicación
-                </h1>
+                {(!isEdit) &&
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Publicaciones</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Nueva publicación</BreadcrumbItem>
+                    </Breadcrumb>
+                }
+                {(!isEdit) &&
+                    <h1 className="h4 mb-3 font-weight-bold">
+                        Nueva publicación
+                    </h1>
+                }
                 <div>
                     <InlineSpinner />
                 </div>

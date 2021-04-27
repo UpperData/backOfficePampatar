@@ -5,7 +5,9 @@ import {
     Col,
     Card,
     CardBody,
-    CardTitle
+    CardTitle,
+    Breadcrumb, 
+    BreadcrumbItem
 } from 'reactstrap';
 import axios from 'axios'
 import RegionsSelect from '../../../components/selects/RegionsSelect';
@@ -14,6 +16,7 @@ import ComunasSelect from '../../../components/selects/ComunasSelect';
 import PhoneMultiple from '../../../components/phones/phoneMultiple';
 import WarehouseSelect from '../../../components/selects/WarehouseSelect';
 import InlineSpinner from '../../spinner/InlineSpinner';
+import {Link} from "react-router-dom"
 
 function AddWarehouseSeller(props) {
 
@@ -277,6 +280,9 @@ function AddWarehouseSeller(props) {
                         setloading(true);
                         reset();
                         window.scrollTo({top: 10, behavior: 'smooth'});
+                        setTimeout(() => {
+                            setsuccessmessage("");
+                        }, 1000);
                     }else{
                         seterrormessage(res.data.data.message);
                         window.scrollTo({top: 10, behavior: 'smooth'});
@@ -311,6 +317,9 @@ function AddWarehouseSeller(props) {
                     if(res.data.data.result){
                         setsuccessmessage('¡Almacen creado satisfactoriamente!');
                         reset();
+                        setTimeout(() => {
+                            setsuccessmessage("");
+                        }, 1000);
                         window.scrollTo({top: 10, behavior: 'smooth'});
                     }else{
                         seterrormessage(res.data.data.message);
@@ -327,9 +336,35 @@ function AddWarehouseSeller(props) {
     if(loading){
         return (
             <div>
-                <h1 className="h4 mb-3 font-weight-bold">
-                    {props.Edit ? 'Actualizar almacén' : 'Nuevo almacén'}
-                </h1>
+
+                {props.Edit
+                ?
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Mis almacenes</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Actualizar almacén</BreadcrumbItem>
+                    </Breadcrumb>
+                :
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Mis almacenes</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Nuevo almacén</BreadcrumbItem>
+                    </Breadcrumb>
+                }
+
+                <div className="row align-items-center justify-content-between mb-3">
+                    <div className="col col-lg-auto">
+                        <h1 className="h4 mb-0 font-weight-bold">
+                            {props.Edit ? 'Actualizar almacén' : 'Nuevo almacén'}
+                        </h1>
+                    </div>
+                    {!props.Edit &&
+                        <div className="col col-lg-auto">
+                            <Link to="/viewWarehouseSeller" className="btn btn-info">
+                                Listado de almacenes
+                            </Link>
+                        </div>
+                    }
+                </div>
+
                 {(errormessage !== '') &&
                     <div className="alert alert-warning">
                         {errormessage}
@@ -346,20 +381,45 @@ function AddWarehouseSeller(props) {
     }else{
         return (
             <div>
-                <h1 className="h4 mb-3 font-weight-bold">
-                    {props.Edit ? 'Actualizar almacén' : 'Nuevo almacén'}
-                </h1>
-                    {(errormessage !== '') &&
-                        <div className="alert alert-warning">
-                            {errormessage}
-                        </div>
-                    }
+                {props.Edit
+                ?
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Mis almacenes</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Actualizar almacén</BreadcrumbItem>
+                    </Breadcrumb>
+                :
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Mis almacenes</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Nuevo almacén</BreadcrumbItem>
+                    </Breadcrumb>
+                }
 
-                    {(successmessage !== '') &&
-                        <div className="alert alert-success">
-                            {successmessage}
+                <div className="row align-items-center justify-content-between mb-3">
+                    <div className="col col-lg-auto">
+                        <h1 className="h4 mb-0 font-weight-bold">
+                            {props.Edit ? 'Actualizar almacén' : 'Nuevo almacén'}
+                        </h1>
+                    </div>
+                    {!props.Edit &&
+                        <div className="col col-lg-auto">
+                            <Link to="/viewWarehouseSeller" className="btn btn-info">
+                                Listado de almacenes
+                            </Link>
                         </div>
                     }
+                </div>
+
+                {(errormessage !== '') &&
+                    <div className="alert alert-warning">
+                        {errormessage}
+                    </div>
+                }
+
+                {(successmessage !== '') &&
+                    <div className="alert alert-success">
+                        {successmessage}
+                    </div>
+                }
 
                     {props.Edit &&
                         <div>
@@ -368,7 +428,7 @@ function AddWarehouseSeller(props) {
                                     <Card>
                                         <div className="p-3">
                                             <CardTitle>
-                                                <i className="mdi mdi-border-all mr-2"></i>Seleccione un almacén
+                                                Seleccione un almacén
                                             </CardTitle>
                                         </div>
                                         <CardBody className="border-top">
@@ -387,7 +447,7 @@ function AddWarehouseSeller(props) {
                                     <Card>
                                         <div className="p-3">
                                             <CardTitle>
-                                                <i className="mdi mdi-border-all mr-2"></i>Datos del almacén
+                                                Datos del almacén
                                             </CardTitle>
                                         </div>
                                         <CardBody className="border-top">
@@ -535,7 +595,7 @@ function AddWarehouseSeller(props) {
                                     <Card>
                                         <div className="p-3">
                                             <CardTitle>
-                                                <i className="mdi mdi-border-all mr-2"></i>Datos de contacto
+                                                Datos de contacto
                                             </CardTitle>
                                         </div>
                                         <CardBody className="border-top">
@@ -563,14 +623,14 @@ function AddWarehouseSeller(props) {
                                     </Card>
                                     {props.Edit 
                                     ?
-                                        <p>
-                                            <button disabled={sending} type="submit" className="btn btn-warning">
+                                        <p className="text-right">
+                                            <button disabled={sending} type="submit" className="btn btn-lg font-weight-bold btn-warning">
                                                 {(!sending) ? 'Actualizar almacén' : <p className="mb-0"><i className="fa fa-spinner fa-spin"></i></p>}
                                             </button>
                                         </p>
                                     :
-                                        <p>
-                                            <button disabled={sending} type="submit" className="btn btn-info">
+                                        <p className="text-right">
+                                            <button disabled={sending} type="submit" className="btn btn-lg font-weight-bold btn-info">
                                                 {(!sending) ? 'Crear almacén' : <p className="mb-0"><i className="fa fa-spinner fa-spin"></i></p>}
                                             </button>
                                         </p>

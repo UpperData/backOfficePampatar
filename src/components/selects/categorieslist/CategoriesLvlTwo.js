@@ -16,7 +16,7 @@ function CategoriesLvlTwo(props) {
     const formatData = () => {
         
         let newList = [];
-        console.log(props.list);
+        //console.log(props.list);
         let items = props.list.find(item => item.id === props.categoryParent);
         items = items.cat2s;
 

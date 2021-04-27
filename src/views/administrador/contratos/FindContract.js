@@ -6,6 +6,8 @@ import {
     Card,
     CardBody,
     CardTitle,
+    Breadcrumb, 
+    BreadcrumbItem
 } from 'reactstrap';
 //import moment from 'moment'
 import axios from 'axios'
@@ -162,6 +164,10 @@ function FindContract() {
     if(!loading){
         return (
             <div>
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Contratos</a></BreadcrumbItem>
+                    <BreadcrumbItem active>consulta de contratos</BreadcrumbItem>
+                </Breadcrumb>
                 <h1 className="h4 mb-3 font-weight-bold">Consulta de contratos</h1>
                 <div className="filters bg-light py-3 mb-3 px-3">
                     <form action="">
@@ -206,7 +212,9 @@ function FindContract() {
                     <Col md="12">
                         <Card>
                             <div className="p-3">
-                                <CardTitle><i className="mdi mdi-border-all mr-2"></i>Listado de tiendas con contratos activos en pampatar</CardTitle>
+                                <CardTitle>
+                                    Listado de tiendas con contratos activos en pampatar
+                                </CardTitle>
                             </div>
                             <CardBody className="border-top">
                                 <Table responsive>
@@ -231,7 +239,7 @@ function FindContract() {
                                                         <strong>{item.name}</strong>
                                                     </td>
                                                     <td>
-                                                       
+                                                        --
                                                     </td>
                                                     <td className="text-right">
                                                         <Link to={'/findContract/shop/'+item.id} className="btn btn-primary btn-sm">
@@ -257,6 +265,10 @@ function FindContract() {
     }else{
         return (
             <div>
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Contratos</a></BreadcrumbItem>
+                    <BreadcrumbItem active>consulta de contratos</BreadcrumbItem>
+                </Breadcrumb>
                 <h1 className="h4 mb-3 font-weight-bold">Consulta de contratos</h1>
                 <InlineSpinner />
             </div>

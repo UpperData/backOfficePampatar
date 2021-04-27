@@ -238,12 +238,24 @@ export default () => {
               <DropdownToggle nav caret className="pro-pic">
                   {(role === 'Vendedor') 
                     ?
-                      <img
-                        src={`data:image/png;base64,${logoshop}`}
-                        alt="user"
-                        className="rounded-circle"
-                        width="31"
-                      />
+                      <>
+                      {(logoshop !== "")
+                        ?
+                          <img
+                            src={`data:image/png;base64,${logoshop}`}
+                            alt="user"
+                            className="rounded-circle"
+                            width="31"
+                          />
+                        :
+                          <img
+                            src={profilephoto}
+                            alt="user"
+                            className="rounded-circle"
+                            width="31"
+                          />
+                      }
+                      </>
                     :
                       <img
                         src={profilephoto}

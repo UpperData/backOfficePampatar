@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 import InlineSpinner from '../../spinner/InlineSpinner';
 import {Link} from 'react-router-dom'
+import {Breadcrumb, BreadcrumbItem} from "reactstrap"
 
 function CurrentTaxes() {
 
@@ -34,6 +35,10 @@ function CurrentTaxes() {
     if(!loading){
         return (
             <div>
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Impuestos</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Impuestos actuales</BreadcrumbItem>
+                </Breadcrumb>
                 <h1 className="h4 mb-3 font-weight-bold">
                     Impuestos Actuales
                 </h1>
@@ -77,6 +82,10 @@ function CurrentTaxes() {
     }else{
         return (
             <div>
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Impuestos</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Impuestos actuales</BreadcrumbItem>
+                </Breadcrumb>
                 <h1 className="h4 mb-3 font-weight-bold">
                     Impuestos Actuales
                 </h1>

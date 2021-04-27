@@ -5,6 +5,8 @@ import {
     Card,
     CardBody,
     CardTitle,
+    Breadcrumb, 
+    BreadcrumbItem
 } from 'reactstrap';
 import {Link, withRouter} from 'react-router-dom'
 import axios from 'axios'
@@ -62,12 +64,21 @@ function FindContractByShop(props) {
         if(data.length > 0){
             return (
                 <div>
-                    <Link to="/findContract" className="text-info mb-3 d-inline-block">
-                        Volver a la lista
-                    </Link>
-                    <h1 className="h4 mb-3">
-                        Lista de contratos de la tienda: <span className="font-weight-bold">{data[0].shop.name}</span>
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Contratos</a></BreadcrumbItem>
+                        <BreadcrumbItem>
+                            <Link to="/findContract">
+                                Consulta de contratos
+                            </Link>
+                        </BreadcrumbItem>
+                        <BreadcrumbItem active>Ver contratos</BreadcrumbItem>
+                    </Breadcrumb>
+                    <h1 className="h6 mb-1 font-weight-bold">
+                        Lista de contratos de la tienda
                     </h1>
+                    <h3 className="h1 font-weight-bold mb-3">
+                        {data[0].shop.name}
+                    </h3>
                     <Row>
                         {data.map((item, key) => {
                             let shop = item;
@@ -98,19 +109,21 @@ function FindContractByShop(props) {
                                                 <div className="p-3">
                                                     <CardTitle>
                                                         <h6>
-                                                            <i className="mdi mdi-border-all mr-2"></i>Número de contrato: 
-                                                            <strong className="ml-2">{contract.number}</strong>
+                                                            Contrato: 
+                                                            <strong className="ml-2">#{contract.number}</strong> 
+                                                            <span className="mx-3">-</span> 
+                                                            <i className="fa fa-calendar-alt mr-2"></i>Creación: {date[0]}
                                                         </h6>
                                                     </CardTitle>
                                                 </div>
                                                 <CardBody className="border-top">
-                                                    <h6><i className="fa d-none fa-calendar-alt mr-3"></i>Creación: {date[0]}</h6>
-                                                    <hr/>
                                                     <h6 className="font-weight-bold">Datos del contrato: </h6>
                                                     <h6 className="mt-4">
-                                                        <i className="fa d-none fa-calendar-alt mr-3"></i>
+                                                        <i className="fa fa-calendar-alt mr-3"></i>
                                                         Inicio: <span>{contract.inicio}</span> - fin: <span>{contract.fin}</span>
                                                     </h6>
+
+                                                    <hr/>
 
                                                     <h6>Número de productos: <span className="font-weight-normal">{contract.comProduct}</span></h6>
                                                     <h6>Stock mínimo por producto: <span className="font-weight-normal">{contract.minStock}</span></h6>
@@ -122,7 +135,7 @@ function FindContractByShop(props) {
                                                     <h6>Porcentaje por servicios: <span className="font-weight-normal">{shop.servPercen}</span></h6>
                                                     
                                                     <hr/>
-                                                    <h6 className="font-weight-normal">Nota:</h6>
+                                                    <h6 className="font-weight-bold">Nota:</h6>
                                                     <h6>
                                                         {contract.nota}
                                                     </h6>
@@ -134,7 +147,7 @@ function FindContractByShop(props) {
                                             <div className="p-3">
                                                 <CardTitle>
                                                     <h6>
-                                                        <i className="mdi mdi-border-all mr-2"></i>Vista previa
+                                                        Vista previa
                                                     </h6>
                                                 </CardTitle>
                                             </div>

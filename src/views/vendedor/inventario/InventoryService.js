@@ -7,7 +7,9 @@ import {
     Card,
     CardBody,
     CardTitle,
-    Table
+    Table,
+    Breadcrumb, 
+    BreadcrumbItem
     //CustomInput,
 } from 'reactstrap';
 import ServicesSelect from '../../../components/selects/servicesSelect';
@@ -17,6 +19,7 @@ import moment from 'moment'
 import "react-datetime/css/react-datetime.css";
 import ServiceTypesSelect from '../../../components/selects/ServiceTypesSelect';
 import TimePanel from '../../../components/time/TimePanel';
+import InlineSpinner from '../../spinner/InlineSpinner';
 
 //lang
 require("moment/locale/es");
@@ -28,6 +31,8 @@ function InventoryService(props) {
     const [errors,              seterrors]          = useState({});
     const [successmessage,      setsuccessmessage]  = useState('');
     const [errormessage,        seterrormessage]    = useState('');
+
+    const [searchList,          setsearchList]      = useState(false);
 
     const [service,             setservice]         = useState(null);
     const [serviceData,         setserviceData]     = useState(null);
@@ -62,6 +67,7 @@ function InventoryService(props) {
         setnote('');
         setprice('');
         setquantity('');
+        setsearchList(false);
     }
 
     const validate = () => {
@@ -292,12 +298,14 @@ function InventoryService(props) {
     const changeService = (service) => {
         setservice(service);
         setserviceData(null);
+        setsearchList(true);
         console.log('cambiando servicio');
         let url = '/seller/seRvice/invenTory/GETALL/'+service.value;
 
         axios.get(url).then((res) => {
             console.log(res.data);
             setservicesList(res.data.data.rsInventoryServiceList);
+            setsearchList(false);
         }).catch((err) => {
             console.error(err);
         })
@@ -334,6 +342,19 @@ function InventoryService(props) {
 
     return (
         <div>
+            {!props.edit
+            ?
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Inventario</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Inventario de Servicios</BreadcrumbItem>
+                </Breadcrumb>
+            :
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Inventario</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Actualizar servicio</BreadcrumbItem>
+                </Breadcrumb>
+            }
+
             {!props.edit 
             ? 
                 <h1 className="h4 mb-3 font-weight-bold">
@@ -367,7 +388,7 @@ function InventoryService(props) {
                 <Card>
                     <div className="p-3">
                         <CardTitle>
-                            <i className="mdi mdi-border-all mr-2"></i>Seleccione un servicio
+                            Seleccione un servicio
                         </CardTitle>
                     </div>
                     <CardBody className="border-top">
@@ -376,11 +397,17 @@ function InventoryService(props) {
                 </Card>
             }
 
-            {(!sended && props.edit && service !== null && servicesList !== null && serviceData === null) &&
+            {searchList &&
+                <div className="py-5 mt-5">
+                    <InlineSpinner />
+                </div>
+            }
+
+            {(!searchList && !sended && props.edit && service !== null && servicesList !== null && serviceData === null) &&
             <Card>
                 <div className="p-3">
                     <CardTitle>
-                        <i className="mdi mdi-border-all mr-2"></i>Servicios de este tipo en el inventario
+                        Servicios de este tipo en el inventario
                     </CardTitle>
                 </div>
                 <CardBody className="border-top">
@@ -424,6 +451,14 @@ function InventoryService(props) {
                                             )
                                         })
                                     }
+
+                                    {servicesList !== null && servicesList.length === 0 &&
+                                        <tr>
+                                            <td colSpan="20" className="text-center">
+                                                Ningun servicio de este tipo encontrado en el inventario
+                                            </td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </Table>
                         </Col>
@@ -439,7 +474,19 @@ function InventoryService(props) {
                         <Card>
                             <div className="p-3">
                                 <CardTitle>
-                                    <i className="mdi mdi-border-all mr-2"></i>Datos del servicio: {serviceData !== null ? <span className="font-weight-bold text-primary">{+serviceData.id}</span> : ''}
+                                    {props.edit &&
+                                        <button className="mr-3 btn" onClick={() => setserviceData(null)}>
+                                            <i className="fa fa-angle-left"></i>
+                                        </button>
+                                    }
+
+                                    Datos del servicio 
+                                    
+                                    {props.edit &&
+                                        <>
+                                            id {serviceData !== null ? <span className="font-weight-bold text-primary">#{+serviceData.id}</span> : ''}
+                                        </>
+                                    }
                                 </CardTitle>
                             </div>
                             <CardBody className="border-top">

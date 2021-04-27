@@ -6,6 +6,8 @@ import {
     CardBody,
     CardTitle,
     FormGroup,
+    Breadcrumb, 
+    BreadcrumbItem
 } from 'reactstrap';
 import TagsInput from "react-tagsinput";
 import Datetime from "react-datetime";
@@ -305,11 +307,23 @@ function RepairContract() {
         axios.get(urlcontract+value.value+'/').then((res) => {
             let thiscontract = res.data.data.rsShopContract[0];
             console.log(thiscontract);
+            console.log(thiscontract.contract.tags);
 
             let descriptioncontract = (Array.isArray(thiscontract.contractDesc)) ? thiscontract.contractDesc[0] : thiscontract.contractDesc ;
 
             setContract(thiscontract);
 
+            if(Array.isArray(thiscontract.contract.tags) && thiscontract.contract.tags.length > 0){
+                let newTagList = [];
+
+                for (let i = 0; i < thiscontract.contract.tags.length; i++) {
+                    const tag = thiscontract.contract.tags[i];
+                    newTagList.push(tag.name);
+                }
+                
+                setTags(newTagList);
+            }
+            
             setinicio(descriptioncontract.inicio);
             setfin(descriptioncontract.fin);
             setnota(descriptioncontract.nota);
@@ -333,6 +347,11 @@ function RepairContract() {
         if(!success){
             return (
                 <div>
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Contratos</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Corregir contrato</BreadcrumbItem>
+                    </Breadcrumb>
+
                     <h1 className="h4 mb-3 font-weight-bold">Corregir contrato</h1>
 
                     {(errorMessage !== '') &&
@@ -349,7 +368,7 @@ function RepairContract() {
                             <Card>
                                 <div className="p-3">
                                     <CardTitle>
-                                        <i className="mdi mdi-border-all mr-2"></i>Seleccione una tienda con contrato activo
+                                        Seleccione una tienda con contrato activo
                                     </CardTitle>
                                 </div>
                                 <CardBody className="border-top">
@@ -372,12 +391,17 @@ function RepairContract() {
                             <Card>
                                 <div className="p-3">
                                     <CardTitle>
-                                        <i className="mdi mdi-border-all mr-2"></i>Datos del contrato actual
+                                        Datos del contrato actual
                                     </CardTitle>
                                 </div>
                                 <CardBody className="border-top">
                                     <Row>
-                                        <Col md="4">
+                                        <Col md="12">
+                                            <h6 className="font-weight-bold mb-3">
+                                                General
+                                            </h6>
+                                        </Col>
+                                        <Col md="12">
                                             <div className="form-group">
                                                 <label htmlFor="">Número de contrato:</label>
                                                 <input 
@@ -397,7 +421,7 @@ function RepairContract() {
                                                 }
                                             </div>
                                         </Col>
-                                        <Col md="4">
+                                        <Col md="6">
                                             <div className="form-group">
                                                 <label htmlFor="">Inicio del contrato:</label>
                                                 <Datetime
@@ -417,7 +441,7 @@ function RepairContract() {
                                                 }
                                             </div>
                                         </Col>
-                                        <Col md="4">
+                                        <Col md="6">
                                             <div className="form-group">
                                                 <label htmlFor="">Fin del contrato:</label>
                                                 <Datetime
@@ -437,7 +461,36 @@ function RepairContract() {
                                                 }
                                             </div>
                                         </Col>
-                                        <Col md="4">
+                                        <Col md="12">
+                                            <div className="form-group">
+                                                <label htmlFor="">Etiquetas:</label>
+                                                <TagsInput
+                                                    className="my-tags-input react-tagsinput"
+                                                    value={tags}
+                                                    onChange={(tags) => setTags(tags)}
+                                                    tagProps={{
+                                                        className: "react-tagsinput-tag bg-info text-white rounded",
+                                                    }}
+                                                    inputProps={{
+                                                        className: 'react-tagsinput-input',
+                                                        placeholder: 'Añadir etiqueta'
+                                                    }}
+                                                />
+                                                {(typeof errors === 'object' && errors.hasOwnProperty('tags')) &&
+                                                    <div className="help-block text-danger font-weight-bold">
+                                                        <small>
+                                                            {errors.tags}
+                                                        </small>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </Col>
+                                        <Col md="12">
+                                            <h6 className="font-weight-bold mb-3">
+                                                Servicios
+                                            </h6>
+                                        </Col>
+                                        <Col md="6">
                                             <div className="form-group">
                                                 <label htmlFor="">Número de servicios que proveerá la tienda</label>
                                                 <input 
@@ -456,6 +509,32 @@ function RepairContract() {
                                                     </div>
                                                 }
                                             </div>
+                                        </Col>
+                                        <Col md="6">
+                                            <div className="form-group">
+                                                <label htmlFor="">Porcentaje por servicio</label>
+                                                <input 
+                                                    type="number"
+                                                    value={serPercen}
+                                                    onChange={(e) => setserPercen(e.target.value)}
+                                                    step="any"
+                                                    min="0" 
+                                                    placeholder="Porcentaje 2" 
+                                                    className={((typeof errors === 'object' && errors.hasOwnProperty('serPercen') ? 'is-invalid' : '') +' form-control')}
+                                                />
+                                                {(typeof errors === 'object' && errors.hasOwnProperty('serPercen')) &&
+                                                    <div className="help-block text-danger font-weight-bold">
+                                                        <small>
+                                                            {errors.serPercen}
+                                                        </small>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </Col>
+                                        <Col md="12">
+                                            <h6 className="font-weight-bold mb-3">
+                                                Productos
+                                            </h6>
                                         </Col>
                                         <Col md="4">
                                             <div className="form-group">
@@ -497,28 +576,7 @@ function RepairContract() {
                                                 }
                                             </div>
                                         </Col>
-                                        <Col md="6">
-                                            <div className="form-group">
-                                                <label htmlFor="">Porcentaje por servicio</label>
-                                                <input 
-                                                    type="number"
-                                                    value={serPercen}
-                                                    onChange={(e) => setserPercen(e.target.value)}
-                                                    step="any"
-                                                    min="0" 
-                                                    placeholder="Porcentaje 2" 
-                                                    className={((typeof errors === 'object' && errors.hasOwnProperty('serPercen') ? 'is-invalid' : '') +' form-control')}
-                                                />
-                                                {(typeof errors === 'object' && errors.hasOwnProperty('serPercen')) &&
-                                                    <div className="help-block text-danger font-weight-bold">
-                                                        <small>
-                                                            {errors.serPercen}
-                                                        </small>
-                                                    </div>
-                                                }
-                                            </div>
-                                        </Col>
-                                        <Col md="6">
+                                        <Col md="4">
                                             <div className="form-group">
                                                 <label htmlFor="">Porcentaje por producto</label>
                                                 <input 
@@ -542,7 +600,8 @@ function RepairContract() {
                                         <Col md="12">
                                             <hr/>
                                         </Col>
-                                        <Col md="6">
+                                        <Col md="12">
+                                            <hr/>
                                             <div className="mb-3">
                                                 <div className="mb-3">
                                                     <FormGroup>
@@ -560,30 +619,6 @@ function RepairContract() {
                                                         </div>
                                                     }
                                                 </div>
-                                            </div>
-                                        </Col>
-                                        <Col md="6">
-                                            <div className="form-group">
-                                                <label htmlFor="">Etiquetas:</label>
-                                                <TagsInput
-                                                    className="my-tags-input react-tagsinput"
-                                                    value={tags}
-                                                    onChange={(tags) => setTags(tags)}
-                                                    tagProps={{
-                                                        className: "react-tagsinput-tag bg-info text-white rounded",
-                                                    }}
-                                                    inputProps={{
-                                                        className: 'react-tagsinput-input',
-                                                        placeholder: 'Añadir etiqueta'
-                                                    }}
-                                                />
-                                                {(typeof errors === 'object' && errors.hasOwnProperty('tags')) &&
-                                                    <div className="help-block text-danger font-weight-bold">
-                                                        <small>
-                                                            {errors.tags}
-                                                        </small>
-                                                    </div>
-                                                }
                                             </div>
                                         </Col>
                                         <Col md="12">
@@ -642,6 +677,10 @@ function RepairContract() {
         if(errorMessage !== ''){
             return(
                 <div>
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Contratos</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Corregir contrato</BreadcrumbItem>
+                    </Breadcrumb>
                     <h1 className="h4 mb-3 font-weight-bold">Corregir contrato</h1>
                     <div className="alert alert-warning">
                         <p className="mb-0">
@@ -653,6 +692,10 @@ function RepairContract() {
         }else{
             return(
                 <div>
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Contratos</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Corregir contrato</BreadcrumbItem>
+                    </Breadcrumb>
                     <h1 className="h4 mb-3 font-weight-bold">Corregir contrato</h1>
                     <InlineSpinner />
                 </div>

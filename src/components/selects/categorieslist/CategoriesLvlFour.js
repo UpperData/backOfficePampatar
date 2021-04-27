@@ -24,8 +24,8 @@ function CategoriesLvlFour(props) {
         let ids = [];
         let id2s = [];
 
-        console.log(props.categorieslvltwo)
-        console.log(props.categorieslvlthree);
+        //console.log(props.categorieslvltwo)
+        //console.log(props.categorieslvlthree);
 
         if(Array.isArray(props.categorieslvlthree) && props.categorieslvlthree.length > 0){
             let cat2list  = props.list.find(item => item.id === categoryParent).cat2s;
@@ -49,8 +49,8 @@ function CategoriesLvlFour(props) {
                     const parent = cat3sParents[i].cat3s;
                     for (let j = 0; j < parent.length; j++) {
                         const cat4s = parent[j].cat4s;
-                        console.log("cat3:",parent[j]);
-                        console.log(parent[j]);
+                        //console.log("cat3:",parent[j]);
+                        //console.log(parent[j]);
                         if(id2s.includes(parent[j].id)){
 
                             for (let k = 0; k < cat4s.length; k++) {
@@ -68,7 +68,7 @@ function CategoriesLvlFour(props) {
                 }
             }
 
-            console.log(newList);
+            //console.log(newList);
 
             setList(newList);
             setLoading(false);

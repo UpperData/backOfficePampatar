@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 import InlineSpinner from '../../spinner/InlineSpinner';
-import {withRouter} from 'react-router-dom'
-import {Card,CardBody,Row,Col, Table, CardTitle} from 'reactstrap'
+import {Link, withRouter} from 'react-router-dom'
+import {Card,CardBody,Row,Col, Table, CardTitle, Breadcrumb, BreadcrumbItem} from 'reactstrap'
 
 function ShowTax(props) {
 
@@ -35,19 +35,33 @@ function ShowTax(props) {
     if(!loading){
         return (
             <div>
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Impuestos</a></BreadcrumbItem>
+                    <BreadcrumbItem>
+                        <Link to="/tax/LIST/admin">
+                            Impuestos actuales
+                        </Link>
+                    </BreadcrumbItem>
+                    <BreadcrumbItem>Ver impuesto</BreadcrumbItem>
+                </Breadcrumb>
                 <h1 className="h4 mb-3 font-weight-bold">
+                    <Link to="/tax/LIST/admin" className="mr-3 text-info">
+                        <i className="fa fa-angle-left"></i>
+                    </Link>
                     Ver impuesto
                 </h1>
                 <Card>
                     <div className="p-3">
                         <CardTitle>
-                            <i className="mdi mdi-border-all mr-2"></i>Datos del impuesto 
+                            <h6 className="font-weight-bold">
+                                Datos del impuesto 
+                            </h6>
+                            <h3 className="font-weight-bold h2 mb-3">{data.name}</h3>
                         </CardTitle>
                     </div>
                     <CardBody className="border-top">
                         <Row>
                             <Col md="12">
-                                <h3 className="font-weight-bold mb-3">{data.name}</h3>
                                 {data.taxValues.length > 0 && 
                                     <div>
                                         <Table responsive>
@@ -66,7 +80,10 @@ function ShowTax(props) {
                                                     return (       
                                                         <tr key={key}>
                                                             <td className="text-left">{item.createdAt.split('T')[0]}</td>
-                                                            <td className="text-right font-weight-bold text-primary">{item.value}{(data.name === 'IVA'?'%':'')}</td>
+                                                            <td className="text-right font-weight-bold text-primary">
+                                                                {item.value}
+                                                                <i className="fa fa-percent"></i>
+                                                            </td>
                                                         </tr>       
                                                     )
                                                 })}
@@ -83,6 +100,15 @@ function ShowTax(props) {
     }else{
         return (
             <div>
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Impuestos</a></BreadcrumbItem>
+                    <BreadcrumbItem>
+                        <Link to="/tax/LIST/admin">
+                            Impuestos actuales
+                        </Link>
+                    </BreadcrumbItem>
+                    <BreadcrumbItem>Ver impuesto</BreadcrumbItem>
+                </Breadcrumb>
                 <h1 className="h4 mb-3 font-weight-bold">
                     Datos del impuesto
                 </h1>

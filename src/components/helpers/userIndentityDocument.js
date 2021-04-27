@@ -16,8 +16,12 @@ function UserIndentityDocument(props) {
     const [count,    setcount]                                  = useState(0);
 
     const backoffice = useSelector(state => state.backoffice);
-    let peopleTypeList = backoffice.peopleTypes.rows;
-
+    let peopleTypeList = [];
+    
+    if(backoffice.peopleTypes !== null){
+        peopleTypeList = backoffice.peopleTypes.rows;
+    }
+    
     const handleCheckInDocumentTypes = (dataObject) => {
         console.log('Check in tipo de documento');
         let dataInArray = document;

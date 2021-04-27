@@ -196,12 +196,24 @@ const Sidebar = (props) => {
                 {
                 (role === 'Vendedor') 
                   ?
-                    <img
-                      src={`data:image/png;base64,${logoshop}`}
-                      alt="user"
-                      className="rounded-circle mr-3"
-                      width="30"
-                    />
+                    <>
+                      {logoshop !== "" 
+                        ?
+                          <img
+                            src={`data:image/png;base64,${logoshop}`}
+                            alt="user"
+                            className="rounded-circle mr-3"
+                            width="30"
+                          />
+                        :
+                        <img
+                          src={`data:image/png;base64,${DefaultUser}`}
+                          alt="user"
+                          className="rounded-circle mr-3"
+                          width="30"
+                        />
+                      }
+                    </>
                   :
                     <img
                       src={`data:image/png;base64,${DefaultUser}`}

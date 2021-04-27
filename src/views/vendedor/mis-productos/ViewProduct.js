@@ -6,7 +6,9 @@ import {
     Card,
     CardBody,
     CardTitle,
-    Table
+    Table,
+    Breadcrumb, 
+    BreadcrumbItem
 } from 'reactstrap';
 import InlineSpinner from '../../spinner/InlineSpinner';
 import { Link } from 'react-router-dom';
@@ -46,13 +48,18 @@ function ViewProducts() {
         return (
             <div>
                 <div>
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Mis Productos</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Listar productos</BreadcrumbItem>
+                    </Breadcrumb>
+
                     <div className="row pb-3">
                         <div className="col-md-6">
                             <h1 className="h4 mb-3 font-weight-bold">Listar productos</h1>
                         </div>
                         <div className="col-md-6">
                             <div className="text-md-right">
-                                <Link to="/addProduct" className="btn btn-info btn-sm">
+                                <Link to="/addProduct" className="btn btn-info">
                                     Nuevo producto
                                 </Link>
                             </div>
@@ -64,17 +71,19 @@ function ViewProducts() {
                             {errormessage}
                         </div>
                     }
+
                     {(successmessage !== '') &&
                         <div className="alert alert-success">
                             {successmessage}
                         </div>
                     }
+
                     <Row>
                         <Col md="12">
                             <Card>
                                 <div className="p-3">
                                     <CardTitle>
-                                        <i className="mdi mdi-border-all mr-2"></i>Productos disponibles
+                                        Productos disponibles
                                     </CardTitle>
                                 </div>
                                 <CardBody className="border-top">
@@ -123,6 +132,10 @@ function ViewProducts() {
     }else{
         return(
             <div>
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Mis Productos</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Listar productos</BreadcrumbItem>
+                </Breadcrumb>
                 <h1 className="h4 mb-3 font-weight-bold">Listar productos</h1>
                 <InlineSpinner />
             </div>

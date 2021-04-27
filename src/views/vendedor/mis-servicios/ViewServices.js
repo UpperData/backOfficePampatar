@@ -7,7 +7,9 @@ import {
     Card,
     CardBody,
     CardTitle,
-    Table
+    Table,
+    Breadcrumb, 
+    BreadcrumbItem
 } from 'reactstrap';
 import InlineSpinner from '../../spinner/InlineSpinner';
 import {Link} from 'react-router-dom'
@@ -52,13 +54,17 @@ function ViewServices() {
         return (
             <div>
                 <div>
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Mis Servicios</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Listar servicios</BreadcrumbItem>
+                    </Breadcrumb>
                     <div className="row pb-3">
                         <div className="col-md-6">
                             <h1 className="h4 mb-3 font-weight-bold">Listar servicios</h1>
                         </div>
                         <div className="col-md-6">
                             <div className="text-md-right">
-                                <Link to="/addService" className="btn btn-info btn-sm">
+                                <Link to="/addService" className="btn btn-info">
                                     Nuevo servicio
                                 </Link>
                             </div>
@@ -79,7 +85,7 @@ function ViewServices() {
                             <Card>
                                 <div className="p-3">
                                     <CardTitle>
-                                        <i className="mdi mdi-border-all mr-2"></i>Servicios disponibles
+                                        <i className="fa fa-list-alt mr-2"></i>Servicios disponibles
                                     </CardTitle>
                                 </div>
                                 <CardBody className="border-top">
@@ -122,6 +128,10 @@ function ViewServices() {
     }else{
         return(
             <div>
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Mis Servicios</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Listar servicios</BreadcrumbItem>
+                </Breadcrumb>
                 <h1 className="h4 mb-3 font-weight-bold">Listar servicios</h1>
                 <InlineSpinner />
             </div>

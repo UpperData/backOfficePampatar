@@ -10,6 +10,8 @@ import {
     CardBody,
     CardTitle,
     CustomInput,
+    Breadcrumb, 
+    BreadcrumbItem
 } from 'reactstrap';
 import GenderSelect from '../../../components/selects/GenderSelect';
 import NationalitySelect from '../../../components/selects/NationalitySelect';
@@ -85,6 +87,8 @@ function UpdateSeller() {
                 axios.get(urlget)
                 .then((res) => {
                     let data = res.data.data.rsAccount[0];
+                    console.log(data);
+
                     let shops = res.data.data.rsAccount[0].shopRequests;
                     let idshop = session.userData.shop.postulacionId;
 
@@ -395,6 +399,10 @@ function UpdateSeller() {
     if(!loading){
         return (
             <div>
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Configuraciones</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Actualizar datos</BreadcrumbItem>
+                </Breadcrumb>
                 <h1 className="h4 mb-3 font-weight-bold">Actualizar datos de la tienda</h1>
                 <form onSubmit={(e) => updateAccount(e)} action="">
                     <Row>
@@ -402,7 +410,7 @@ function UpdateSeller() {
                             <Card>
                                 <div className="p-3">
                                     <CardTitle>
-                                        <i className="mdi mdi-border-all mr-2"></i>Datos del usuario
+                                        Datos del usuario
                                     </CardTitle>
                                 </div>
                                 <CardBody className="border-top">
@@ -508,7 +516,7 @@ function UpdateSeller() {
                             <Card>
                                 <div className="p-3">
                                     <CardTitle>
-                                        <i className="mdi mdi-border-all mr-2"></i>Datos bancarios
+                                        Datos bancarios
                                     </CardTitle>
                                 </div>
                                 <CardBody className="border-top">
@@ -608,7 +616,7 @@ function UpdateSeller() {
                             <Card>
                                 <div className="p-3">
                                     <CardTitle>
-                                        <i className="mdi mdi-border-all mr-2"></i>Datos de la tienda
+                                        Datos de la tienda
                                     </CardTitle>
                                 </div>
                                 <CardBody className="border-top">
@@ -733,8 +741,8 @@ function UpdateSeller() {
                                     </Row>
                                 </CardBody>
                             </Card>
-                            <p className="py-2">
-                                <button disabled={sending} type="submit" className="btn btn-info d-block w-100">
+                            <p className="py-2 text-right">
+                                <button disabled={sending} type="submit" className="btn btn-lg font-weight-bold btn-info">
                                     {(!sending) ? 'Actualizar datos' : <p className="mb-0"><i className="fa fa-spin fa-spinner"></i></p>}
                                 </button>
                             </p>
@@ -746,6 +754,10 @@ function UpdateSeller() {
     }else{
         return (
             <div>
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Configuraciones</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Actualizar datos</BreadcrumbItem>
+                </Breadcrumb>
                 <h1 className="h4 mb-3 font-weight-bold">Actualizar datos de la tienda</h1>
                 <InlineSpinner />
             </div>

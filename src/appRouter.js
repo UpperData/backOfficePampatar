@@ -117,7 +117,7 @@ const AppRouter = (props) => {
           //const response = error.response.data
           const originalRequest = error.config;
   
-          if (code === 401 && !originalRequest._retry && !failRequestByToken) {
+          if (code === 403 && !originalRequest._retry && !failRequestByToken) {
               originalRequest._retry = true;
               failRequestByToken = true;
               //let STORAGE_ISLOGED = localStorage.getItem('is_loged');

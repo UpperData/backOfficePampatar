@@ -4,9 +4,12 @@ import {Card,CardBody,CardTitle,Table,Row,Col, TabContent, TabPane, Nav, NavItem
 import ShopWithContractsSelect from '../../../components/selects/ShopsWithContractsSelect';
 import InlineSpinner from '../../spinner/InlineSpinner';
 import {useSelector} from 'react-redux'
-import {Link} from "react-router-dom"
+import {Link, withRouter} from "react-router-dom"
+import { isBase64 } from '../../../utils/helpers';
 
-function Procesar() {
+function ConsultarTienda(props) {
+
+    let id = props.match.params.id;
 
     const backoffice                            = useSelector(state => state.backoffice);
     const bidTypes                              = backoffice.bidTypes;
@@ -26,7 +29,7 @@ function Procesar() {
 
     const [shopSelected, setshopSelected]       = useState(null);
 
-    const [searchdatabid, setsearchdatabid]     = useState(false);
+    const [searchdatabid, setsearchdatabid]     = useState(id);
     const [databid, setdatabid]                 = useState(null);
     const [bidSelected, setbidSelected]         = useState(null);
     const [photos, setphotos]                   = useState(null);
@@ -50,14 +53,20 @@ function Procesar() {
     }
 
     const getData = () => {
-        axios.get("/sEtTiNg/biD/IN/evaLUAtion").then((res) => {
+        axios.get(`/setting/seller/shop/general/profile/${id}`)
+        .then((res) => {
             console.log(res.data);
-            setdata(res.data);
-            setshoplist(res.data);
-            setloading(false);
-        }).catch((err) => {
-            console.error(err);
-        });
+            setshop(res.data.data.rsAccount[0]);
+
+            axios.get(`/SeTtiNG/BiD/get/BySHOp/${id}`).then((res) => {
+                console.log(res.data);
+                setdata(res.data);
+                setlist(res.data);
+                setloading(false);
+            }).catch((err) => {
+                console.error(err);
+            });
+        })
     }
 
     useEffect(() => {
@@ -69,39 +78,13 @@ function Procesar() {
         }
     });
 
-    const filterShops = (text = setFilterBySearchShop) => {
-        let newlist = shoplist;
-
-        if(text !== ""){
-            newlist = shoplist.filter(item => item.name.toLowerCase().includes(text.trim().toLowerCase()));
-        }
-
-        setdata(newlist);
-        setcount(count + 5);
-    }
-
-    const changeInputSearchShop = (value) => {
-        setFilterBySearchShop(value);
-
-        setTimeout(() => {
-            filterShops(value);
-        }, 0);
-    }
-
-    const cleanFiltersShop = () => {
-        setdata(shoplist);
-        setFilterBySearchShop('');
-
-        setcount(count + 5);
-    }
-
     //----------------------------------------------------------
 
     const filterBids = (text = filterBySearch) => {
-        let newlist = shopSelected.Bids;
+        let newlist = data;
 
         if(text !== ""){
-            newlist = shopSelected.Bids.filter(item => item.title.toLowerCase().includes(text.trim().toLowerCase()));
+            newlist = data.filter(item => item.title.toLowerCase().includes(text.trim().toLowerCase()));
         }
 
         setlist(newlist);
@@ -117,21 +100,18 @@ function Procesar() {
     }
 
     const cleanFilters = () => {
-        setlist(shopSelected.Bids);
         setFilterBySearch('');
-    }
-
-    const selectShop = (shop) => {
-        console.log(shop);
-        setlist(shop.Bids);
-        setshopSelected(shop);
+        setlist(data);
     }
 
     const showDataBid = (id) => {
         setsearchdatabid(true);
         setbidSelected(id);
         setModal(true);
-        let urlBid = `/sEtTiNg/BiD/GET/OnE/${shopSelected.id}/${id}`;
+        setsuccessmessage("");
+        seterrormessage("");
+
+        let urlBid = `/sEtTiNg/BiD/GET/OnE/${props.match.params.id}/${id}`;
         let urlPhotos = `/bID/GET/IMge/byBID/${id}`;
 
         axios.get(urlBid)
@@ -160,10 +140,10 @@ function Procesar() {
     const changeStatusBid = (e, type) => {
         let urlaction = ``;
 
-        if(type === "accept"){
-            urlaction = `/SETTiNG/BiD/UpBid/APPROve`;
-        }else if(type === "reject"){
-            urlaction = `/SetTiNG/BiD/UPBid/rJeCT`;
+        if(type === "active"){
+            urlaction = `/sEtTiNG/bID/ActiVaTE/${bidSelected}`;
+        }else if(type === "inactive"){
+            urlaction = `/SEtTInG/biD/REVOKE/${bidSelected}`;
         }
 
         setsuccessmessage('');
@@ -172,21 +152,16 @@ function Procesar() {
         
         axios({
             url: urlaction,
-            method: "PUT",
-            data: {
-                id: bidSelected
-            }
+            method: "GET",
         }).then((res) => {
             console.log(res.data);
             if(res.data.data.result){
-                setsuccessmessage(res.data.data.Message);
+                setsuccessmessage(res.data.data.message);
                 setTimeout(() => {
                     setshopSelected(null);
                     setdatabid(null);
                     setModal(false);
                     setchanging(false);
-                    setloading(true);
-                    getData();
                 }, 2000);
             }else{
                 seterrormessage(res.data.data.message);
@@ -199,226 +174,125 @@ function Procesar() {
         });
     }
 
-    function isBase64(str) {
-        if (str ==='' || str.trim() ===''){ return false; }
-        try {
-            return btoa(atob(str)) == str;
-        } catch (err) {
-            return false;
-        }
-    }
-
     return (
         <div>
-
             <Breadcrumb listClassName="px-0">
-                <BreadcrumbItem><a href="##">Contratos</a></BreadcrumbItem>
-                <BreadcrumbItem active>Procesar publicaciones</BreadcrumbItem>
+                <BreadcrumbItem><a href="##">Publicaciones</a></BreadcrumbItem>
+                <BreadcrumbItem>
+                    <Link to="/admIn/pUBLICATIONS/ListAll">Consultar publicaciones</Link>
+                </BreadcrumbItem>
+                <BreadcrumbItem active>Ver tienda</BreadcrumbItem>
             </Breadcrumb>
 
             <h1 className="h4 mb-3 font-weight-bold">
-                Procesar publicaciones
+                Consultar publicaciónes
             </h1>
             
             {(searchBids || loading) &&
                 <InlineSpinner />
             }
 
-            {(shopSelected === null) 
-            ?
-                <div>
-                    <p>
-                        Seleccione una tienda haciendo click en su carta correspondiente.
-                    </p>
-
-                    {(!loading) &&
-                        <div className="filters bg-light py-3 mb-3 px-3">
-                            <form action="">
-                                <div className="row justify-content-between align-items-center">
-                                    <div className="col-lg-6">
-                                        <div className="input">
-                                            <input 
-                                                value={filterBySearchShop}
-                                                onChange={(e) => changeInputSearchShop(e.target.value)}
-                                                type="text" 
-                                                className="form-control" 
-                                                placeholder="Filtrar tienda por titulo" 
-                                                aria-label="filter" 
-                                                aria-describedby="filter-shop-by-name"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="col-lg-3">
-                                        <button 
-                                            type="button" 
-                                            onClick={() => cleanFiltersShop()} 
-                                            className="btn btn-primary"
-                                        >
-                                            limpiar filtros
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    }
-
-                    {(Array.isArray(data) && data.length === 0 && !loading) &&
-                        <div>
-                            <h3 className="h5 text-center pt-4">
-                                No existen tiendas que coincidan con los parametros de la busqueda.
-                            </h3>
-                        </div>
-                    }
-
-                    {(Array.isArray(data) && data.length > 0 && !loading) &&
-                        <div>
-                            <div className="row row-eq-height">
-                                {(data.map((item, key) => {
-                                    let logoshop = '';
-                                    console.log(item);
-
-                                    if(item.logo !== null){
-                                        logoshop = item.logo.data.reduce(
-                                            function (data, byte) {
-                                                return data + String.fromCharCode(byte);
-                                            },
-                                            ''
-                                        );
-                                    }
-                                    
-                                    return (
-                                        <div key={key} className="col-lg-4 mb-4">
-                                            <button onClick={() => selectShop(item)} className="card w-100 shadow h-100">
-                                                <div className="card-body h-100 py-3">
-                                                    <div className="row h-100 justify-content-center align-items-center">
-                                                        {(item.logo !== null) &&
-                                                            <div className="col-md-6">
-                                                                <img
-                                                                    src={`data:image/png;base64,${logoshop}`}
-                                                                    alt="user"
-                                                                    className="rounded-circle"
-                                                                    height="100"
-                                                                />
-                                                            </div>
-                                                        }
-                                                        <div className="col-md-auto">
-                                                            <h2 className="text-center text-secondary">
-                                                                <strong>
-                                                                    {item.name}
-                                                                </strong>
-                                                            </h2>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </button>
-                                        </div>
-                                    )
-                                }))}
-                            </div>
-                        </div>
-                    }
-                </div>
-            :
-                <div>
-                    <Card>
-                        <CardBody className="border-bottom">
-                            <CardTitle className="mb-0 font-weight-bold">
-                                <button onClick={() => setshopSelected(null)} className="btn btn-sm mr-3">
-                                    <i className="fa fa-angle-left"></i>
-                                </button>Tienda seleccionada
-                            </CardTitle>
-                        </CardBody>
-                        <CardBody>
-                            <h2 className="font-weight-bold text-info">
-                                <i className="mdi mdi-store-outline mr-3"></i>{shopSelected.name}
-                            </h2>
-                        </CardBody>
-                    </Card>
-                    <Card>
-                    <div className="filters bg-light py-3 mb-3 px-3">
-                        <form action="">
-                            <div className="row justify-content-between align-items-center">
-                                <div className="col-lg-6">
-                                    <div className="input">
-                                        <input 
-                                            value={filterBySearch}
-                                            onChange={(e) => changeInputSearch(e.target.value)}
-                                            type="text" 
-                                            className="form-control" 
-                                            placeholder="Filtrar por titulo" 
-                                            aria-label="filter" 
-                                            aria-describedby="filter-by-name"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="col-lg-3">
-                                    <button 
-                                        type="button" 
-                                        onClick={() => cleanFilters()} 
-                                        className="btn btn-primary"
-                                    >
-                                        limpiar filtros
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>    
+            {!loading && !data !== null &&
+            <div>
+                <Card>
                     <CardBody className="border-bottom">
                         <CardTitle className="mb-0 font-weight-bold">
-                            <i className="fa fa-list mr-2"></i>
-                            Publicaciones
+                            <Link to="/admIn/pUBLICATIONS/ListAll" className="btn btn-sm mr-3">
+                                <i className="fa fa-angle-left"></i>
+                            </Link>Tienda seleccionada
                         </CardTitle>
                     </CardBody>
-                    <CardBody className="pb-5">
-                        <Row>
-                            <Col xs="12">
-                                <Table responsive>
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                #
-                                            </th>
-                                            <th>
-                                                Titulo
-                                            </th>
-                                            <th>
-                                                Acción
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {(list.length > 0 && list.map((item, key) => {
-                                            return (
-                                                <tr key={key}>
-                                                    <td>
-                                                        {item.id}
-                                                    </td>
-                                                    <td>
-                                                        {item.title}
-                                                    </td>
-                                                    <td>
-                                                        <button onClick={() => showDataBid(item.id)} className="btn btn-info">
-                                                            Ver publicación
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            )
-                                        }))}
-
-                                        {(list.length === 0) &&
-                                            <tr>
-                                                <td className="text-center" colSpan="20">
-                                                    Ninguna solicitud de publicacion encontrada.
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </Table>
-                            </Col>
-                        </Row>
+                    <CardBody>
+                        <h2 className="font-weight-bold text-info">
+                            <i className="mdi mdi-store-outline mr-3"></i>{shop.name}
+                        </h2>
                     </CardBody>
                 </Card>
-                </div>
+                <Card>
+                <div className="filters bg-light py-3 mb-3 px-3">
+                    <form action="">
+                        <div className="row justify-content-between align-items-center">
+                            <div className="col-lg-6">
+                                <div className="input">
+                                    <input 
+                                        value={filterBySearch}
+                                        onChange={(e) => changeInputSearch(e.target.value)}
+                                        type="text" 
+                                        className="form-control" 
+                                        placeholder="Filtrar por titulo" 
+                                        aria-label="filter" 
+                                        aria-describedby="filter-by-name"
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-lg-3">
+                                <button 
+                                    type="button" 
+                                    onClick={() => cleanFilters()} 
+                                    className="btn btn-primary"
+                                >
+                                    limpiar filtros
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>    
+                <CardBody className="border-bottom">
+                    <CardTitle className="mb-0 font-weight-bold">
+                        <i className="fa fa-list mr-2"></i>
+                        Publicaciones
+                    </CardTitle>
+                </CardBody>
+                <CardBody className="pb-5">
+                    <Row>
+                        <Col xs="12">
+                            <Table responsive>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            #
+                                        </th>
+                                        <th>
+                                            Titulo
+                                        </th>
+                                        <th>
+                                            Acción
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {(list.length > 0 && list.map((item, key) => {
+                                        return (
+                                            <tr key={key}>
+                                                <td>
+                                                    {item.id}
+                                                </td>
+                                                <td>
+                                                    {item.title}
+                                                </td>
+                                                <td>
+                                                    <button onClick={() => showDataBid(item.id)} className="btn btn-info">
+                                                        Ver publicación
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        )
+                                    }))}
+
+                                    {(list.length === 0) &&
+                                        <tr className="text-center">
+                                            <td colSpan="20" className="text-center">
+                                                Sin publicaciones encontradas
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </Table>
+                        </Col>
+                    </Row>
+                </CardBody>
+            </Card>
+            </div>
             }
 
             <Modal size="lg" isOpen={modal} toggle={toggle}>
@@ -444,6 +318,14 @@ function Procesar() {
                             {(searchdatabid) &&
                                 <div className="py-5 text-center mb-4">
                                     <InlineSpinner />
+                                </div>
+                            }
+
+                            {(databid !== null && !searchdatabid && successmessage === "") &&
+                                <div className="alert alert-info">
+                                    <strong>Estado de la publicación:</strong>
+                                    {databid.StatusId === 2 ? " Inactiva" : ""} 
+                                    {databid.StatusId === 1 ? " Activa" : ""} 
                                 </div>
                             }
 
@@ -785,12 +667,17 @@ function Procesar() {
                 <ModalFooter>
                     {(!searchdatabid && databid !== null && successmessage === "") &&
                         <>
-                            <Button disabled={changing} color="info" onClick={(e) => changeStatusBid(e, "accept")}>
-                                {changing ? <span><i className="fa fa-spinner fa-spin"></i></span> : 'Aceptar'}
-                            </Button>
-                            <Button disabled={changing} color="info" onClick={(e) => changeStatusBid(e, "reject")}>
-                                {changing ? <span><i className="fa fa-spinner fa-spin"></i></span> : 'Rechazar'}
-                            </Button>
+                            {databid.StatusId === 2 &&
+                                <Button disabled={changing} color="info" onClick={(e) => changeStatusBid(e, "active")}>
+                                    {changing ? <span><i className="fa fa-spinner fa-spin"></i></span> : 'Activar'}
+                                </Button>
+                            }
+
+                            {databid.StatusId === 1 &&
+                                <Button disabled={changing} color="info" onClick={(e) => changeStatusBid(e, "inactive")}>
+                                    {changing ? <span><i className="fa fa-spinner fa-spin"></i></span> : 'Desactivar'}
+                                </Button>
+                            }
                         </>
                     }
                     <Button color="primary" onClick={toggle}>
@@ -803,4 +690,4 @@ function Procesar() {
     )
 }
 
-export default Procesar
+export default withRouter(ConsultarTienda)

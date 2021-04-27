@@ -7,3 +7,12 @@ export const moneyFormatter = (amount) => {
 
     return peso.format(amount);
 }
+
+export const isBase64 = (str) => {
+    if (str ==='' || str.trim() ===''){ return false; }
+    try {
+        return btoa(atob(str)) == str;
+    } catch (err) {
+        return false;
+    }
+}
