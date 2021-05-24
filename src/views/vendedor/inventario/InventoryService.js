@@ -41,7 +41,7 @@ function InventoryService(props) {
     const [days,                setdays]            = useState(null);
     const [serviceId,           setserviceId]       = useState(null);
     const [serviceTypeId,       setserviceTypeId]   = useState(null);
-    const [dateStart,           setdateStart]       = useState(null);
+    const [dateStart,           setdateStart]       = useState(moment(new Date(), "YYYY-MM-DD"));
     const [dateEnd,             setdateEnd]         = useState(null);
     const [note,                setnote]            = useState('');
     const [price,               setprice]           = useState('');
@@ -55,14 +55,15 @@ function InventoryService(props) {
             setservicesList(null);
         }
 
-        setsending(false);
-        seterrors({});
         setsuccessmessage('');
         seterrormessage('');
+
+        setsending(false);
+        seterrors({});
         setdays(null);
         setserviceId(null);
         setserviceTypeId(null);
-        setdateStart(null);
+        setdateStart(moment(new Date(), "YYYY-MM-DD"));
         setdateEnd(null);
         setnote('');
         setprice('');
@@ -103,12 +104,14 @@ function InventoryService(props) {
         }
 
         if(!props.edit){
-            if(dateStart !== null && moment().isAfter(moment(dateStart))){
+            let newDate = new Date();
+
+            if(dateStart !== null && moment(dateStart, "YYYY-MM-DD").isBefore(moment(newDate, "YYYY-MM-DD").subtract(1, "days"))){
                 thiserrors.dateStart = 'La fecha de inicio debe ser igual ó superior a la fecha de hoy';
                 errorsCount++;
             }
 
-            if( dateEnd !== null && moment(dateStart).isAfter(moment(dateEnd)) ){
+            if(dateEnd !== null && moment(dateStart).isAfter(moment(dateEnd)) ){
                 thiserrors.dateStart = 'Esta fecha debe ser menor a la culminación';
                 thiserrors.dateEnd   = 'Esta fecha debe ser posterior al inicio.';
                 errorsCount++;
@@ -219,7 +222,7 @@ function InventoryService(props) {
                     reset();
                     setsended(true);
                     window.scrollTo({top: 10, behavior: 'smooth'});
-                    setsuccessmessage('¡Servicio añadido satisfactoriamente!')
+                    setsuccessmessage(res.data.data.message);
                 }else{
                     window.scrollTo({top: 10, behavior: 'smooth'});
                     seterrormessage(res.data.data.message);
@@ -340,6 +343,12 @@ function InventoryService(props) {
         setdays(formatDays);
     }
 
+    const addNewService = () => {
+        setsended(false);
+        setsuccessmessage("");
+        seterrormessage("");
+    }
+
     return (
         <div>
             {!props.edit
@@ -379,8 +388,8 @@ function InventoryService(props) {
             }
 
             {(sended && !props.edit) &&
-                <button onClick={() => setsended(false)} className="btn mt-2 btn-primary">
-                    Nuevo servicio
+                <button onClick={() => addNewService()} className="btn mt-2 btn-primary">
+                    Agregar nuevo servicio
                 </button>
             }
 
@@ -646,14 +655,14 @@ function InventoryService(props) {
                         {props.edit &&
                             <p className="my-2 text-right">
                                 <button disabled={sending} type="submit" className="btn font-weight-bold btn-lg btn-warning">
-                                    {(sending) ? <span>Enviando</span> : 'Editar servicio'}
+                                    {(sending) ? <span><i className="fa fa-spin fa-spinner"></i></span> : 'Editar servicio'}
                                 </button>
                             </p>
                         }
                         {!props.edit &&
                             <p className="my-2 text-right">
                                 <button disabled={sending} type="submit" className="btn font-weight-bold btn-lg btn-primary">
-                                    {(sending) ? <span>Enviando</span> : 'Añadir servicio'}
+                                    {(sending) ? <span><i className="fa fa-spin fa-spinner"></i></span> : 'Añadir servicio'}
                                 </button>
                             </p>
                         }

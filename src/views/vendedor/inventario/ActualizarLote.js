@@ -14,7 +14,9 @@ import {
     Modal, 
     ModalHeader, 
     ModalBody, 
-    ModalFooter
+    ModalFooter,
+    Breadcrumb, 
+    BreadcrumbItem
 } from 'reactstrap';
 import ProductSelect from '../../../components/selects/ProductSelect';
 import WarehouseSelect from '../../../components/selects/WarehouseSelect';
@@ -144,6 +146,10 @@ function ActualizarLote() {
     if(!loading){
         return (
             <div className="actualizar-lote">
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Inventario</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Actualizar lote</BreadcrumbItem>
+                </Breadcrumb>
                 <h1 className="h4 mb-3 font-weight-bold">
                     Actualizar lote
                 </h1>
@@ -162,9 +168,7 @@ function ActualizarLote() {
                         <Col md="12">
                             <Card>
                                 <div className="p-3">
-                                    <CardTitle>
-                                        <i className="mdi mdi-border-all mr-2"></i>Seleccione un producto
-                                    </CardTitle>
+                                    Seleccione un producto
                                 </div>
                                 <CardBody className="border-top">
                                     <ProductSelect value={product} onChange={changeProduct} />
@@ -182,9 +186,7 @@ function ActualizarLote() {
                         <Col md="12">
                             <Card>
                                 <div className="p-3">
-                                    <CardTitle>
-                                        <i className="mdi mdi-border-all mr-2"></i>Lotes del producto: {product.label}
-                                    </CardTitle>
+                                    Lotes del producto: {product.label}
                                 </div>
                                 <CardBody className="border-top">
                                 <Table responsive>
@@ -248,9 +250,7 @@ function ActualizarLote() {
                                     </div>
                                     <Card>
                                         <div className="p-3">
-                                            <CardTitle>
-                                                <i className="mdi mdi-border-all mr-2"></i>Datos del lote - <button onClick={() => gotolist()} className="btn btn-sm btn-info">Volver a la lista de lotes</button>
-                                            </CardTitle>
+                                            Datos del lote - <button onClick={() => gotolist()} className="btn btn-sm btn-info">Volver a la lista de lotes</button>
                                         </div>
                                         <CardBody className="border-top">
                                             <Row>
@@ -323,6 +323,10 @@ function ActualizarLote() {
     }else{
         return (
             <div className="actualizar-lote">
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Inventario</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Actualizar lote</BreadcrumbItem>
+                </Breadcrumb>
                 <h1 className="h4 mb-3 font-weight-bold">
                     Actualizar lote
                 </h1>

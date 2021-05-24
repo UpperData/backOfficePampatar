@@ -13,6 +13,7 @@ import axios from 'axios'
 import { Fragment } from 'react';
 
 import { Document, Page, pdfjs } from "react-pdf";
+import InlineSpinner from '../../spinner/InlineSpinner';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 function FindContractByShop(props) {
@@ -106,15 +107,13 @@ function FindContractByShop(props) {
                                 <Fragment key={key}>
                                     <Col md="7">
                                             <Card>
-                                                <div className="p-3">
-                                                    <CardTitle>
-                                                        <h6>
-                                                            Contrato: 
-                                                            <strong className="ml-2">#{contract.number}</strong> 
-                                                            <span className="mx-3">-</span> 
-                                                            <i className="fa fa-calendar-alt mr-2"></i>Creación: {date[0]}
-                                                        </h6>
-                                                    </CardTitle>
+                                                <div className="px-3 py-4">
+                                                    <h6 className="mb-0">
+                                                        Contrato: 
+                                                        <strong className="ml-2">#{contract.number}</strong> 
+                                                        <span className="mx-3">-</span> 
+                                                        <i className="fa fa-calendar-alt mr-2"></i>Creación: {date[0]}
+                                                    </h6>  
                                                 </div>
                                                 <CardBody className="border-top">
                                                     <h6 className="font-weight-bold">Datos del contrato: </h6>
@@ -145,11 +144,14 @@ function FindContractByShop(props) {
                                         <Col key={key} md="5">
                                         <Card>
                                             <div className="p-3">
-                                                <CardTitle>
-                                                    <h6>
+                                                <div className="d-flex align-items-center justify-content-between">
+                                                    <h6 className="mb-0">
                                                         Vista previa
                                                     </h6>
-                                                </CardTitle>
+                                                    <button onClick={(e) => downloadPdf(e, `data:application/pdf;${pdfFile.split(';')[1]}`)} className="btn btn-outline-light btn-sm text-dark px-4">
+                                                        <i className="fa fa-download"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                             <CardBody className="border-top">
                                             <div className="div-pdf" ref={pdfWrapper}>
@@ -160,9 +162,6 @@ function FindContractByShop(props) {
                                                     <Page pageNumber={pageNumber} width={400} />
                                                 </Document>
                                                 <p>Página <span>{pageNumber}</span> de <span>{numPages}</span></p>
-                                                <button onClick={(e) => downloadPdf(e, `data:application/pdf;${pdfFile.split(';')[1]}`)} className="btn btn-info d-block w-100">
-                                                    Descargar
-                                                </button>
                                             </div>
                                             </CardBody>
                                         </Card>
@@ -181,7 +180,19 @@ function FindContractByShop(props) {
     }else{
         return (
             <div>
-                <h1 className="h4 mb-3 font-weight-bold">Cargando ..</h1>
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Contratos</a></BreadcrumbItem>
+                    <BreadcrumbItem>
+                        <Link to="/findContract">
+                            Consulta de contratos
+                        </Link>
+                    </BreadcrumbItem>
+                    <BreadcrumbItem active>Ver contratos</BreadcrumbItem>
+                </Breadcrumb>
+                <h1 className="h6 mb-1 font-weight-bold">
+                    Lista de contratos de la tienda
+                </h1>
+                <InlineSpinner />
             </div>
         )
     }

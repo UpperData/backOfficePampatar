@@ -110,7 +110,7 @@ function PhoneMultiple(props) {
                         return (
                             <div key={key} className="form-group">
                                 <label className="text-info h7 font-weight-bold my-2" htmlFor="">
-                                    Número de teléfono #{phoneKey}
+                                    Datos del teléfono #{phoneKey}
                                 </label>
                                 <div className="">
                                     <div className="row">
@@ -143,8 +143,8 @@ function PhoneMultiple(props) {
             }
 
             {phonesNumber.length <= 2 &&
-                <button type="button" onClick={() => addPhoneNumber()} className="btn btn-block rounded shadow font-weight-bold btn-primary">
-                    <i className="fa fa-plus mr-2"></i>Añadir número de teléfono
+                <button type="button" onClick={() => addPhoneNumber()} className="btn btn-block rounded shadow btn-primary">
+                    <i className="fa fa-plus mr-2"></i><i className="fa fa-phone"></i>
                 </button>
             }
         </div>

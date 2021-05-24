@@ -239,7 +239,7 @@ function Consultar() {
                                             />
                                         </div>
                                     </div>
-                                    <div className="col-lg-3">
+                                    <div className="col-lg-3 text-right">
                                         <button 
                                             type="button" 
                                             onClick={() => cleanFiltersShop()} 

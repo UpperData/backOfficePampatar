@@ -16,3 +16,23 @@ export const isBase64 = (str) => {
         return false;
     }
 }
+
+export const getBase64Img = (data) => {
+    let imagen = "";
+    let type = "";
+    
+    if(Array.isArray(data.data)){
+        imagen = data.data.reduce(
+            function (data, byte) {
+                return data + String.fromCharCode(byte);
+            },
+            ''
+        );
+
+        let separator = imagen.split(",");
+        type    = separator[0];
+        imagen  = separator[separator.length - 1];
+    }
+
+    return {type: type, url: imagen};
+}

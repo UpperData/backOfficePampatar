@@ -28,7 +28,7 @@ import {
 } from 'reactstrap';
 import {useSelector} from 'react-redux'
 import BidTypesSelect from '../../../components/selects/TypeBidSelect';
-import { isBase64 } from '../../../utils/helpers';
+import { getBase64Img, isBase64 } from '../../../utils/helpers';
 
 function List() {
 
@@ -39,8 +39,12 @@ function List() {
     const bidTypes                              = backoffice.bidTypes;
     const [loading, setloading]                 = useState(true);
     const [search, setsearch]                   = useState(true);
+
+
     const [data, setdata]                       = useState([]);
     const [list, setlist]                       = useState([]);
+    const [imglist, setimglist]                 = useState([]);
+
 
     const [successmessagemodalstatus,           setsuccessmessagemodalstatus]   = useState("");
     const [errormessagemodalstatus,         seterrormessagemodalstatus]         = useState("");
@@ -73,14 +77,56 @@ function List() {
     const [modalView, setModalView]                         = useState(false);
     const toggleView = () => setModalView(!modalView);
 
-    let url = "/seLLer/pUBLIctIons/get/ALl";
+    let url         = "/seLLer/pUBLIctIons/get/ALl";
+    let urlGetImg   = `/SettInG/IMG/geT/bYID/`;
 
     const getData = () => {
         axios.get(url).then((res) => {
             console.log(res.data);
-            setdata(res.data);
-            setlist(res.data);
-            setloading(false);
+
+            let items = res.data;
+            setdata(items);
+            setlist(items);
+
+            let countItems  = items.length;
+            let countPhotos = 0;
+
+            let newPhotosList = [];
+            
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                let getPrincipalImgId = null;
+
+                if(Array.isArray(item.photos) && item.photos.length > 0){
+                    getPrincipalImgId = item.photos.find(photo => Number(photo.type) === 1);
+                }
+
+                if(getPrincipalImgId !== null){
+                    console.log(getPrincipalImgId);
+                    newPhotosList.push({id: getPrincipalImgId.id, data: null});
+                }
+            }
+            
+            if(Array.isArray(newPhotosList) && newPhotosList.length > 0){
+                for (let j = 0; j < newPhotosList.length; j++) {
+                    const thisphoto = newPhotosList[j];
+
+                    axios.get(urlGetImg+thisphoto.id).then((res) => {
+                        //console.log(res.data);
+                        newPhotosList[j].data = res.data.data;
+                        countPhotos++;
+
+                        if(countPhotos === countItems){
+                            setimglist(newPhotosList);
+                            setloading(false);
+                        }
+                    }).catch((err) => {
+                        console.error(err);
+                    })
+                }
+            }
+
+            console.log(newPhotosList);
         }).catch((err) => {
             console.error(err);
             setloading(false);
@@ -229,10 +275,6 @@ function List() {
         });
     }
 
-    console.log(bidSelected);
-    console.log(typeChangeStatus);
-
-    
     const showDataBid = (id) => {
         setsearchdatabid(true);
         setbidSelected(id);
@@ -307,6 +349,7 @@ function List() {
                                         <Nav tabs className="nav-fill">
                                             <NavItem>
                                                 <NavLink
+                                                    style={{cursor: "pointer"}}
                                                     className={activeTab === '1' ? "active font-weight-bold" : ""}
                                                     onClick={() =>  toggleTab('1')}
                                                 >
@@ -315,6 +358,7 @@ function List() {
                                             </NavItem>
                                             <NavItem>
                                                 <NavLink
+                                                    style={{cursor: "pointer"}}
                                                     className={activeTab === '2' ? "active font-weight-bold" : ""}
                                                     onClick={() =>  toggleTab('2')}
                                                 >
@@ -323,6 +367,7 @@ function List() {
                                             </NavItem>
                                             <NavItem>
                                                 <NavLink
+                                                    style={{cursor: "pointer"}}
                                                     className={activeTab === '3' ? "active font-weight-bold" : ""}
                                                     onClick={() =>  toggleTab('3')}
                                                 >
@@ -580,37 +625,20 @@ function List() {
                                             </TabPane>
                                             <TabPane tabId="3">
                                                 <div className="py-4">
-                                                    <h3 className="font-weight-bold mb-3">
+                                                    <h3 className="font-weight-bold mb-4">
                                                         Imagenes de la publicacion
                                                     </h3>
                                                     <div className="row">
-                                                        {Array.isArray(photos) && photos.length > 1 && photos.map((item, key) => {
-                                                            let imagen = "";
-                                                            let type = "";
-                                                            
-                                                                if(Array.isArray(item.img.data)){
-                                                                    imagen = item.img.data.reduce(
-                                                                        function (data, byte) {
-                                                                            return data + String.fromCharCode(byte);
-                                                                        },
-                                                                        ''
-                                                                    );
+                                                        {Array.isArray(photos) && photos.length > 1 && photos.map((item, key) => {                                                            
+                                                            let dataImg = getBase64Img(item.img);
 
-                                                                    let separator = imagen.split(",");
-                                                                    type    = separator[0];
-                                                                    imagen  = separator[separator.length - 1];
-                                                                }
-                                                            
-                                                            console.log(type);
-                                                            console.log(imagen);
-
-                                                            if(isBase64(imagen)){
+                                                            if(isBase64(dataImg.url)){
                                                                 return (
-                                                                    <div key={key} className="col-lg-6 mb-3">
+                                                                    <div key={key} className="col-lg-6 mb-4">
                                                                         <img 
                                                                             className="img-fluid"
                                                                             //style='display:block; width:100px;height:100px;'                
-                                                                            src={`data:image/${type};base64,${imagen}`}
+                                                                            src={`data:image/${dataImg.type};base64,${dataImg.url}`}
                                                                         />
                                                                     </div>
                                                                 )
@@ -630,6 +658,17 @@ function List() {
                                                             }
                                                         })}
                                                     </div>
+
+                                                    {(databid.urlVideos !== null && databid.urlVideos !== undefined) &&
+                                                        <div>
+                                                            <h3 className="font-weight-bold mb-4">
+                                                                Video url:
+                                                            </h3>
+                                                            <a target="__blank" href={databid.urlVideos}>
+                                                                {databid.urlVideos}
+                                                            </a>
+                                                        </div>
+                                                    }
                                                 </div>
                                             </TabPane>
                                         </TabContent>
@@ -643,8 +682,6 @@ function List() {
                         </Button>
                     </ModalFooter>
                 </Modal>
-
-
 
                 <Modal isOpen={modal} toggle={toggle}>
                     <ModalHeader toggle={toggle}>
@@ -757,29 +794,48 @@ function List() {
                                     </thead>
                                     <tbody>
                                         {(list.length > 0 && list.map((item, key) => {
-                                            let type = bidTypes.find(type => Number(type.id ) === Number(item.skuTypeId));
-                                            //let img = item.photos[0];
-                                            //let imgformat = img.toString().split(",");
-                                            //console.log(imgformat);
+                                            let type    = bidTypes.find(type => Number(type.id) === Number(item.skuTypeId));
+                                            let photoId = null;
+
+                                            if(Array.isArray(item.photos) && item.photos.length > 0){
+                                                photoId = item.photos.find(photo => Number(photo.type) === 1);
+                                            }
+
+                                            let img = "";
+
+                                            //console.log(photoId);
+
+                                            if(photoId !== null){
+                                                img = imglist.find(photo => Number(photo.id) === Number(photoId.id));
+                                            }
+
+                                            let dataimg = getBase64Img(img.data);
+                                            //console.log(url);
 
                                             return (
                                                 <tr key={key}>
-                                                    <td>
+                                                    <td style={{verticalAlign: "middle"}}>
                                                         {item.id}
                                                     </td>
-                                                    <td>
-                                                        
+                                                    <td style={{verticalAlign: "middle"}}>
+                                                        {(img !== null && img !== undefined) &&
+                                                            <img 
+                                                                className="img-fluid shadow"
+                                                                style={{width: "100px", borderRadius: "5px"}}                
+                                                                src={`data:image/${dataimg.type};base64,${dataimg.url}`}
+                                                            />
+                                                        }
                                                     </td>
-                                                    <td>
+                                                    <td style={{verticalAlign: "middle"}}>
                                                         {item.title}
                                                     </td>
-                                                    <td>
+                                                    <td style={{verticalAlign: "middle"}}>
                                                         {type.name}
                                                     </td>
-                                                    <td>
+                                                    <td style={{verticalAlign: "middle"}}>
                                                         {item.Status.name}
                                                     </td>
-                                                    <td>
+                                                    <td style={{verticalAlign: "middle"}}>
                                                         <UncontrolledDropdown>
                                                             <DropdownToggle tag="a" className="link" style={{cursor: "pointer"}}>
                                                                 <i className="fa fa-ellipsis-v"></i>

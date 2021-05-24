@@ -133,7 +133,7 @@ function UpdateTax() {
                         <Card>
                             <div className="p-3">
                                 <CardTitle>
-                                    Datos <span className="text-muted">({(data !== null) ? 'Actualizado por ultima vez el '+data.taxValues[0].createdAt.split('T')[0] : ''})</span>
+                                    Datos <span className="text-muted">({(data !== null) ? 'Actualizado por última vez el '+data.taxValues[0].createdAt.split('T')[0] : ''})</span>
                                 </CardTitle>
                             </div>
                             <CardBody className="border-top">

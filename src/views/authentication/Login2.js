@@ -227,8 +227,9 @@ const login = (e) => {
               <Col md="6" lg="4" className="bg-dark d-none d-md-flex text-white">
                 <div className="p-4">
                   <h3 className="display-5">
-                    Bienvenido,
-                    <br /> <span className="text-primary font-bold">Artesano</span>
+                    <span className="text-light font-bold">
+                      Bienvenido
+                    </span>
                   </h3>
                   <p className="op-5 mt-4">
                     Este es el sistema administrativo de <strong>Pampatar</strong> en el cual podrá administrar su tienda y mirar su progreso a través de nuestra plataforma.
@@ -238,7 +239,9 @@ const login = (e) => {
               </Col>
               <Col md="6" lg="5" className="bg-white">
                 <div className="p-4">
-                  <h3 className="font-medium mb-3 font-weight-bold">Ingresar al administrador</h3>
+                  <h3 className="font-medium mb-3 h2 font-weight-bold">
+                    Iniciar sesión
+                  </h3>
                   <Form onSubmit={(e) => login(e)} className="mt-3" action="/dashbaord">
                     <Label for="email" className="font-medium">
                       Correo Electrónico
@@ -308,7 +311,7 @@ const login = (e) => {
                           type="submit"
                           block
                         >
-                          {(sending) ? <span>cargando<i className="fa fa-spin fa-spinner ml-3"></i></span> : 'Ingresar'}
+                          {(sending) ? <span><i className="fa fa-spin fa-spinner ml-3"></i></span> : 'Ingresar'}
                         </Button>
                       </Col>
                     </Row>

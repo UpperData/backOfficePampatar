@@ -10,7 +10,9 @@ import {
     ModalHeader, 
     ModalBody, 
     ModalFooter,
-    Button
+    Button,
+    Breadcrumb, 
+    BreadcrumbItem
 } from 'reactstrap';
 import ProductSelect from '../../../components/selects/ProductSelect';
 import axios from 'axios'
@@ -18,7 +20,7 @@ import InlineSpinner from '../../spinner/InlineSpinner';
 import { moneyFormatter } from '../../../utils/helpers';
 import ServicesStock from './ServicesStock';
 
-function StockMonitorSeller() {
+function StockMonitorSeller(props) {
 
     const [product, setproduct] = useState(null);
     const [service, setservice] = useState(null);
@@ -168,17 +170,28 @@ function StockMonitorSeller() {
 
     return (
         <div>
+
+            {!props.edit
+            ?
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Inventario</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Monitor de stock</BreadcrumbItem>
+                </Breadcrumb>
+            :
+                <Breadcrumb listClassName="px-0">
+                    <BreadcrumbItem><a href="##">Inventario</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Monitor de stock</BreadcrumbItem>
+                </Breadcrumb>
+            }
+
             <h1 className="h4 mb-3 font-weight-bold">
-                Stock de productos
+                Monitor de stock
             </h1>
             <Row>
                 <Col md="12">
                     <Card>
                         <div className="p-3">
-                            <CardTitle>
-                                <i className="mdi mdi-border-all mr-2"></i>
-                                Consultar stock de:
-                            </CardTitle>
+                            Consultar stock de:
                         </div>
                         <CardBody className="border-top">
                             <button disabled={type === 'product'} onClick={() => changeType('product')} className="btn btn-primary">
@@ -202,9 +215,7 @@ function StockMonitorSeller() {
                         <form action="">
                         <Card>
                             <div className="p-3">
-                                <CardTitle>
-                                    <i className="mdi mdi-border-all mr-2"></i>Stock por producto
-                                </CardTitle>
+                                Stock por producto
                             </div>
                             <CardBody className="border-top">
                                 <Row>
@@ -266,11 +277,9 @@ function StockMonitorSeller() {
                                     </Card>
                                 </div>
                                 <div className="col col-lg-12">
-                                    <Card>
+                                <Card>
                                 <div className="p-3">
-                                    <CardTitle>
-                                        <i className="mdi mdi-border-all mr-2"></i>Lotes
-                                    </CardTitle>
+                                    Lotes
                                 </div>
                                 <CardBody className="border-top">
                                     <Row>

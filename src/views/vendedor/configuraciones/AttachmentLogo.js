@@ -130,9 +130,7 @@ function AttachmentLogo() {
                         <Col md="12">
                             <Card>
                                 <div className="p-3">
-                                    <CardTitle>
-                                        Logo de la tienda
-                                    </CardTitle>
+                                    Logo de la tienda
                                 </div>
                                 <CardBody className="border-top">
                                         <Row className="align-items-center justify-content-center">

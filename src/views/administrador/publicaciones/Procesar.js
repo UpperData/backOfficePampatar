@@ -5,6 +5,7 @@ import ShopWithContractsSelect from '../../../components/selects/ShopsWithContra
 import InlineSpinner from '../../spinner/InlineSpinner';
 import {useSelector} from 'react-redux'
 import {Link} from "react-router-dom"
+import { getBase64Img } from '../../../utils/helpers';
 
 function Procesar() {
 
@@ -51,10 +52,11 @@ function Procesar() {
 
     const getData = () => {
         axios.get("/sEtTiNg/biD/IN/evaLUAtion").then((res) => {
-            console.log(res.data);
+            console.log(res);
             setdata(res.data);
             setshoplist(res.data);
             setloading(false);
+            setsuccessmessage('');
         }).catch((err) => {
             console.error(err);
         });
@@ -248,7 +250,7 @@ function Procesar() {
                                             />
                                         </div>
                                     </div>
-                                    <div className="col-lg-3">
+                                    <div className="col-lg-3 text-right">
                                         <button 
                                             type="button" 
                                             onClick={() => cleanFiltersShop()} 
@@ -263,10 +265,12 @@ function Procesar() {
                     }
 
                     {(Array.isArray(data) && data.length === 0 && !loading) &&
-                        <div>
-                            <h3 className="h5 text-center pt-4">
-                                No existen tiendas que coincidan con los parametros de la busqueda.
-                            </h3>
+                        <div className="card">
+                            <div className="card-body py-4">
+                                <h3 className="h5 text-center font-weight-bold">
+                                    No existen tiendas que coincidan con los parametros de la busqueda.
+                                </h3>
+                            </div>
                         </div>
                     }
 
@@ -351,7 +355,7 @@ function Procesar() {
                                         />
                                     </div>
                                 </div>
-                                <div className="col-lg-3">
+                                <div className="col-lg-3 text-right">
                                     <button 
                                         type="button" 
                                         onClick={() => cleanFilters()} 
@@ -381,7 +385,7 @@ function Procesar() {
                                             <th>
                                                 Titulo
                                             </th>
-                                            <th>
+                                            <th className="text-right">
                                                 Acción
                                             </th>
                                         </tr>
@@ -396,7 +400,7 @@ function Procesar() {
                                                     <td>
                                                         {item.title}
                                                     </td>
-                                                    <td>
+                                                    <td className="text-right">
                                                         <button onClick={() => showDataBid(item.id)} className="btn btn-info">
                                                             Ver publicación
                                                         </button>
@@ -452,6 +456,7 @@ function Procesar() {
                                     <Nav tabs className="nav-fill">
                                         <NavItem>
                                             <NavLink
+                                                style={{cursor: "pointer"}}
                                                 className={activeTab === '1' ? "active font-weight-bold" : ""}
                                                 onClick={() =>  toggleTab('1')}
                                             >
@@ -460,6 +465,7 @@ function Procesar() {
                                         </NavItem>
                                         <NavItem>
                                             <NavLink
+                                                style={{cursor: "pointer"}}
                                                 className={activeTab === '2' ? "active font-weight-bold" : ""}
                                                 onClick={() =>  toggleTab('2')}
                                             >
@@ -468,6 +474,7 @@ function Procesar() {
                                         </NavItem>
                                         <NavItem>
                                             <NavLink
+                                                style={{cursor: "pointer"}}
                                                 className={activeTab === '3' ? "active font-weight-bold" : ""}
                                                 onClick={() =>  toggleTab('3')}
                                             >
@@ -482,7 +489,9 @@ function Procesar() {
                                                 <h4 className="font-weight-bold h3 mb-1">
                                                     {databid.title} 
                                                     <span className="badge badge-primary small mx-2">
-                                                        {databid.skuType.name}
+                                                        {
+                                                            databid.skuType.name
+                                                        }
                                                     </span>
                                                 </h4>
                                                 <p className="text-muted small mb-0">
@@ -725,37 +734,20 @@ function Procesar() {
                                         </TabPane>
                                         <TabPane tabId="3">
                                             <div className="py-4">
-                                                <h3 className="font-weight-bold mb-3">
+                                                <h3 className="font-weight-bold mb-4">
                                                     Imagenes de la publicacion
                                                 </h3>
                                                 <div className="row">
                                                     {Array.isArray(photos) && photos.length > 1 && photos.map((item, key) => {
-                                                        let imagen = "";
-                                                        let type = "";
-                                                        
-                                                            if(Array.isArray(item.img.data)){
-                                                                imagen = item.img.data.reduce(
-                                                                    function (data, byte) {
-                                                                        return data + String.fromCharCode(byte);
-                                                                    },
-                                                                    ''
-                                                                );
+                                                        let imgData = getBase64Img(item.img);
 
-                                                                let separator = imagen.split(",");
-                                                                type    = separator[0];
-                                                                imagen  = separator[separator.length - 1];
-                                                            }
-                                                        
-                                                        console.log(type);
-                                                        console.log(imagen);
-
-                                                        if(isBase64(imagen)){
+                                                        if(isBase64(imgData.url)){
                                                             return (
-                                                                <div key={key} className="col-lg-6 mb-3">
+                                                                <div key={key} className="col-lg-6 mb-4">
                                                                     <img 
                                                                         className="img-fluid"
                                                                         //style='display:block; width:100px;height:100px;'                
-                                                                        src={`data:image/${type};base64,${imagen}`}
+                                                                        src={`data:image/${imgData.type};base64,${imgData.url}`}
                                                                     />
                                                                 </div>
                                                             )
@@ -775,6 +767,16 @@ function Procesar() {
                                                         }
                                                     })}
                                                 </div>
+                                                {(databid.urlVideos !== null && databid.urlVideos !== undefined) &&
+                                                    <div>
+                                                        <h3 className="font-weight-bold mb-4">
+                                                            Url de videos
+                                                        </h3>
+                                                        <a target="__blank" href={databid.urlVideos}>
+                                                            {databid.urlVideos}
+                                                        </a>
+                                                    </div>
+                                                }
                                             </div>
                                         </TabPane>
                                     </TabContent>

@@ -27,7 +27,15 @@ function SkuTypeSelect(props) {
                     formattedElement.label = thisElement.name;
                     formattedElement.value = thisElement.id;
 
-                    newList.push(formattedElement);
+                    if(formattedElement.value === 3){
+                        if(props.isOnlyForProducts){
+                            //fsaffasfasfsa
+                        }else{
+                            newList.push(formattedElement);
+                        }
+                    }else{
+                        newList.push(formattedElement);
+                    }
                 }            
 
                 setList(newList);

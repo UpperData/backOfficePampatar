@@ -9,7 +9,7 @@ import {
     Breadcrumb, 
     BreadcrumbItem
 } from 'reactstrap';
-//import moment from 'moment'
+import moment from 'moment'
 import axios from 'axios'
 import InlineSpinner from '../../spinner/InlineSpinner';
 import {Link} from 'react-router-dom'
@@ -169,10 +169,10 @@ function FindContract() {
                     <BreadcrumbItem active>consulta de contratos</BreadcrumbItem>
                 </Breadcrumb>
                 <h1 className="h4 mb-3 font-weight-bold">Consulta de contratos</h1>
-                <div className="filters bg-light py-3 mb-3 px-3">
+                <div className="filters bg-light py-3 px-3">
                     <form action="">
                         <div className="row justify-content-between align-items-center">
-                            <div className="col-lg-2">
+                            <div className="col-lg-2 d-none">
                                 <div className="filter-by">
                                     <button type="button" 
                                     onClick={() => sortTable('status')} 
@@ -222,7 +222,7 @@ function FindContract() {
                                         <tr>
                                             <th>ID</th>
                                             <th>Nombre de la tienda</th>
-                                            <th>Estado</th>
+                                            <th className="text-center">Fecha de creación</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -238,11 +238,11 @@ function FindContract() {
                                                     <td>
                                                         <strong>{item.name}</strong>
                                                     </td>
-                                                    <td>
-                                                        --
+                                                    <td className="text-center">
+                                                        {moment(item.createdAt).format("DD/MM/YYYY")}
                                                     </td>
                                                     <td className="text-right">
-                                                        <Link to={'/findContract/shop/'+item.id} className="btn btn-primary btn-sm">
+                                                        <Link to={'/findContract/shop/'+item.id} className="btn btn-info btn-sm">
                                                             ver contratos
                                                         </Link>
                                                     </td>

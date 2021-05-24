@@ -55,12 +55,12 @@ function SelectRequest() {
             //setsearchByText(false);
             filterBy('search', value);
             //filterBy('text', value);
-        }, 500);
+        }, 200);
     }
 
     const searchShop = (text) => {
         let newlist = data.rows.filter((item) => {
-            let fullName = item.Account.Person.firstName.toLowerCase()+' '+item.Account.Person.lastName.toLowerCase();
+            let fullName = item.Account.Person.firstName.toLowerCase()+' '+item.Account.Person.lastName.toLowerCase()+' '+item.marca.toLowerCase();
             return fullName.includes(text.toLowerCase());
         });
 
@@ -225,7 +225,7 @@ function SelectRequest() {
                         <BreadcrumbItem active>Consultar postulaciones</BreadcrumbItem>
                     </Breadcrumb>
                     <h1 className="h4 mb-3 font-weight-bold">Consulta Postulaciones</h1>
-                    <div className="filters bg-light py-3 mb-3 px-3">
+                    <div className="filters bg-light py-3 px-3">
                         <form action="">
                             <div className="row justify-content-between align-items-center">
                                 <div className="col-auto">
@@ -284,7 +284,6 @@ function SelectRequest() {
                                 <Card>
                                     <div className="p-3">
                                         <CardTitle>
-                                            <i className="mdi mdi-border-all mr-2"></i>
                                             Lista de postulaciones
                                         </CardTitle>
                                     </div>
@@ -294,10 +293,10 @@ function SelectRequest() {
                                                 <tr>
                                                     <th>ID</th>
                                                     <th>Nombre de la tienda</th>
-                                                    <th>Numero de empleados</th>
-                                                    <th>Canales de venta</th>
-                                                    <th>Estatus</th>
-                                                    <th>Fecha de creación</th>
+                                                    <th>Empleados</th>
+                                                    <th className="text-center">Canales de venta</th>
+                                                    <th className="text-center">Estatus</th>
+                                                    <th className="text-center">Fecha de creación</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -318,20 +317,22 @@ function SelectRequest() {
                                                                 </UncontrolledTooltip>
                                                             </td>
                                                             <td>{item.employees}</td>
-                                                            <td>
+                                                            <td className="text-center">
                                                                 {item.salesChannels.length > 0 && item.salesChannels.map((subitem, subkey) => {
                                                                     return (
-                                                                        <Badge key={subkey} color="primary" className="mx-1">
+                                                                        <Badge key={subkey} color="info" className="mx-2">
                                                                             {subitem.name}
                                                                         </Badge>
                                                                     )
                                                                 })}
                                                             </td>
-                                                            <td>
+                                                            <td className="text-center">
                                                                 {item.status[item.status.length - 1].name}
                                                             </td>
-                                                            <td>
-                                                                {item.createdAt.split('T')[0]}
+                                                            <td className="text-center">
+                                                                <div style={{width: "130px"}}>
+                                                                    {item.createdAt.split('T')[0]}
+                                                                </div>
                                                             </td>
                                                         </tr>
                                                     )
@@ -373,7 +374,6 @@ function SelectRequest() {
                     <Card>
                         <div className="p-3">
                             <CardTitle>
-                                <i className="mdi mdi-border-all mr-2"></i>
                                 Datos de la postulación
                             </CardTitle>
                         </div>

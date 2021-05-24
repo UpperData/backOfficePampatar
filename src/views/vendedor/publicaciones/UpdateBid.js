@@ -15,12 +15,15 @@ function UpdateBid(props) {
     }
 
     const reset = (message) => {
-        setbidSelected();
+        setbidSelected(null);
         setsuccessMessage(message);
         console.log(message);
-        setTimeout(() => {
-            setsuccessMessage("");
-        }, 5000);
+
+        /*
+            setTimeout(() => {
+                setsuccessMessage("");
+            }, 10000);
+        */
     }
 
     useEffect(() => {

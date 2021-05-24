@@ -144,10 +144,10 @@
 
         span.color{
             transition: .3s ease all;
-            border: 2px solid transparent;
-            width: 20px;
-            height: 20px;
-            border-radius: .3em;
+            border: 5px solid transparent;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
 
             &:hover{
                 box-shadow: $box-shadow;

@@ -88,9 +88,7 @@ function ViewWarehouseSeller() {
                         <Col md="12">
                             <Card>
                                 <div className="p-3">
-                                    <CardTitle>
-                                        Almacenes disponibles
-                                    </CardTitle>
+                                    Almacenes disponibles
                                 </div>
                                 <CardBody className="border-top">
                                         <Row>
@@ -101,10 +99,10 @@ function ViewWarehouseSeller() {
                                                             <th>
                                                                 Nombre del almacen
                                                             </th>
-                                                            <th>
+                                                            <th className="text-center">
                                                                 Dirección
                                                             </th>
-                                                            <th>
+                                                            <th className="text-center">
                                                                 Teléfono
                                                             </th>
                                                         </tr>
@@ -154,11 +152,11 @@ function ViewWarehouseSeller() {
                                                                             </UncontrolledTooltip>
                                                                         }
                                                                     </td>
-                                                                    <td>
-                                                                        {dir}
+                                                                    <td className="text-center">
+                                                                        {(item.address !== null ? dir : "--")}
                                                                     </td>
-                                                                    <td>
-                                                                        {phone.number}
+                                                                    <td className="text-center">
+                                                                        {(item.phone !== null ? phone.number : "--")}
                                                                     </td>
                                                                 </tr>
                                                             )

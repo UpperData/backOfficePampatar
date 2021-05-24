@@ -93,6 +93,7 @@ function BidsSellerAd(props) {
     const [weight,      setweight]                      = useState('');
     const [photos,      setphotos]                      = useState([]);
 
+    const [typePhotos, settypePhotos]                   = useState(null);
     const [photo1, setphoto1]                           = useState(null);
     const [photo2, setphoto2]                           = useState(null);
     const [photo3, setphoto3]                           = useState(null);
@@ -139,6 +140,8 @@ function BidsSellerAd(props) {
         let newVariation = 
         {
                 id,
+                category: null,
+                sizetype: null,
                 size: null,
                 quantity:"",
                 discount:'',
@@ -310,9 +313,7 @@ function BidsSellerAd(props) {
                 countErrors++;
             }
 
-            if(weight === "" 
-            //|| Number(weight) === 0
-            ){
+            if(weight === "" && bidType.value !== 3){
                 thiserrors.weight = "Debe añadir el peso.";
                 countErrors++;
             }        
@@ -326,6 +327,14 @@ function BidsSellerAd(props) {
     
                 for (let i = 0; i < variationList.length; i++) {
                     const variation = variationList[i];
+
+                    if(variation.category === null){
+                        variationErrorsCount++;
+                    }
+
+                    if(variation.sizetype === null){
+                        variationErrorsCount++;
+                    }
     
                     if(variation.size === null){
                         variationErrorsCount++;
@@ -363,30 +372,33 @@ function BidsSellerAd(props) {
     
                 if(variation.length < 2){
                     countErrors++;
-                    thiserrors.variations = 'Debe registrar un mínimo de 2 variaciones para ingresar un lote con esta caracteristica.';
+                    thiserrors.variations = 'Debe registrar un mínimo de 2 variaciones.';
                 }
             }
         }
 
         if(actualStep === "media"){
-            if(photo1 === null){
-                thiserrors.photo1 = "Debe ingresar una foto principal.";
-                countErrors++;
-            }
+            if(Array.isArray(typePhotos) && typePhotos.length > 0){
+                for (let i = 0; i < typePhotos.length; i++) {
+                    const type = typePhotos[i];
+                    //console.log(type);
     
-            if(photo2 === null){
-                thiserrors.photo2 = "Debe ingresar una foto con angulos.";
-                countErrors++;
-            }
+                    let findPhoto = photos.find(item => Number(item.attachmentTypeId) === Number(type.id));
+                    //console.log(findPhoto);
     
-            if(photo3 === null){
-                thiserrors.photo3 = "Debe ingresar una foto a comparacion de escala";
-                countErrors++;
+                    if(findPhoto.data === null){
+                        thiserrors.photos = "Debe insertar todas las fotografias de forma obligatoria";
+                        countErrors++;
+                    }
+                }
             }
-    
-            if(photo4 === null){
-                thiserrors.photo4 = "Debe ingresar una foto siendo usado.";
-                countErrors++;
+
+            if(urlVideos !== ""){
+                let regvideo = /^(http(s)??\:\/\/)?(www\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])/;
+                if(!regvideo.test(urlVideos)){
+                    thiserrors.video = "La url ingresada debe corresponder a un video de youtube";
+                    countErrors++;
+                }
             }
         }
 
@@ -485,41 +497,33 @@ function BidsSellerAd(props) {
             countErrors++;
             errorInStep = "details";
         }
+
+        if(weight === "" && bidType.value !== 3){
+            thiserrors.weight = "Debe añadir el peso.";
+            countErrors++;
+            errorInStep = "details";
+        }
         
         //media
 
-        if(photo1 === null){
-            thiserrors.photo1 = "Debe ingresar una foto principal.";
-            countErrors++;
-            errorInStep = "media";
-        }
+        if(Array.isArray(typePhotos) && typePhotos.length > 0){
+            for (let i = 0; i < typePhotos.length; i++) {
+                const type = typePhotos[i];
+                //console.log(type);
 
-        if(photo2 === null){
-            thiserrors.photo2 = "Debe ingresar una foto con angulos.";
-            countErrors++;
-            errorInStep = "media";
-        }
+                let findPhoto = photos.find(item => Number(item.attachmentTypeId) === Number(type.id));
+                //console.log(findPhoto);
 
-        if(photo3 === null){
-            thiserrors.photo3 = "Debe ingresar una foto a comparacion de escala";
-            countErrors++;
-            errorInStep = "media";
-        }
-
-        if(photo4 === null){
-            thiserrors.photo4 = "Debe ingresar una foto siendo usado.";
-            countErrors++;
-            errorInStep = "media";
-        }
-
-        if(photo4 === null){
-            thiserrors.photo4 = "Debe ingresar una foto siendo usado.";
-            countErrors++;
-            errorInStep = "media";
+                if(findPhoto.data === null){
+                    errorInStep = "media";
+                    countErrors++;
+                    thiserrors.photos = "Debe insertar todas las fotografias de forma obligatoria";
+                }
+            }
         }
 
         if(urlVideos !== ""){
-            console.log("url:"+urlVideos);
+            //console.log("url:"+urlVideos);
             let regvideo = /^(http(s)??\:\/\/)?(www\.)?((youtube\.com\/watch\?v=)|(youtu.be\/))([a-zA-Z0-9\-_])/;
             if(!regvideo.test(urlVideos)){
                 thiserrors.video = "La url ingresada debe corresponder a un video de youtube";
@@ -529,6 +533,8 @@ function BidsSellerAd(props) {
         }
 
         if(countErrors > 0){
+            console.log(errorInStep);
+
             if(errorInStep !== ''){
                 setActiveStep(errorInStep);
                 seterrors(thiserrors);
@@ -595,6 +601,19 @@ function BidsSellerAd(props) {
             }
         }
 
+        let newPhotos = [];
+        if(Array.isArray(photos) && photos.length > 0){
+            for (let i = 0; i < photos.length; i++) {
+                let thisPhoto = photos[i];
+                
+                let newPhotoFormatted               = {};
+                newPhotoFormatted.attachmentTypeId  = thisPhoto.attachmentTypeId;
+                newPhotoFormatted.data              = thisPhoto.data[0].type+","+thisPhoto.data[0].url;
+            
+                newPhotos.push(newPhotoFormatted);
+            }
+        }
+
         let data = {};
 
         if(!isEdit){
@@ -614,19 +633,12 @@ function BidsSellerAd(props) {
                 materials: formattedMaterials,
 
                 tags,
-                weight,
 
-                photos: [
-                    photo1[0].type+","+photo1[0].url, 
-                    photo2[0].type+","+photo2[0].url, 
-                    photo3[0].type+","+photo3[0].url, 
-                    photo4[0].type+","+photo4[0].url
-                ]
+                photos: newPhotos
             }
         }else{
             data.bidId  = BidId;
             data.change = {
-                //bidType: bidType.value,
                 skuId: skuId.value,
                 BrandId: brandId.value,
 
@@ -641,14 +653,7 @@ function BidsSellerAd(props) {
                 materials: formattedMaterials,
 
                 tags,
-                weight,
-
-                photos: [
-                    photo1[0].type+","+photo1[0].url, 
-                    photo2[0].type+","+photo2[0].url, 
-                    photo3[0].type+","+photo3[0].url, 
-                    photo4[0].type+","+photo4[0].url
-                ]
+                photos: newPhotos
             }
         }
 
@@ -697,6 +702,19 @@ function BidsSellerAd(props) {
             url = "/SElLeR/BidUpDAte/requeST";
         }
 
+        let newPhotos = [];
+        if(Array.isArray(photos) && photos.length > 0){
+            for (let i = 0; i < photos.length; i++) {
+                let thisPhoto = photos[i];
+                
+                let newPhotoFormatted               = {};
+                newPhotoFormatted.attachmentTypeId  = thisPhoto.attachmentTypeId;
+                newPhotoFormatted.data              = thisPhoto.data[0].type+","+thisPhoto.data[0].url;
+            
+                newPhotos.push(newPhotoFormatted);
+            }
+        }
+
         let formattedMaterials = [];
         if(materials !== null && materials.length > 0){
             for (let i = 0; i < materials.length; i++) {
@@ -726,7 +744,8 @@ function BidsSellerAd(props) {
 
         if(bidType.value === 2){
 
-            //Materiales --------------------------------
+            // MATERIALES --------------------------------
+
             if(!isEdit){
                 data = {
                     bidType: bidType.value,
@@ -752,12 +771,7 @@ function BidsSellerAd(props) {
                     include,
                     dimension: [dimension],
     
-                    photos: [
-                        photo1[0].type+","+photo1[0].url, 
-                        photo2[0].type+","+photo2[0].url, 
-                        photo3[0].type+","+photo3[0].url, 
-                        photo4[0].type+","+photo4[0].url
-                    ]
+                    photos: newPhotos
                 }
             }else{
                 data.bidId = BidId;
@@ -785,12 +799,7 @@ function BidsSellerAd(props) {
                     include,
                     dimension: [dimension],
     
-                    photos: [
-                        photo1[0].type+","+photo1[0].url, 
-                        photo2[0].type+","+photo2[0].url, 
-                        photo3[0].type+","+photo3[0].url, 
-                        photo4[0].type+","+photo4[0].url
-                    ]
+                    photos: newPhotos
                 }
             }
 
@@ -829,12 +838,7 @@ function BidsSellerAd(props) {
                     reasons: formattedReasons,
                     dimension: [dimension],
                     
-                    photos: [
-                        photo1[0].type+","+photo1[0].url, 
-                        photo2[0].type+","+photo2[0].url, 
-                        photo3[0].type+","+photo3[0].url, 
-                        photo4[0].type+","+photo4[0].url
-                    ]
+                    photos: newPhotos
                 }
             }else{
                 data.bidId  = BidId;
@@ -869,15 +873,11 @@ function BidsSellerAd(props) {
                     reasons: formattedReasons,
                     dimension: [dimension],
                     
-                    photos: [
-                        photo1[0].type+","+photo1[0].url, 
-                        photo2[0].type+","+photo2[0].url, 
-                        photo3[0].type+","+photo3[0].url, 
-                        photo4[0].type+","+photo4[0].url
-                    ]
+                    photos: newPhotos
                 }
             }
         }
+
 
         if(variation.length > 0){
             let variationList = variation;
@@ -886,9 +886,11 @@ function BidsSellerAd(props) {
             for (let i = 0; i < variationList.length; i++) {
                 const element = variationList[i];
                 let formatVariation = {};
-                console.log(element.size.value);
 
+                formatVariation.category    = element.category.value;
+                formatVariation.sizetype    = element.sizetype.value;
                 formatVariation.size        = element.size.value;
+
                 formatVariation.quantity    = element.quantity;
                 formatVariation.discount    = element.discount;
                 formatVariation.color       = element.color;
@@ -984,10 +986,11 @@ function BidsSellerAd(props) {
             let skutypeIdData = {value: bid.skuType.id, label: bid.skuType.name};
 
             setBidId(bid.id);
+            setbidType(skutypeIdData);
 
-            setskuId(skutypeIdData);
-            setbidType({value: bid.skuId, label: bid.title});
+            let dataSku = {value: bid.skuId, label: bid.title};
 
+            setsku(dataSku);
             changeTypeBid(skutypeIdData);
 
             //title
@@ -1024,6 +1027,9 @@ function BidsSellerAd(props) {
 
             setbrandId({label: bid.Brand.name, value: bid.Brand.id});
             setinclude(bid.include ? bid.include : "");
+
+            setcustomizable(bid.customizable !== null   ? bid.customizable  : false);
+            setcustomize(bid.customize !== null         ? bid.customize     : false);
 
             setdevolution(bid.devolution);
             if(bid.garanty !== null && Number(bid.garanty) > 0){
@@ -1081,12 +1087,15 @@ function BidsSellerAd(props) {
             axios.get(urlPhotos)
             .then((res) => {
 
+                console.log(res.data);
+
                 let newPhotos = [];
 
                 if(Array.isArray(res.data)){
                     for (let i = 0; i < res.data.length; i++) {
                         const item = res.data[i];
                         if(Array.isArray(item.img.data)){
+
                             let imagen = item.img.data.reduce(
                                 function (data, byte) {
                                     return data + String.fromCharCode(byte);
@@ -1102,38 +1111,42 @@ function BidsSellerAd(props) {
                             //console.log(imagen);
                             //console.log(type);
 
+                            let newData = {};
                             let newItem = {}
 
                             if(isBase64(imagen)){
-                                newItem = {
+                                newData = [{
                                     id:newPhotos.length+1,
                                     name: "imagen_"+newPhotos.length,
                                     type: type,
                                     url:  separator[1]+","+separator[2]
-                                };
+                                }];
                             }else{
-                                newItem = {
+                                newData = [{
                                     id:newPhotos.length+1,
                                     name: "imagen_"+newPhotos.length,
                                     type: null,
                                     url:  null
-                                };
+                                }];
                             }
+
+                            newItem.attachmentTypeId = item.type;
+                            newItem.data = newData;
 
                             newPhotos.push(newItem);
                         }
                     }
                 }
 
-                //console.log(newPhotos);
+                console.log("PHOTOS");
+                console.log(newPhotos);
 
-                setphoto1([newPhotos[0]]);
-                setphoto2([newPhotos[1]]);
-                setphoto3([newPhotos[2]]);
-                setphoto4([newPhotos[3]]);
+                //setphoto1([newPhotos[0]]);
+                //setphoto2([newPhotos[1]]);
+                //setphoto3([newPhotos[2]]);
+                //setphoto4([newPhotos[3]]);
 
-                
-
+                setphotos(newPhotos);
                 setloading(false);
 
             }).catch((err) => {
@@ -1151,20 +1164,48 @@ function BidsSellerAd(props) {
                 setsearch(false);
                 let url = '/menu';
                 let urlGetVariations = 'https://intimi.vps.co.ve/inner/pampatarStatic/data/variations.json';
-                
+                let urlTypePhotos = "/aTTacHMEnt/Get/TypeS";
+
                 axios.get(url).then((res) => {
                     setmenuCats(res.data.data.menu);
                     axios.get(urlGetVariations)
                     .then((res) => {
-                        //console.log('variations');
-                        //console.log(res.data);
                         setvariationList(res.data);
-                        if(!isEdit){
-                            setloading(false);
-                        }else{
-                            //BUSCANDO DATOS PARA EDICION
-                            getDataByEdit();
-                        }
+
+                        axios.get(urlTypePhotos)
+                        .then((res) => {
+
+                            console.log(res.data);
+                            let types = res.data;
+                            settypePhotos(types);
+
+                            let newPhotos = [];
+
+                            if(Array.isArray(types) && types.length > 0){
+                                for (let i = 0; i < types.length; i++) {
+                                    const itemphoto             = types[i];
+                                    console.log(itemphoto);
+
+                                    let thisPhoto                = {};
+                                    thisPhoto.attachmentTypeId   = itemphoto.id;
+                                    thisPhoto.data               = null;
+
+                                    newPhotos.push(thisPhoto);
+                                }
+
+                                console.log(newPhotos);
+                                setphotos(newPhotos);
+
+                                if(!isEdit){
+                                    setloading(false);
+                                }else{
+                                    //BUSCANDO DATOS PARA EDICION
+                                    getDataByEdit();
+                                }
+                            }
+                        }).catch((err) => {
+                            console.error(err);
+                        });
                     }).catch((err) => {
                         console.error(err);
                     });
@@ -1253,11 +1294,28 @@ function BidsSellerAd(props) {
         seturlVideos('');
         setmaterials(null);
         setweight(0);
-        setphotos([]);
+
+        let newPhotos = [];
+        
+        for (let i = 0; i < typePhotos.length; i++) {
+            const itemphoto             = typePhotos[i];
+            console.log(itemphoto);
+
+            let thisPhoto                = {};
+            thisPhoto.attachmentTypeId   = itemphoto.id;
+            thisPhoto.data               = null;
+
+            newPhotos.push(thisPhoto);
+        }
+
+        console.log(newPhotos);
+        setphotos(newPhotos);
+
         setphoto1(null);
         setphoto2(null);
         setphoto3(null);
         setphoto4(null);
+
         setreasons([]);
         setdimension({
             height: "", 
@@ -1306,9 +1364,9 @@ function BidsSellerAd(props) {
         console.log(bidType);
         console.log(val);
 
-        if(bidType.value === 3){
+        if(bidType !== null && typeof bidType === "object" && bidType.hasOwnProperty("value") && bidType.value === 3){
             setskuId(val);
-        }else{
+        }else if(bidType === null || (typeof bidType === "object" && bidType.value !== 3)){
             console.log("Buscando stock del producto/material");
             let urlstock = '/stock/GET/AlL/byPrO-Ser/'+val.value+'/product/'+shopId+'';
             setskuId(val);
@@ -1321,6 +1379,30 @@ function BidsSellerAd(props) {
             });
         }
     }
+
+    const newDataPhoto = (data, photoid) => {
+        console.log(photos);
+        console.log(data);
+        
+        let photoList   = photos;
+        let searchPhoto = photoList.find(photo => photo.attachmentTypeId === photoid);
+        let index = photoList.indexOf(searchPhoto);
+
+        console.log(photoid);
+        console.log(photoList);
+        console.log(searchPhoto);
+        console.log(index);
+
+        searchPhoto.data = data;
+        photoList[index] = searchPhoto;
+        setphotos(photoList);
+
+        console.log(photoList);
+        setcount(count + 10);
+        
+    }
+
+    //console.log(photos);
 
     if(!loading){
         if(!published){
@@ -1846,7 +1928,7 @@ function BidsSellerAd(props) {
                                                                     }
 
                                                                     <div className="row">
-                                                                        
+                                                                    {(bidType.value !== 3) &&
                                                                             <div className="col-lg-4">
                                                                                 <div className="d-flex align-items-center mb-3">
                                                                                     <label htmlFor="weight" className="control-label mb-0 mr-3">
@@ -1873,6 +1955,7 @@ function BidsSellerAd(props) {
                                                                                     </div>
                                                                                 }
                                                                             </div>
+                                                                    }
                                                                         
 
                                                                     {(bidType.value === 1) &&
@@ -2011,10 +2094,17 @@ function BidsSellerAd(props) {
                                                                             <Col md="12">
                                                                                 <div className="form-group">
                                                                                     <label htmlFor="">Talla</label>
-                                                                                    <SizesCombobox onChange={(data) => changeVariationData(item.id, 'size', data)} list={variationList.TALLAS} value={(activeForm) ? search[0].size : '' } />
-                                                                                    {/* 
-                                                                                        <SizesSelect onChange={(data) => changeVariationData(item.id, 'size', data)} value={(activeForm) ? search[0].size : '' } />
-                                                                                    */}
+                                                                                    <SizesCombobox 
+                                                                                        list={variationList.TALLAS} 
+
+                                                                                        category={(activeForm) ? search[0].category : '' } 
+                                                                                        sizetype={(activeForm) ? search[0].sizetype : '' } 
+                                                                                        size={(activeForm) ? search[0].size : '' } 
+
+                                                                                        onChangeCategory={(data)    => changeVariationData(item.id, 'category', data)}
+                                                                                        onChangeSizeType={(data)    => changeVariationData(item.id, 'sizetype', data)}
+                                                                                        onChangeSize={(data)        => changeVariationData(item.id, 'size',     data)} 
+                                                                                    />
                                                                                 </div>
                                                                             </Col>
                                                                             <Col md="6">
@@ -2084,70 +2174,43 @@ function BidsSellerAd(props) {
                                                                 La foto que se mostrara en las busquedas y con la cual sera representada la publicacion.
                                                             </p>
 
+                                                            {(typeof errors === 'object' && errors.hasOwnProperty('photos')) &&
+                                                                <div className="alert alert-danger help-block text-danger my-3 font-weight-bold">
+                                                                    <small>
+                                                                        {errors.photos}
+                                                                    </small>
+                                                                </div>
+                                                            }
+
                                                             <div className="row">
-                                                                <div className="col-lg-6">
-                                                                    <div className="form-group">
-                                                                        <label htmlFor="photo1">
-                                                                            <strong className="text-primary">Principal</strong>
-                                                                        </label>
-                                                                        
-                                                                        <InputPhotos value={photo1} onChange={(photo) => setphoto1(photo)} max={1} />
-                                                                            {(typeof errors === 'object' && errors.hasOwnProperty('photo1')) &&
-                                                                                <div className="alert alert-danger help-block text-danger font-weight-bold">
-                                                                                    <small>
-                                                                                        {errors.photo1}
-                                                                                    </small>
-                                                                                </div>
-                                                                            }
-                                                                    </div>
-                                                                </div>
-                                                                <div className="col-lg-6">
-                                                                    <div className="form-group">
-                                                                        <label htmlFor="photo2">
-                                                                            <strong>Con angulos</strong>
-                                                                        </label>
-                                                                        <InputPhotos value={photo2} onChange={(photo) => setphoto2(photo)} max={1} />
-                                                                            {(typeof errors === 'object' && errors.hasOwnProperty('photo2')) &&
-                                                                                <div className="alert alert-danger help-block text-danger font-weight-bold">
-                                                                                    <small>
-                                                                                        {errors.photo2}
-                                                                                    </small>
-                                                                                </div>
-                                                                            }
-                                                                    </div>
-                                                                </div>
-                                                                <div className="col-lg-6">
-                                                                    <div className="form-group">
-                                                                        <label htmlFor="photo3">
-                                                                            <strong>Comparacion de escala</strong>
-                                                                        </label>
-                                                                        <InputPhotos value={photo3} onChange={(photo) => setphoto3(photo)} max={1} />
-                                                                            {(typeof errors === 'object' && errors.hasOwnProperty('photo3')) &&
-                                                                                <div className="alert alert-danger help-block text-danger font-weight-bold">
-                                                                                    <small>
-                                                                                        {errors.photo3}
-                                                                                    </small>
-                                                                                </div>
-                                                                            }
-                                                                    </div>
-                                                                </div>
-                                                                <div className="col-lg-6">
-                                                                    <div className="form-group">
-                                                                        <label htmlFor="photo4">
-                                                                            <strong>Siendo usado</strong>
-                                                                        </label>
-                                                                        <InputPhotos value={photo4} onChange={(photo) => setphoto4(photo)} max={1} />
-                                                                            {(typeof errors === 'object' && errors.hasOwnProperty('photo4')) &&
-                                                                                <div className="alert alert-danger help-block text-danger font-weight-bold">
-                                                                                    <small>
-                                                                                        {errors.photo4}
-                                                                                    </small>
-                                                                                </div>
-                                                                            }
-                                                                    </div>
-                                                                </div>
+                                                                {(typePhotos !== null && Array.isArray(typePhotos) && typePhotos.map((item, key) => {
+
+                                                                    let thisPhoto = photos.find(photo => photo.attachmentTypeId === item.id);
+
+                                                                    return (
+                                                                        <div key={key} className="col-lg-6">
+                                                                            <div className="form-group">
+                                                                                <label htmlFor="photo1">
+                                                                                    <strong className="text-dark">
+                                                                                        {item.name} 
+                                                                                        <span className="d-none">
+                                                                                            {thisPhoto.attachmentTypeId}
+                                                                                        </span>
+                                                                                    </strong>
+                                                                                </label>
+
+                                                                                <InputPhotos 
+                                                                                    value={thisPhoto.data} 
+                                                                                    onChange={(photo) => newDataPhoto(photo, thisPhoto.attachmentTypeId)} 
+                                                                                    max={1} 
+                                                                                />
+
+                                                                            </div>
+                                                                        </div>
+                                                                    )
+                                                                }))}
                                                             </div>
-                                                            
+
                                                             {(bidType !== null) &&
                                                                 <div className="form-group">
                                                                     <label htmlFor="video">Añadir video 
@@ -2178,10 +2241,13 @@ function BidsSellerAd(props) {
                                                 </div>
                                             </div>
                                         }
+
                                         <hr/>
+
                                         { (progress > 0) &&
                                             <Progress striped color="success" value={progress} />
                                         }
+
                                         <div className="row pt-3 justify-content-center">
                                         <div className="col-8">
                                             <div className="d-flex align-items-center justify-content-between">
@@ -2268,11 +2334,11 @@ function BidsSellerAd(props) {
                     </h1>
                     <div className="card">
                         <div className="card-body py-5">
-                            <h4 className="font-weight-bold h3 text-center">
+                            <h4 className="font-weight-bold h3 mb-4 text-center">
                                 {successmessage}
                             </h4>
                             <div className="text-center">
-                                <button onClick={() => reset()} className="btn btn-primary">
+                                <button onClick={() => reset()} className="btn font-weight-bold shadow btn-primary">
                                     Crear otra publicación
                                 </button>
                             </div>

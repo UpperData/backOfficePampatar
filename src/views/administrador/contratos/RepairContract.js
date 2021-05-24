@@ -117,12 +117,14 @@ function RepairContract() {
             errorsCount++;
         }
 
+        let newDate = new Date();
+
         //inicio
         if(inicio === null || inicio === ''){
             thiserrors.inicio = 'Indique la fecha de inicio del contrato';
             errorsCount++;
-        }else if(moment().isAfter(moment(inicio))){
-            thiserrors.inicio = 'La fecha debe ser superior a la fecha de hoy';
+        }else if(moment(inicio).isBefore(moment(newDate, "YYYY-MM-DD").subtract(1, "days"))){
+            thiserrors.inicio = 'La fecha debe ser igual ó superior a la fecha de hoy';
             errorsCount++;
         }
         
@@ -403,13 +405,13 @@ function RepairContract() {
                                         </Col>
                                         <Col md="12">
                                             <div className="form-group">
-                                                <label htmlFor="">Número de contrato:</label>
+                                                <label htmlFor="">Ingrese el número del contrato:</label>
                                                 <input 
                                                     type="number"
                                                     min="0" 
                                                     value={number}
                                                     onChange={(e) => setnumber(e.target.value)}
-                                                    placeholder="Número del contrato" 
+                                                    placeholder="Ingrese el número del contrato" 
                                                     className={((typeof errors === 'object' && errors.hasOwnProperty('number') ? 'is-invalid' : '') +' form-control')}
                                                 />
                                                 {(typeof errors === 'object' && errors.hasOwnProperty('number')) &&
@@ -665,7 +667,7 @@ function RepairContract() {
                 <div>
                     <h1 className="h4 mb-3 font-weight-bold">Corregir contrato</h1>
                     <div className="alert alert-success mb-3">
-                        ¡Contrato corregido con exito!
+                        ¡Contrato corregido con éxito!
                     </div>
                     <button onClick={() => newContrat()} className="btn btn-primary">
                         Corregir otro contrato

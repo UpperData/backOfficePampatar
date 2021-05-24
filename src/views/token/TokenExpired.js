@@ -28,10 +28,10 @@ function TokenExpired() {
                             <i className="mdi mdi-clock text-white"></i>
                         </div>
                         <h2 className="font-weight-bold h1 mb-4">
-                            Su sesión ha expirado
+                            ¡Su sesión ha expirado!
                         </h2>
                         <h4 className="my-4">
-                            Dirigase al <strong>login</strong> nuevamente e ingrese los datos de su cuenta para volver a entrar
+                            <strong>Inicie sesión</strong> nuevamente e ingrese los datos de su cuenta para seguir administrando su cuenta.
                         </h4>
                         <div className="my-2">
                             <Link to="/authentication/Login" className="btn btn-lg font-weight-bold px-4 shadow btn-primary shadow">

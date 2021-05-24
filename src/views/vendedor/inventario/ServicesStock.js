@@ -95,9 +95,7 @@ function ServicesStock() {
                         <form action="">
                         <Card>
                             <div className="p-3">
-                                <CardTitle>
-                                    <i className="mdi mdi-border-all mr-2"></i>Stock de servicios
-                                </CardTitle>
+                                Stock de servicios
                             </div>
                             <CardBody className="border-top">
                                 <Row>
@@ -136,7 +134,21 @@ function ServicesStock() {
                                                                 <span className={statusclass}><i className={statusicon}></i></span>
                                                             </div>
                                                             <h4 className={statusclass +' font-weight-bold h3'}>{data.statusStock.message}</h4>
-                                                            <h4><span className="h4 font-weight-bold">Precio Actual:</span><span className="font-weight-light ml-2">{moneyFormatter(dataService.endPrice)}</span></h4>
+                                                            {(dataService.data.hasOwnProperty("result") && dataService.data.result === false) 
+                                                            ?
+                                                                <div>
+                                                                    <h4 className="font-weight-bold">
+                                                                        {dataService.data.message}
+                                                                    </h4>
+                                                                </div>
+                                                            :
+                                                                <h4>
+                                                                    <span className="h4 font-weight-bold">Precio Actual:</span>
+                                                                    <span className="font-weight-light ml-2">
+                                                                        {moneyFormatter(dataService.endPrice)}
+                                                                    </span>
+                                                                </h4>
+                                                            }
                                                         </div>
                                                     </div>
                                                     <div className="col-lg-6">
@@ -161,7 +173,7 @@ function ServicesStock() {
                                     <Card>
                                 <div className="p-3">
                                     <CardTitle>
-                                        <i className="mdi mdi-border-all mr-2"></i> Stock
+                                        Stock
                                     </CardTitle>
                                 </div>
                                 <CardBody className="border-top">

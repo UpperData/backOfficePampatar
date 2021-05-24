@@ -282,7 +282,7 @@ function AddWarehouseSeller(props) {
                         window.scrollTo({top: 10, behavior: 'smooth'});
                         setTimeout(() => {
                             setsuccessmessage("");
-                        }, 1000);
+                        }, 5000);
                     }else{
                         seterrormessage(res.data.data.message);
                         window.scrollTo({top: 10, behavior: 'smooth'});
@@ -319,7 +319,7 @@ function AddWarehouseSeller(props) {
                         reset();
                         setTimeout(() => {
                             setsuccessmessage("");
-                        }, 1000);
+                        }, 5000);
                         window.scrollTo({top: 10, behavior: 'smooth'});
                     }else{
                         seterrormessage(res.data.data.message);
@@ -350,6 +350,18 @@ function AddWarehouseSeller(props) {
                     </Breadcrumb>
                 }
 
+                {(errormessage !== '') &&
+                    <div className="alert alert-warning">
+                        {errormessage}
+                    </div>
+                }
+
+                {(successmessage !== '') &&
+                    <div className="alert alert-success">
+                        {successmessage}
+                    </div>
+                }
+
                 <div className="row align-items-center justify-content-between mb-3">
                     <div className="col col-lg-auto">
                         <h1 className="h4 mb-0 font-weight-bold">
@@ -364,18 +376,6 @@ function AddWarehouseSeller(props) {
                         </div>
                     }
                 </div>
-
-                {(errormessage !== '') &&
-                    <div className="alert alert-warning">
-                        {errormessage}
-                    </div>
-                }
-
-                {(successmessage !== '') &&
-                    <div className="alert alert-success">
-                        {successmessage}
-                    </div>
-                }
             </div>
         )
     }else{
@@ -427,9 +427,7 @@ function AddWarehouseSeller(props) {
                                 <Col md="12">
                                     <Card>
                                         <div className="p-3">
-                                            <CardTitle>
-                                                Seleccione un almacén
-                                            </CardTitle>
+                                            Seleccione un almacén
                                         </div>
                                         <CardBody className="border-top">
                                             <WarehouseSelect value={warehouse} onChange={changeWarehouse} />
@@ -446,9 +444,7 @@ function AddWarehouseSeller(props) {
                                 <Col md="7">
                                     <Card>
                                         <div className="p-3">
-                                            <CardTitle>
-                                                Datos del almacén
-                                            </CardTitle>
+                                            Datos del almacén
                                         </div>
                                         <CardBody className="border-top">
                                                 <Row>
@@ -554,7 +550,7 @@ function AddWarehouseSeller(props) {
                                                                 min="0" 
                                                                 value={number}
                                                                 onChange={(e) => setnumber(e.target.value)}
-                                                                placeholder="Número de departamento" 
+                                                                placeholder="Numeración de la calle" 
                                                                 className={((typeof errors === 'object' && errors.hasOwnProperty('number') ? 'is-invalid' : '') +' form-control')}
                                                             />
                                                             {(typeof errors === 'object' && errors.hasOwnProperty('number')) &&
@@ -575,7 +571,7 @@ function AddWarehouseSeller(props) {
                                                                 min="0" 
                                                                 value={local}
                                                                 onChange={(e) => setlocal(e.target.value)}
-                                                                placeholder="Local del almacén" 
+                                                                placeholder="Número de Local/ Dpto/ bodega" 
                                                                 className={((typeof errors === 'object' && errors.hasOwnProperty('local') ? 'is-invalid' : '') +' form-control')}
                                                             />
                                                             {(typeof errors === 'object' && errors.hasOwnProperty('local')) &&
@@ -594,9 +590,7 @@ function AddWarehouseSeller(props) {
                                 <Col md="5">
                                     <Card>
                                         <div className="p-3">
-                                            <CardTitle>
-                                                Datos de contacto
-                                            </CardTitle>
+                                            Datos de contacto
                                         </div>
                                         <CardBody className="border-top">
                                                 <Row>

@@ -238,71 +238,22 @@ function AddProductSeller(props) {
                 if(res.data.data.result){
                     window.scrollTo({top: 10, behavior: 'smooth'});
                     reset();
-                    setsuccessmessage('¡Lote creado satisfactoriamente!')
+                    setsuccessmessage('¡Lote creado satisfactoriamente!');
+                    setTimeout(() => {
+                        setsuccessmessage("");
+                    }, 5000);
                 }else{
                     window.scrollTo({top: 10, behavior: 'smooth'});
                     seterrormessage(res.data.data.message);
+                    setTimeout(() => {
+                        seterrormessage("");
+                    }, 5000);
                 }
             }).catch((err) => {
                 console.error(err);
                 setsending(false);
             })   
         }
-    }
-
-    const addVariation = () => {
-        console.log('Añadiendo variacion');
-        let id = variation.length + 1;
-        let variationList = variation;
-        let newVariation = 
-        {
-                id,
-                size: null,
-                quantity:"",
-                discount:'',
-                color:""
-        };
-
-        variationList.push(newVariation);
-        console.log(variationList);
-
-        setvariation(variationList);
-        setcountvariation(countvariation + 5);
-    }
-
-    //console.log(variation);
-    //console.log(variation.length);
-
-    const changeVariationData = (id, keyName, value) => {
-        let variationList = variation;
-        for (let i = 0; i < variationList.length; i++) {
-            const element = variationList[i];
-            if(element.id === id){
-                console.log('Cambiando:'+keyName+' a:'+value);
-                element[keyName] = value;
-            }
-        }
-
-        setvariation(variationList);
-        setcountvariation(countvariation + 5);
-    }
-
-    const deleteVariation = (id) => {
-        //alert(phoneNumber);
-        let variationList = variation;
-        variationList.splice(id - 1, 1);
-        let newVariationList = [];
-        console.log(variationList);
-
-        for (let i = 0; i < variationList.length; i++) {
-            let format = variationList[i];
-            format.id = i + 1;
-            newVariationList.push(format);
-        }
-
-        console.log(newVariationList);
-        setvariation(newVariationList);
-        setcountvariation(countvariation + 5);
     }
 
     const handleChangeSkuId = (value) => {
@@ -330,9 +281,19 @@ function AddProductSeller(props) {
     if(!loading){
         return (
             <div>
-                <h1 className="h4 mb-3 font-weight-bold">
-                    {props.Edit ? 'Actualizar lote' : 'Nuevo lote'}
-                </h1>
+                    {props.Edit
+                    ?
+                        <Breadcrumb listClassName="px-0">
+                            <BreadcrumbItem><a href="##">Inventario</a></BreadcrumbItem>
+                            <BreadcrumbItem active>Actualizar lote</BreadcrumbItem>
+                        </Breadcrumb>
+                    :
+                        <Breadcrumb listClassName="px-0">
+                            <BreadcrumbItem><a href="##">Inventario</a></BreadcrumbItem>
+                            <BreadcrumbItem active>Nuevo lote</BreadcrumbItem>
+                        </Breadcrumb>
+                    }
+
                     {(errormessage !== '') &&
                         <div className="alert alert-warning">
                             {errormessage}
@@ -344,6 +305,10 @@ function AddProductSeller(props) {
                             {successmessage}
                         </div>
                     }
+
+                    <h1 className="h4 mb-3 font-weight-bold">
+                        {props.Edit ? 'Actualizar lote' : 'Nuevo lote'}
+                    </h1>
 
                     {props.Edit &&
                         <div>
@@ -370,9 +335,7 @@ function AddProductSeller(props) {
                                 <Col md="12">
                                     <Card>
                                         <div className="p-3">
-                                            <CardTitle>
-                                                <i className="mdi mdi-border-all mr-2"></i>Datos del lote
-                                            </CardTitle>
+                                            Datos del lote
                                         </div>
                                         <CardBody className="border-top">
                                                 <Row>
@@ -550,6 +513,18 @@ function AddProductSeller(props) {
     }else{
         return (
             <div>
+                {props.Edit
+                ?
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Inventario</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Actualizar lote</BreadcrumbItem>
+                    </Breadcrumb>
+                :
+                    <Breadcrumb listClassName="px-0">
+                        <BreadcrumbItem><a href="##">Inventario</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Nuevo lote</BreadcrumbItem>
+                    </Breadcrumb>
+                }
                 <h1 className="h4 mb-3 font-weight-bold">
                     {props.Edit ? 'Actualizar lote' : 'Nuevo lote'}
                 </h1>

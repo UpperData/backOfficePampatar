@@ -85,7 +85,7 @@ function ViewServices() {
                             <Card>
                                 <div className="p-3">
                                     <CardTitle>
-                                        <i className="fa fa-list-alt mr-2"></i>Servicios disponibles
+                                        <i className="fa fa-list mr-2"></i>Servicios disponibles
                                     </CardTitle>
                                 </div>
                                 <CardBody className="border-top">

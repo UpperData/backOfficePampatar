@@ -136,7 +136,7 @@ function TimePanel(props) {
                                                     <Datetime
                                                         locale="es"
                                                         dateFormat={false}
-                                                        inputProps={{ placeholder: "Seleccione una hora" }}
+                                                        inputProps={{ placeholder: "Seleccione una hora", readOnly: true }}
                                                         value={(activeInput) ? isActive[0].hours.start : '' }
                                                         onChange={(date) => changehh(item.id,'start', date)}
                                                     />
@@ -148,7 +148,7 @@ function TimePanel(props) {
                                                     <Datetime
                                                         locale="es"
                                                         dateFormat={false}
-                                                        inputProps={{ placeholder: "Seleccione una hora" }}
+                                                        inputProps={{ placeholder: "Seleccione una hora", readOnly: true }}
                                                         value={(activeInput) ? isActive[0].hours.end : '' }
                                                         onChange={(date) => changehh(item.id,'end', date)}
                                                     />

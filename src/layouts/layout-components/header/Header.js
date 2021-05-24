@@ -246,6 +246,7 @@ export default () => {
                             alt="user"
                             className="rounded-circle"
                             width="31"
+                            height="31"
                           />
                         :
                           <img
@@ -253,6 +254,7 @@ export default () => {
                             alt="user"
                             className="rounded-circle"
                             width="31"
+                            height="31"
                           />
                       }
                       </>
@@ -262,6 +264,7 @@ export default () => {
                         alt="user"
                         className="rounded-circle"
                         width="31"
+                        height="31"
                       />
                   }
               </DropdownToggle>
@@ -269,20 +272,32 @@ export default () => {
                 <div className="d-flex no-block align-items-center p-3 bg-white mb-2">
                   <div className="">
                     {(role === 'Vendedor') 
-                    ?
-                      <img
-                        src={`data:image/png;base64,${logoshop}`}
-                        alt="user"
-                        className="rounded-circle"
-                        width="60"
-                      />
-                    :
-                      <img
-                        src={`data:image/png;base64,${DefaultUser}`}
-                        alt="user"
-                        className="rounded-circle"
-                        width="60"
-                      />
+                      ?
+                        <>
+                        {(logoshop !== "")
+                          ?
+                            <img
+                              src={`data:image/png;base64,${logoshop}`}
+                              alt="user"
+                              className="rounded-circle"
+                              width="31"
+                            />
+                          :
+                            <img
+                              src={profilephoto}
+                              alt="user"
+                              className="rounded-circle"
+                              width="31"
+                            />
+                        }
+                        </>
+                      :
+                        <img
+                          src={profilephoto}
+                          alt="user"
+                          className="rounded-circle"
+                          width="31"
+                        />
                     }
                   </div>
                   <div className="ml-2">

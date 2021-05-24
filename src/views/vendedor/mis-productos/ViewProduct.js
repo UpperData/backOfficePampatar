@@ -83,7 +83,7 @@ function ViewProducts() {
                             <Card>
                                 <div className="p-3">
                                     <CardTitle>
-                                        Productos disponibles
+                                        Lista de productos
                                     </CardTitle>
                                 </div>
                                 <CardBody className="border-top">
@@ -117,7 +117,7 @@ function ViewProducts() {
                                                 </Table>
                                                 {(data.sku.length === 0) && 
                                                     <p className="text-center">
-                                                        Sin productos disponibles en este momento.
+                                                        Sin productos encontrados.
                                                     </p>  
                                                 }
                                             </Col>

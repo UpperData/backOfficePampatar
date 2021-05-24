@@ -55,6 +55,7 @@ function InputPhotos(props) {
                                 url: data
                             }
 
+                            console.log(actualFiles);
                             actualFiles.push(newDataFile);
 
                             props.onChange(actualFiles);
@@ -88,6 +89,10 @@ function InputPhotos(props) {
         let listWithoutItem = actualList.filter(item => item.id !== id);
         setfiles(listWithoutItem);
         setcount(count + 5);
+
+        if(listWithoutItem.length === 0){
+            props.onChange(null);
+        }
     }
 
     return (

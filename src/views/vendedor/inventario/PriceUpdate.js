@@ -12,7 +12,9 @@ import {
     ModalFooter,
     InputGroupText,
     InputGroupAddon,
-    InputGroup
+    InputGroup,
+    Breadcrumb, 
+    BreadcrumbItem
 } from 'reactstrap';
 import axios from 'axios'
 import ProductSelect from '../../../components/selects/ProductSelect';
@@ -153,6 +155,11 @@ function PriceUpdate() {
 
     return (
         <div className="actualizar-lote">
+            <Breadcrumb listClassName="px-0">
+                <BreadcrumbItem><a href="##">Inventario</a></BreadcrumbItem>
+                <BreadcrumbItem active>Actualizar Precios</BreadcrumbItem>
+            </Breadcrumb>
+
             <h1 className="h4 mb-3 font-weight-bold">
                 Actualizar Precios
             </h1>
@@ -177,7 +184,6 @@ function PriceUpdate() {
                     <Card>
                         <div className="p-3">
                             <CardTitle>
-                                <i className="mdi mdi-border-all mr-2"></i>
                                 Desea actualizar el precio de:
                             </CardTitle>
                         </div>
@@ -202,7 +208,7 @@ function PriceUpdate() {
                                 <Card>
                                     <div className="p-3">
                                         <CardTitle>
-                                            <i className="mdi mdi-border-all mr-2"></i>Seleccione un producto
+                                            Seleccione un producto
                                         </CardTitle>
                                     </div>
                                     <CardBody className="border-top">
@@ -221,7 +227,7 @@ function PriceUpdate() {
                                     <Card>
                                         <div className="p-3">
                                             <CardTitle>
-                                                <i className="mdi mdi-border-all mr-2"></i>Datos <span className="text-muted">{(data !== null) ? 'Actualizado por ultima vez el '+data.createdAt.split('T')[0] : ''}</span>
+                                                Datos <span className="text-muted">{(data !== null) ? 'Actualizado por última vez el '+data.createdAt.split('T')[0] : ''}</span>
                                             </CardTitle>
                                         </div>
                                         <CardBody className="border-top">
@@ -312,7 +318,7 @@ function PriceUpdate() {
                                 <Card>
                                     <div className="p-3">
                                         <CardTitle>
-                                            <i className="mdi mdi-border-all mr-2"></i>Seleccione un servicio
+                                            Seleccione un servicio
                                         </CardTitle>
                                     </div>
                                     <CardBody className="border-top">
@@ -331,7 +337,7 @@ function PriceUpdate() {
                                     <Card>
                                         <div className="p-3">
                                             <CardTitle>
-                                                <i className="mdi mdi-border-all mr-2"></i>Datos <span className="text-muted">{(data !== null) ? 'Actualizado por ultima vez el '+data.createdAt.split('T')[0] : ''}</span>
+                                                Data <span className="text-muted">{(data !== null) ? 'Actualizado por última vez el '+data.createdAt.split('T')[0] : ''}</span>
                                             </CardTitle>
                                         </div>
                                         <CardBody className="border-top">
@@ -398,7 +404,7 @@ function PriceUpdate() {
                                     Actualizar precio del servicio
                                 </ModalHeader>
                                 <ModalBody>
-                                    <h5>¿Actualizar el precio de <span className="font-weight-bold">{service.label}</span> a <span className="font-weight-bold text-success">CLP ${price}</span>?</h5>
+                                    <h5>¿Desea actualizar el precio del servicio <span className="font-weight-bold">{service.label}</span> a <span className="font-weight-bold text-dark">CLP ${price}</span>?</h5>
                                 </ModalBody>
                                 <ModalFooter>
                                 <Button color="info" onClick={(e) => GoUpdatePrice(e)}>

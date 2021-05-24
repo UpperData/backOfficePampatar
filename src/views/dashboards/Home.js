@@ -33,9 +33,9 @@ const Home = () => {
             <Card>
                 <span className="lstick"></span>
                 <CardBody>
-                  <h4 className="card-title">Mi tienda</h4>
+                  <h4 className="h5 font-weight-bold card-title">Mi tienda</h4>
                   <div className="my-3">
-                    <h1 className="text-primary"><i className="mdi mdi-store-outline"></i> {session.userData.shop.name}</h1>
+                    <h1 className="text-info font-weight-bold h2"><i className="mdi mdi-store-outline mr-2"></i> {session.userData.shop.name}</h1>
                   </div>
                 </CardBody>
             </Card>
@@ -47,9 +47,9 @@ const Home = () => {
             <Card>
                 <span className="lstick"></span>
                 <CardBody>
-                  <h4 className="card-title">Administración</h4>
+                  <h4 className="h5 font-weight-bold card-title">Administración</h4>
                   <div className="my-3">
-                    <h1 className="text-primary h4"><i className="mdi mdi-view-dashboard"></i> Usuario: {account.email}</h1>
+                    <h1 className="text-info font-weight-bold h2"><i className="far fa-user mr-2"></i>{account.email}</h1>
                   </div>
                 </CardBody>
             </Card>

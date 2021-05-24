@@ -322,7 +322,7 @@ function AddProduct(props) {
                                                     <Col xs="6">
                                                         <div className="form-group">
                                                             <label htmlFor="product-name">Tipo del producto:</label>
-                                                            <SkuTypeSelect value={skuTypeId} onChange={(value) => setskuTypeId(value)} />
+                                                            <SkuTypeSelect isOnlyForProducts value={skuTypeId} onChange={(value) => setskuTypeId(value)} />
                                                             {(typeof errors === 'object' && errors.hasOwnProperty('skuTypeId')) &&
                                                                 <div className="help-block text-danger font-weight-bold">
                                                                     <small>

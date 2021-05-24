@@ -239,7 +239,7 @@ function AddService(props) {
                                     <Card>
                                         <div className="p-3">
                                             <CardTitle>
-                                                <i className="mdi mdi-border-all mr-2"></i>Seleccione un servicio.
+                                                Seleccione un servicio.
                                             </CardTitle>
                                         </div>
                                         <CardBody className="border-top">

@@ -3,15 +3,18 @@ import axios from "axios"
 import InlineSpinner from '../../spinner/InlineSpinner';
 import {TabContent, TabPane, Nav, NavItem, NavLink, Card, CardBody, CardTitle, Row, Table, Col, Button, Modal, ModalHeader, ModalBody, ModalFooter, Breadcrumb, BreadcrumbItem} from "reactstrap"
 import {useSelector} from "react-redux"
+import { getBase64Img } from '../../../utils/helpers';
 
 function Actualizar() {
 
     const [loading, setloading]                 = useState(true);
     const [search, setsearch]                   = useState(true);
     const [changing, setchanging]               = useState(false);
+    const [searchImages, setsearchImages]       = useState(false);
 
     const [shoplist, setshoplist]               = useState(null);
     const [list, setlist]                       = useState(null);
+    const [imglist, setimglist]                 = useState([]);
 
     const [successmessage, setsuccessmessage]   = useState("");
     const [errormessage, seterrormessage]       = useState('');
@@ -128,6 +131,8 @@ function Actualizar() {
     }
 
     const showDataBid = (item) => {
+        seterrormessage("");
+
         setsearchdatabid(true);
         setbidSelected(item.id);
         setdatabid(item);
@@ -152,6 +157,10 @@ function Actualizar() {
 
         let urlaction = ``;
 
+        seterrormessage("");
+        setsuccessmessage("");
+        setchanging(true);
+
         console.log(bidSelected);
 
         if(type === "aprobar"){
@@ -170,29 +179,21 @@ function Actualizar() {
                     setbidSelected(null);
                     setshopSelected(null);
                     setTimeout(() => {
+                        setchanging(false);
                         setloading(true);
                         getData();
                     }, 200);
                 }, 1500);
             }else{
                 seterrormessage(res.data.data.message);
-
-                setTimeout(() => {
-                    setModal(false);
-                    setbidSelected(null);
-                    setshopSelected(null);
-                    setTimeout(() => {
-                        setloading(true);
-                        getData();
-                    }, 200);
-                }, 1500);
+                setchanging(false);
             }
         }).catch((err) => {
             console.log(err);
         });
     }
 
-    console.log(databidupdate);
+    //console.log(databidupdate);
 
     function isBase64(str) {
         if (str ==='' || str.trim() ===''){ return false; }
@@ -201,6 +202,61 @@ function Actualizar() {
         } catch (err) {
             return false;
         }
+    }
+
+    const changeShop = (shop) => {
+        let urlGetImg   = `/SettInG/IMG/geT/bYID/`;
+
+        setsearchImages(true);
+        setimglist([]);
+        selectShop(shop);
+
+        let bidList = shop.Bids;
+        let newPhotosList = [];
+
+        let countItems  = bidList.length;
+        let countPhotos = 0;
+        
+        if(Array.isArray(bidList) && bidList.length > 0){
+            for (let i = 0; i < bidList.length; i++) {
+                const item = bidList[i];
+
+                let getPrincipalImgId = null;
+
+                if(Array.isArray(item.photos) && item.photos.length > 0){
+                    getPrincipalImgId = item.photos.find(photo => Number(photo.type) === 1);
+                }
+
+                if(getPrincipalImgId !== null){
+                    console.log(getPrincipalImgId);
+                    newPhotosList.push({id: getPrincipalImgId.id, data: null});
+                }
+            }
+
+            if(Array.isArray(newPhotosList) && newPhotosList.length > 0){
+                for (let j = 0; j < newPhotosList.length; j++) {
+                    const thisphoto = newPhotosList[j];
+    
+                    axios.get(urlGetImg+thisphoto.id).then((res) => {
+                        //console.log(res.data);
+                        newPhotosList[j].data = res.data.data;
+                        countPhotos++;
+    
+                        if(countPhotos === countItems){
+                            setimglist(newPhotosList);
+                            setsearchImages(false);
+                            console.log("imagenes cargadas");
+                        }
+                    }).catch((err) => {
+                        console.error(err);
+                    })
+                }
+            }
+        }else{
+            setsearchImages(false);
+        }
+
+        console.log(shop.Bids);
     }
 
     return (
@@ -243,7 +299,7 @@ function Actualizar() {
                                                     />
                                                 </div>
                                             </div>
-                                            <div className="col-lg-3">
+                                            <div className="col-lg-3 text-right">
                                                 <button 
                                                     type="button" 
                                                     onClick={() => cleanFiltersShop()} 
@@ -258,10 +314,12 @@ function Actualizar() {
                             }
 
                             {(Array.isArray(list) && list.length === 0 && !loading) &&
-                                <div>
-                                    <h3 className="h5 text-center font-weight-bold">
-                                        No existen tiendas que coincidan con los parametros de la busqueda.
-                                    </h3>
+                                <div className="card">
+                                    <div className="card-body py-4">
+                                        <h3 className="h5 text-center font-weight-bold mb-0">
+                                            No existen tiendas que coincidan con los parametros de la busqueda.
+                                        </h3>
+                                    </div>
                                 </div>
                             }
 
@@ -284,7 +342,7 @@ function Actualizar() {
                                             return (
                                                 <div key={key} className="col-lg-4 mb-4">
                                                     <button 
-                                                    onClick={() => selectShop(item)} 
+                                                    onClick={() => changeShop(item)} 
                                                     className="card w-100 shadow h-100">
                                                         <div className="card-body h-100 py-3">
                                                             <div className="row h-100 justify-content-center align-items-center">
@@ -334,93 +392,123 @@ function Actualizar() {
                                 </h2>
                             </CardBody>
                         </Card>
-                        <Card>
-                            <div className="filters bg-light py-3 mb-3 px-3">
-                                <form action="">
-                                    <div className="row justify-content-between align-items-center">
-                                        <div className="col-lg-6">
-                                            <div className="input">
-                                                <input 
-                                                    value={filterBySearch}
-                                                    onChange={(e) => changeInputSearch(e.target.value)}
-                                                    type="text" 
-                                                    className="form-control" 
-                                                    placeholder="Filtrar por titulo" 
-                                                    aria-label="filter" 
-                                                    aria-describedby="filter-by-name"
-                                                />
+                        {(!searchImages)
+                            ?
+                            <Card>
+                                <div className="filters bg-light py-3 mb-3 px-3">
+                                    <form action="">
+                                        <div className="row justify-content-between align-items-center">
+                                            <div className="col-lg-6">
+                                                <div className="input">
+                                                    <input 
+                                                        value={filterBySearch}
+                                                        onChange={(e) => changeInputSearch(e.target.value)}
+                                                        type="text" 
+                                                        className="form-control" 
+                                                        placeholder="Filtrar por titulo" 
+                                                        aria-label="filter" 
+                                                        aria-describedby="filter-by-name"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-3 text-right">
+                                                <button 
+                                                    type="button" 
+                                                    onClick={() => cleanFilters()} 
+                                                    className="btn btn-primary"
+                                                >
+                                                    limpiar filtros
+                                                </button>
                                             </div>
                                         </div>
-                                        <div className="col-lg-3">
-                                            <button 
-                                                type="button" 
-                                                onClick={() => cleanFilters()} 
-                                                className="btn btn-primary"
-                                            >
-                                                limpiar filtros
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div> 
-                            <CardBody className="border-bottom">
-                                <CardTitle className="mb-0 font-weight-bold">
-                                    <i className="fa fa-list mr-2"></i>
-                                    Publicaciones por actualizar
-                                </CardTitle>
-                            </CardBody>
-                            <CardBody className="pb-5">
-                                <Row>
-                                    <Col xs="12">
-                                        <Table responsive>
-                                            <thead>
-                                                <tr>
-                                                    <th>
-                                                        #
-                                                    </th>
-                                                    <th>
-                                                        Titulo
-                                                    </th>
-                                                    <th>
-                                                        Acción
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {(bidList.length > 0 && bidList.map((item, key) => {
-                                                    return (
-                                                        <tr key={key}>
-                                                            <td>
-                                                                {item.id}
-                                                            </td>
-                                                            <td>
-                                                                {item.title}
-                                                            </td>
-                                                            <td>
-                                                                <button 
-                                                                    onClick={() => showDataBid(item)} 
-                                                                    className="btn btn-info"
-                                                                >
-                                                                    Ver publicación
-                                                                </button>
+                                    </form>
+                                </div> 
+                                <CardBody className="border-bottom">
+                                    <CardTitle className="mb-0 font-weight-bold">
+                                        <i className="fa fa-list mr-2"></i>
+                                        Publicaciones por actualizar
+                                    </CardTitle>
+                                </CardBody>
+                                <CardBody className="pb-5">
+                                    <Row>
+                                        <Col xs="12">
+                                            <Table responsive>
+                                                <thead>
+                                                    <tr>
+                                                        <th>
+                                                            #
+                                                        </th>
+                                                        <th>
+                                                            Imagen principal
+                                                        </th>
+                                                        <th>
+                                                            Titulo
+                                                        </th>
+                                                        <th className="text-right">
+                                                            Acción
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {(bidList.length > 0 && bidList.map((item, key) => {
+                                                        let photoId = null;
+
+                                                        if(Array.isArray(item.photos) && item.photos.length > 0){
+                                                            photoId = item.photos.find(photo => Number(photo.type) === 1);
+                                                        }
+                                                        let img = "";
+                                                        //console.log(photoId);
+                                                        if(photoId !== null){
+                                                            img = imglist.find(photo => Number(photo.id) === Number(photoId.id));
+                                                        }
+
+                                                        let dataimg = getBase64Img(img.data);
+                                                        
+                                                        return (
+                                                            <tr key={key}>
+                                                                <td style={{verticalAlign: "middle"}}>
+                                                                    {item.id}
+                                                                </td>
+                                                                <td style={{verticalAlign: "middle"}}>
+                                                                    {(img !== null && img !== undefined) &&
+                                                                        <img 
+                                                                            className="img-fluid shadow"
+                                                                            style={{width: "100px", borderRadius: "5px"}}                
+                                                                            src={`data:image/${dataimg.type};base64,${dataimg.url}`}
+                                                                        />
+                                                                    }
+                                                                </td>
+                                                                <td style={{verticalAlign: "middle"}}>
+                                                                    {item.title}
+                                                                </td>
+                                                                <td className="text-right" style={{verticalAlign: "middle"}}>
+                                                                    <button 
+                                                                        onClick={() => showDataBid(item)} 
+                                                                        className="btn btn-info"
+                                                                    >
+                                                                        Ver publicación
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    }))}
+
+                                                    {(bidList.length === 0) &&
+                                                        <tr>
+                                                            <td className="text-center" colSpan="20">
+                                                                Sin solicitudes que coincidan con los parametros de la busqueda.
                                                             </td>
                                                         </tr>
-                                                    )
-                                                }))}
-
-                                                {(bidList.length === 0) &&
-                                                    <tr>
-                                                        <td className="text-center" colSpan="20">
-                                                            Sin solicitudes que coincidan con los parametros de la busqueda.
-                                                        </td>
-                                                    </tr>
-                                                }
-                                            </tbody>
-                                        </Table>
-                                    </Col>
-                                </Row>
-                            </CardBody>
-                        </Card>
+                                                    }
+                                                </tbody>
+                                            </Table>
+                                        </Col>
+                                    </Row>
+                                </CardBody>
+                            </Card>
+                            :
+                            <InlineSpinner />
+                        }
                     </div>
                 </div>
             }
@@ -456,6 +544,7 @@ function Actualizar() {
                                     <Nav tabs className="nav-fill">
                                         <NavItem>
                                             <NavLink
+                                                style={{cursor: "pointer"}}
                                                 className={activeTab === '1' ? "active font-weight-bold" : ""}
                                                 onClick={() =>  toggleTab('1')}
                                             >
@@ -464,6 +553,7 @@ function Actualizar() {
                                         </NavItem>
                                         <NavItem>
                                             <NavLink
+                                                style={{cursor: "pointer"}}
                                                 className={activeTab === '2' ? "active font-weight-bold" : ""}
                                                 onClick={() =>  toggleTab('2')}
                                             >
@@ -472,6 +562,7 @@ function Actualizar() {
                                         </NavItem>
                                         <NavItem>
                                             <NavLink
+                                                style={{cursor: "pointer"}}
                                                 className={activeTab === '3' ? "active font-weight-bold" : ""}
                                                 onClick={() =>  toggleTab('3')}
                                             >
@@ -650,7 +741,7 @@ function Actualizar() {
                                                                 })}
                                                             </p>
                                                         </div>
-                                                        {(databidupdate.skuTypeId !== 3) &&
+                                                        {(databidupdate.skuTypeId !== 3 && databidupdate.category.hasOwnProperty("subCat1")) &&
                                                             <>
                                                                 <div className="col-lg-12">
                                                                     <h6 className="font-weight-bold">Subcategorias:</h6>
@@ -804,331 +895,329 @@ function Actualizar() {
                                                                 <div className="col-lg-12 mb-2">
                                                                     <h6><strong>Garantia:</strong> {databid.garanty} dias</h6>
                                                                 </div>
+
                                                                 {(databid.skuTypeId !== 3) &&
                                                                     <div className="col-lg-12 mb-2">
                                                                         <h6><strong>Tiempo de elaboracion:</strong> {databid.time} dias</h6>
                                                                     </div>
                                                                 }
-                                                                {(databid.weight) &&
+
+                                                                {(databid.weight !== null && databid.skuTypeId !== 3) &&
                                                                     <div className="col-lg-12 mb-2">
                                                                         <h6>
                                                                             <strong>Peso:</strong> {databid.weight}
                                                                         </h6>
                                                                     </div>
                                                                 }
-                                                        {(databid.skuTypeId !== 3) &&
-                                                            <>
-                                                                <div className="col-lg-12">
-                                                                    {(databid.materials !== null) &&
-                                                                            <div>
-                                                                                <div className="mb-2">
-                                                                                    <h6 className="mb-0 font-weight-bold">
-                                                                                        Materiales
-                                                                                    </h6>
-                                                                                    <p>
-                                                                                        {Array.isArray(databid.materials) && databid.materials.length > 0 && databid.materials.map((item, key) => {
-                                                                                            return (
-                                                                                                <span key={key} className="mb-2 mr-2 mt-2 badge badge-primary font-weight-bold">
-                                                                                                    {item.name} - {item.qty}
-                                                                                                </span>
-                                                                                            );
-                                                                                        })}
-                                                                                    </p>
-                                                                                </div>
-                                                                            </div>
-                                                                    } 
-                                                                </div>
-                                                                <div className="col-lg-12">
-                                                                    {(databid.dimension !== null) &&
-                                                                        <div>
-                                                                            {Array.isArray(databid.dimension) &&
-                                                                                <div className="mb-2">
-                                                                                    <hr/>
-                                                                                    <h6 className="mb-0 mb-3 font-weight-bold">
-                                                                                        Dimensiones:
-                                                                                    </h6>
-                                                                                    <div className="row">
-                                                                                        <div className="col-lg-12">
-                                                                                            <h6>
-                                                                                                <strong>Ancho:</strong> {databid.dimension[0].width} cm
-                                                                                            </h6>
-                                                                                        </div>
-                                                                                        <div className="col-lg-12">
-                                                                                            <h6>
-                                                                                                <strong>Alto:</strong> {databid.dimension[0].height} cm
-                                                                                            </h6>
-                                                                                        </div>
-                                                                                        <div className="col-lg-12">
-                                                                                            <h6>
-                                                                                                <strong>Profundidad:</strong> {databid.dimension[0].width} cm
-                                                                                            </h6>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            }
-                                                                        </div>
-                                                                    } 
-                                                                </div>
-                                                            </>
-                                                        }
-                                                    </div>
-                                                    
-                                                    </div>
-                                                    <div className="col-lg-6">
-                                                        <h6 className="text-info font-weight-bold">
-                                                            Data despues
-                                                        </h6>
-                                                        <hr/>
-                                                        {(databidupdate.price) &&
-                                                            <div className="alert alert-success">
-                                                                <h3 className="font-weight-bold mb-0">
-                                                                    Precio: CLP ${databid.price.price}
-                                                                </h3>
-                                                            </div>
-                                                        }
-                                                        {(databid.stock && databid.stock !== null) &&
-                                                            <div className="alert alert-info">
-                                                                <h3 className="font-weight-bold mb-0">
-                                                                    Stock: {databid.stock.data.total}
-                                                                </h3>
-                                                            </div>
-                                                        }
-                                                        <div className="row">
-                                                                <div className="col-lg-12 mb-2">
-                                                                    <h6 className="font-weight-bold mb-1">
-                                                                        <strong>Marca:</strong>
-                                                                    </h6>
-                                                                    <h2 className="font-weight-bold text-primary mb-2">
-                                                                        {
-                                                                            //databid.Brand.name
-                                                                        }
-                                                                    </h2>
-                                                                    <hr/>
-                                                                </div> 
+
                                                                 {(databid.skuTypeId !== 3) &&
                                                                     <>
-                                                                        <div className="col-lg-12 mb-2">
-                                                                            <h6><strong>¿Es personalizable?</strong> {databidupdate.customizable ? "Si": "No"}</h6>
-                                                                        </div>
-                                                                        {(databidupdate.customizable) &&
-                                                                            <div className="col-lg-12 mb-2">
-                                                                                <h6><strong>Personalización:</strong> {databidupdate.customize}</h6>
-                                                                            </div>
-                                                                        }
-                                                                    </>
-                                                                }
-                                                                {(databid.skuTypeId !== 3 && databid.include !== "" && databidupdate.include !== null) &&
-                                                                    <div className="col-lg-12 mb-2">
-                                                                        <h6><strong>El producto incluye:</strong></h6>
-                                                                        <p>
-                                                                            {databidupdate.include}
-                                                                        </p>
-                                                                    </div>
-                                                                }
-                                                                <div className="col-lg-12 mb-2">
-                                                                    <h6><strong>Acepta devoluciones:</strong> {databidupdate.devolution ? "Si": "No"}</h6>
-                                                                </div>
-                                                                <div className="col-lg-12 mb-2">
-                                                                    <h6><strong>Garantia:</strong> {databidupdate.garanty} dias</h6>
-                                                                </div>
-                                                                {(databid.skuTypeId !== 3) &&
-                                                                    <div className="col-lg-12 mb-2">
-                                                                        <h6><strong>Tiempo de elaboracion:</strong> {databidupdate.time} dias</h6>
-                                                                    </div>
-                                                                }
-                                                                {(databidupdate.weight) &&
-                                                                    <div className="col-lg-12 mb-2">
-                                                                        <h6>
-                                                                            <strong>Peso:</strong> {databidupdate.weight}
-                                                                        </h6>
-                                                                    </div>
-                                                                }
-                                                        {(databid.skuTypeId !== 3) &&
-                                                            <>
-                                                                <div className="col-lg-12">
-                                                                    {(databidupdate.materials !== null) &&
-                                                                            <div>
-                                                                                <div className="mb-2">
-                                                                                    <h6 className="mb-0 font-weight-bold">
-                                                                                        Materiales
-                                                                                    </h6>
-                                                                                    <p>
-                                                                                        {Array.isArray(databidupdate.materials) && databidupdate.materials.length > 0 && databidupdate.materials.map((item, key) => {
-                                                                                            return (
-                                                                                                <span key={key} className="mb-2 mt-2 mr-2 badge badge-primary font-weight-bold">
-                                                                                                    {item.name} - {item.qty}
-                                                                                                </span>
-                                                                                            );
-                                                                                        })}
-                                                                                    </p>
-                                                                                </div>
-                                                                            </div>
-                                                                    } 
-                                                                </div>
-                                                                <div className="col-lg-12">
-                                                                    {(databid.dimension !== null) &&
-                                                                        <div>
-                                                                            {Array.isArray(databid.dimension) &&
-                                                                                <div className="mb-2">
-                                                                                    <hr/>
-                                                                                    <h6 className="mb-0 mb-3 font-weight-bold">
-                                                                                        Dimensiones:
-                                                                                    </h6>
-                                                                                    <div className="row">
-                                                                                        <div className="col-lg-12">
-                                                                                            <h6>
-                                                                                                <strong>Ancho:</strong> {databid.dimension[0].width} cm
+                                                                        <div className="col-lg-12">
+                                                                            {(databid.materials !== null) &&
+                                                                                    <div>
+                                                                                        <div className="mb-2">
+                                                                                            <h6 className="mb-0 font-weight-bold">
+                                                                                                Materiales
                                                                                             </h6>
-                                                                                        </div>
-                                                                                        <div className="col-lg-12">
-                                                                                            <h6>
-                                                                                                <strong>Alto:</strong> {databid.dimension[0].height} cm
-                                                                                            </h6>
-                                                                                        </div>
-                                                                                        <div className="col-lg-12">
-                                                                                            <h6>
-                                                                                                <strong>Profundidad:</strong> {databid.dimension[0].width} cm
-                                                                                            </h6>
+                                                                                            <p>
+                                                                                                {Array.isArray(databid.materials) && databid.materials.length > 0 && databid.materials.map((item, key) => {
+                                                                                                    return (
+                                                                                                        <span key={key} className="mb-2 mr-2 mt-2 badge badge-primary font-weight-bold">
+                                                                                                            {item.name} - {item.qty}
+                                                                                                        </span>
+                                                                                                    );
+                                                                                                })}
+                                                                                            </p>
                                                                                         </div>
                                                                                     </div>
-                                                                                </div>
-                                                                            }
+                                                                            } 
                                                                         </div>
-                                                                    } 
-                                                                </div>
-                                                            </>
-                                                        }
-                                                    </div>
-                                                    
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </TabPane>
-                                        <TabPane tabId="3">
-                                            <div className="py-4">
-                                                <div className="row">
-                                                    
-                                                    <div className="col-lg-6">
+                                                                        <div className="col-lg-12">
+                                                                            {(databid.dimension !== null) &&
+                                                                                <div>
+                                                                                    {Array.isArray(databid.dimension) &&
+                                                                                        <div className="mb-2">
+                                                                                            <hr/>
+                                                                                            <h6 className="mb-0 mb-3 font-weight-bold">
+                                                                                                Dimensiones:
+                                                                                            </h6>
+                                                                                            <div className="row">
+                                                                                                <div className="col-lg-12">
+                                                                                                    <h6>
+                                                                                                        <strong>Ancho:</strong> {databid.dimension[0].width} cm
+                                                                                                    </h6>
+                                                                                                </div>
+                                                                                                <div className="col-lg-12">
+                                                                                                    <h6>
+                                                                                                        <strong>Alto:</strong> {databid.dimension[0].height} cm
+                                                                                                    </h6>
+                                                                                                </div>
+                                                                                                <div className="col-lg-12">
+                                                                                                    <h6>
+                                                                                                        <strong>Profundidad:</strong> {databid.dimension[0].width} cm
+                                                                                                    </h6>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    }
+                                                                                </div>
+                                                                            } 
+                                                                        </div>
+                                                                    </>
+                                                                }
+                                                        </div>
+                                                        
+                                                        </div>
+                                                        <div className="col-lg-6">
                                                             <h6 className="text-info font-weight-bold">
                                                                 Data despues
                                                             </h6>
                                                             <hr/>
-                                                            <h3 className="font-weight-bold mb-3">
-                                                                Imagenes de la publicacion
-                                                            </h3>
+                                                            {(databidupdate.price) &&
+                                                                <div className="alert alert-success">
+                                                                    <h3 className="font-weight-bold mb-0">
+                                                                        Precio: CLP ${databid.price.price}
+                                                                    </h3>
+                                                                </div>
+                                                            }
+                                                            {(databid.stock && databid.stock !== null) &&
+                                                                <div className="alert alert-info">
+                                                                    <h3 className="font-weight-bold mb-0">
+                                                                        Stock: {databid.stock.data.total}
+                                                                    </h3>
+                                                                </div>
+                                                            }
                                                             <div className="row">
-                                                            {Array.isArray(photos) && photos.length > 1 && photos.map((item, key) => {
-                                                                let imagen = "";
-                                                                let type = "";
-                                                                
-                                                                if(Array.isArray(item.img.data)){
-                                                                    imagen = item.img.data.reduce(
-                                                                        function (data, byte) {
-                                                                            return data + String.fromCharCode(byte);
-                                                                        },
-                                                                        ''
-                                                                    );
+                                                                    <div className="col-lg-12 mb-2">
+                                                                        <h6 className="font-weight-bold mb-1">
+                                                                            <strong>Marca:</strong>
+                                                                        </h6>
+                                                                        <h2 className="font-weight-bold text-primary mb-2">
+                                                                            {
+                                                                                //databid.Brand.name
+                                                                            }
+                                                                        </h2>
+                                                                        <hr/>
+                                                                    </div> 
+                                                                    {(databid.skuTypeId !== 3) &&
+                                                                        <>
+                                                                            <div className="col-lg-12 mb-2">
+                                                                                <h6><strong>¿Es personalizable?</strong> {databidupdate.customizable ? "Si": "No"}</h6>
+                                                                            </div>
+                                                                            {(databidupdate.customizable) &&
+                                                                                <div className="col-lg-12 mb-2">
+                                                                                    <h6><strong>Personalización:</strong> {databidupdate.customize}</h6>
+                                                                                </div>
+                                                                            }
+                                                                        </>
+                                                                    }
+                                                                    {(databid.skuTypeId !== 3 && databid.include !== "" && databidupdate.include !== null) &&
+                                                                        <div className="col-lg-12 mb-2">
+                                                                            <h6><strong>El producto incluye:</strong></h6>
+                                                                            <p>
+                                                                                {databidupdate.include}
+                                                                            </p>
+                                                                        </div>
+                                                                    }
+                                                                    <div className="col-lg-12 mb-2">
+                                                                        <h6><strong>Acepta devoluciones:</strong> {databidupdate.devolution ? "Si": "No"}</h6>
+                                                                    </div>
+                                                                    <div className="col-lg-12 mb-2">
+                                                                        <h6><strong>Garantia:</strong> {databidupdate.garanty} dias</h6>
+                                                                    </div>
+
+                                                                    {(databid.skuTypeId !== 3) &&
+                                                                        <div className="col-lg-12 mb-2">
+                                                                            <h6><strong>Tiempo de elaboracion:</strong> {databidupdate.time} dias</h6>
+                                                                        </div>
+                                                                    }
+
+                                                                    {(databidupdate.weight !== null && databid.skuTypeId !== 3) &&
+                                                                        <div className="col-lg-12 mb-2">
+                                                                            <h6>
+                                                                                <strong>Peso:</strong> {databidupdate.weight}
+                                                                            </h6>
+                                                                        </div>
+                                                                    }
                                                                     
-                                                                    let separator = imagen.split(",");
-                                                                    type    = separator[0];
-                                                                    imagen  = separator[separator.length - 1];
-                                                                }
-                                                                
-                                                                //console.log(type);
-                                                                //console.log(imagen);
-
-                                                                if(isBase64(imagen)){
-                                                                    return (
-                                                                        <div key={key} className="col-lg-6 mb-3">
-                                                                            <img 
-                                                                                className="img-fluid"
-                                                                                //style='display:block; width:100px;height:100px;'                
-                                                                                src={`data:image/${type};base64,${imagen}`}
-                                                                            />
-                                                                        </div>
-                                                                    )
-                                                                }else{
-                                                                    return (
-                                                                        <div key={key} className="col-lg-6 mb-3">
-                                                                            <div className="d-flex shadow-sm align-items-center bg-light justify-content-center p-3">
-                                                                                <h6 className="font-weight-bold text-center">
-                                                                                    <i className="fa fa-2x fa-file-image mr-3 mb-3 d-block w-100"></i>
-                                                                                    <small className="font-weight-bold pt-5">
-                                                                                        No es posible visualizar esta imagen
-                                                                                    </small>
-                                                                                </h6>
+                                                                    {(databid.skuTypeId !== 3) &&
+                                                                        <>
+                                                                            <div className="col-lg-12">
+                                                                                {(databidupdate.materials !== null) &&
+                                                                                        <div>
+                                                                                            <div className="mb-2">
+                                                                                                <h6 className="mb-0 font-weight-bold">
+                                                                                                    Materiales
+                                                                                                </h6>
+                                                                                                <p>
+                                                                                                    {Array.isArray(databidupdate.materials) && databidupdate.materials.length > 0 && databidupdate.materials.map((item, key) => {
+                                                                                                        return (
+                                                                                                            <span key={key} className="mb-2 mt-2 mr-2 badge badge-primary font-weight-bold">
+                                                                                                                {item.name} - {item.qty}
+                                                                                                            </span>
+                                                                                                        );
+                                                                                                    })}
+                                                                                                </p>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                } 
                                                                             </div>
-                                                                        </div>
-                                                                    )
-                                                                }
-                                                            })}
+                                                                            <div className="col-lg-12">
+                                                                                {(databid.dimension !== null) &&
+                                                                                    <div>
+                                                                                        {Array.isArray(databid.dimension) &&
+                                                                                            <div className="mb-2">
+                                                                                                <hr/>
+                                                                                                <h6 className="mb-0 mb-3 font-weight-bold">
+                                                                                                    Dimensiones:
+                                                                                                </h6>
+                                                                                                <div className="row">
+                                                                                                    <div className="col-lg-12">
+                                                                                                        <h6>
+                                                                                                            <strong>Ancho:</strong> {databid.dimension[0].width} cm
+                                                                                                        </h6>
+                                                                                                    </div>
+                                                                                                    <div className="col-lg-12">
+                                                                                                        <h6>
+                                                                                                            <strong>Alto:</strong> {databid.dimension[0].height} cm
+                                                                                                        </h6>
+                                                                                                    </div>
+                                                                                                    <div className="col-lg-12">
+                                                                                                        <h6>
+                                                                                                            <strong>Profundidad:</strong> {databid.dimension[0].width} cm
+                                                                                                        </h6>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        }
+                                                                                    </div>
+                                                                                } 
+                                                                            </div>
+                                                                        </>
+                                                                    }
                                                         </div>
                                                         
-                                                    </div>
-                                                    <div className="col-lg-6">
-                                                            <h6 className="text-info font-weight-bold">
-                                                                Data antes
-                                                            </h6>
-                                                            <hr/>
-                                                            <h3 className="font-weight-bold mb-3">
-                                                                Imagenes de la publicacion
-                                                            </h3>
-                                                            <div className="row">
-                                                            {Array.isArray(databidupdate.photos) && databidupdate.photos.length > 1 && databidupdate.photos.map((item, key) => {
-                                                                let imagen = "";
-                                                                let type = "";
-
-                                                                console.log(item);
-                                                                
-                                                                if(Array.isArray(item)){
-                                                                    imagen = item.reduce(
-                                                                        function (data, byte) {
-                                                                            return data + String.fromCharCode(byte);
-                                                                        },
-                                                                        ''
-                                                                    );
-
-                                                                    let separator = imagen.split(",");
-                                                                    type    = separator[0];
-                                                                    imagen  = separator[separator.length - 1];
-                                                                }
-                                                                
-                                                                console.log(type);
-                                                                console.log(imagen);
-
-                                                                if(isBase64(imagen)){
-                                                                    return (
-                                                                        <div key={key} className="col-lg-6 mb-3">
-                                                                            <img 
-                                                                                className="img-fluid"
-                                                                                //style='display:block; width:100px;height:100px;'                
-                                                                                src={`data:image/${type};base64,${imagen}`}
-                                                                            />
-                                                                        </div>
-                                                                    )
-                                                                }else{
-                                                                    return (
-                                                                        <div key={key} className="col-lg-6 mb-3">
-                                                                            <div className="d-flex shadow-sm align-items-center bg-light justify-content-center p-3">
-                                                                                <h6 className="font-weight-bold text-center">
-                                                                                    <i className="fa fa-2x fa-file-image mr-3 mb-3 d-block w-100"></i>
-                                                                                    <small className="font-weight-bold pt-5">
-                                                                                        No es posible visualizar esta imagen
-                                                                                    </small>
-                                                                                </h6>
-                                                                            </div>
-                                                                        </div>
-                                                                    )
-                                                                }
-                                                            })}
                                                         </div>
-                                                        
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </TabPane>
-                                    </TabContent>
-                                </div>
+                                            </TabPane>
+                                            <TabPane tabId="3">
+                                                <div className="py-4">
+                                                    <div className="row">
+                                                        
+                                                        <div className="col-lg-6">
+                                                                <h6 className="text-info font-weight-bold">
+                                                                    Data antes
+                                                                </h6>
+                                                                <hr/>
+                                                                <h3 className="font-weight-bold mb-3">
+                                                                    Imagenes de la publicacion
+                                                                </h3>
+                                                                <div className="row">
+                                                                {Array.isArray(photos) && photos.length > 1 && photos.map((item, key) => {
+                                                                    let imagen = "";
+                                                                    let type = "";
+                                                                    
+                                                                    if(Array.isArray(item.img.data)){
+                                                                        imagen = item.img.data.reduce(
+                                                                            function (data, byte) {
+                                                                                return data + String.fromCharCode(byte);
+                                                                            },
+                                                                            ''
+                                                                        );
+                                                                        
+                                                                        let separator = imagen.split(",");
+                                                                        type    = separator[0];
+                                                                        imagen  = separator[separator.length - 1];
+                                                                    }
+                                                                    
+                                                                    //console.log(type);
+                                                                    //console.log(imagen);
+
+                                                                    if(isBase64(imagen)){
+                                                                        return (
+                                                                            <div key={key} className="col-lg-6 mb-3">
+                                                                                <img 
+                                                                                    className="img-fluid"
+                                                                                    //style='display:block; width:100px;height:100px;'                
+                                                                                    src={`data:image/${type};base64,${imagen}`}
+                                                                                />
+                                                                            </div>
+                                                                        )
+                                                                    }else{
+                                                                        return (
+                                                                            <div key={key} className="col-lg-6 mb-3">
+                                                                                <div className="d-flex shadow-sm align-items-center bg-light justify-content-center p-3">
+                                                                                    <h6 className="font-weight-bold text-center">
+                                                                                        <i className="fa fa-2x fa-file-image mr-3 mb-3 d-block w-100"></i>
+                                                                                        <small className="font-weight-bold pt-5">
+                                                                                            No es posible visualizar esta imagen
+                                                                                        </small>
+                                                                                    </h6>
+                                                                                </div>
+                                                                            </div>
+                                                                        )
+                                                                    }
+                                                                })}
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        <div className="col-lg-6">
+                                                                <h6 className="text-info font-weight-bold">
+                                                                    Data despues
+                                                                </h6>
+                                                                <hr/>
+                                                                <h3 className="font-weight-bold mb-3">
+                                                                    Imagenes de la publicacion
+                                                                </h3>
+                                                                <div className="row">
+                                                                {Array.isArray(databidupdate.photos) && databidupdate.photos.length > 1 && databidupdate.photos.map((item, key) => {
+                                                                    let imagen = "";
+                                                                    let type = "";
+
+                                                                    imagen = item.data;
+
+                                                                    let separator = imagen.split(",");
+                                                                    type    = separator[0];
+                                                                    imagen  = separator[separator.length - 1];
+                                                                    
+                                                                    //console.log(item);
+                                                                    //console.log(type);
+                                                                    //console.log(imagen);
+
+                                                                    if(isBase64(imagen)){
+                                                                        return (
+                                                                            <div key={key} className="col-lg-6 mb-3">
+                                                                                <img 
+                                                                                    className="img-fluid"
+                                                                                    //style='display:block; width:100px;height:100px;'                
+                                                                                    src={`data:image/${type};base64,${imagen}`}
+                                                                                />
+                                                                            </div>
+                                                                        )
+                                                                    }else{
+                                                                        return (
+                                                                            <div key={key} className="col-lg-6 mb-3">
+                                                                                <div className="d-flex shadow-sm align-items-center bg-light justify-content-center p-3">
+                                                                                    <h6 className="font-weight-bold text-center">
+                                                                                        <i className="fa fa-2x fa-file-image mr-3 mb-3 d-block w-100"></i>
+                                                                                        <small className="font-weight-bold pt-5">
+                                                                                            No es posible visualizar esta imagen
+                                                                                        </small>
+                                                                                    </h6>
+                                                                                </div>
+                                                                            </div>
+                                                                        )
+                                                                    }
+                                                                })}
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </TabPane>
+                                        </TabContent>
+                                    </div>
                             }
                     </div>
                 </ModalBody>

@@ -5,7 +5,7 @@ import ShopWithContractsSelect from '../../../components/selects/ShopsWithContra
 import InlineSpinner from '../../spinner/InlineSpinner';
 import {useSelector} from 'react-redux'
 import {Link, withRouter} from "react-router-dom"
-import { isBase64 } from '../../../utils/helpers';
+import { getBase64Img, isBase64 } from '../../../utils/helpers';
 
 function ConsultarTienda(props) {
 
@@ -17,6 +17,9 @@ function ConsultarTienda(props) {
     const [loading, setloading]                 = useState(true);
     const [search, setsearch]                   = useState(true);
     const [searchBids, setsearchBids]           = useState(false);
+
+    const [searchImages, setsearchImages]       = useState(false);
+    const [imglist, setimglist]                 = useState([]);
 
     const [successmessage, setsuccessmessage]   = useState("");
     const [errormessage, seterrormessage]       = useState('');
@@ -53,16 +56,68 @@ function ConsultarTienda(props) {
     }
 
     const getData = () => {
+        let urlGetImg   = `/SettInG/IMG/geT/bYID/`;
+
         axios.get(`/setting/seller/shop/general/profile/${id}`)
         .then((res) => {
-            console.log(res.data);
+            //console.log(res.data);
             setshop(res.data.data.rsAccount[0]);
 
             axios.get(`/SeTtiNG/BiD/get/BySHOp/${id}`).then((res) => {
                 console.log(res.data);
-                setdata(res.data);
-                setlist(res.data);
-                setloading(false);
+
+                let bidList         = res.data;
+
+                setdata(bidList);
+                setlist(bidList);
+
+                setsearchImages(true);
+                setimglist([]);
+                
+                let newPhotosList   = [];
+                let countItems      = bidList.length;
+                let countPhotos     = 0;
+
+                if(Array.isArray(bidList) && bidList.length > 0){
+                    for (let i = 0; i < bidList.length; i++) {
+                        const item = bidList[i];
+        
+                        let getPrincipalImgId = null;
+        
+                        if(Array.isArray(item.photos) && item.photos.length > 0){
+                            getPrincipalImgId = item.photos.find(photo => Number(photo.type) === 1);
+                        }
+        
+                        if(getPrincipalImgId !== null){
+                            console.log(getPrincipalImgId);
+                            newPhotosList.push({id: getPrincipalImgId.id, data: null});
+                        }
+                    }
+        
+                    if(Array.isArray(newPhotosList) && newPhotosList.length > 0){
+                        for (let j = 0; j < newPhotosList.length; j++) {
+                            const thisphoto = newPhotosList[j];
+            
+                            axios.get(urlGetImg+thisphoto.id).then((res) => {
+                                //console.log(res.data);
+                                newPhotosList[j].data = res.data.data;
+                                countPhotos++;
+            
+                                if(countPhotos === countItems){
+                                    setimglist(newPhotosList);
+                                    setsearchImages(false);
+                                    console.log("imagenes cargadas");
+                                    setloading(false);
+                                }
+                            }).catch((err) => {
+                                console.error(err);
+                            })
+                        }
+                    }
+                }else{
+                    setsearchImages(false);
+                    setloading(false);
+                }
             }).catch((err) => {
                 console.error(err);
             });
@@ -141,9 +196,9 @@ function ConsultarTienda(props) {
         let urlaction = ``;
 
         if(type === "active"){
-            urlaction = `/sEtTiNG/bID/ActiVaTE/${bidSelected}`;
+            urlaction = `/sEtTiNG/bID/ActiVaTE/${bidSelected}/${databid.shopId}`;
         }else if(type === "inactive"){
-            urlaction = `/SEtTInG/biD/REVOKE/${bidSelected}`;
+            urlaction = `/SEtTInG/biD/REVOKE/${bidSelected}/${databid.shopId}`;
         }
 
         setsuccessmessage('');
@@ -225,7 +280,7 @@ function ConsultarTienda(props) {
                                     />
                                 </div>
                             </div>
-                            <div className="col-lg-3">
+                            <div className="col-lg-3 text-right">
                                 <button 
                                     type="button" 
                                     onClick={() => cleanFilters()} 
@@ -253,24 +308,50 @@ function ConsultarTienda(props) {
                                             #
                                         </th>
                                         <th>
-                                            Titulo
+                                            Imagen principal
                                         </th>
                                         <th>
+                                            Titulo
+                                        </th>
+                                        <th className="text-right">
                                             Acción
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {(list.length > 0 && list.map((item, key) => {
+
+                                        let photoId = null;
+
+                                        if(Array.isArray(item.photos) && item.photos.length > 0){
+                                            photoId = item.photos.find(photo => Number(photo.type) === 1);
+                                        }
+                                        let img = "";
+                                        //console.log(photoId);
+                                        if(photoId !== null){
+                                            img = imglist.find(photo => Number(photo.id) === Number(photoId.id));
+                                        }
+
+                                        let dataimg = getBase64Img(img.data);
+
                                         return (
                                             <tr key={key}>
-                                                <td>
+                                                <td style={{verticalAlign: "middle"}}>
                                                     {item.id}
                                                 </td>
-                                                <td>
+                                                <td style={{verticalAlign: "middle"}}>
+                                                    {(img !== null && img !== undefined) &&
+                                                        <img 
+                                                            className="img-fluid shadow"
+                                                            style={{width: "100px", borderRadius: "5px"}}                
+                                                            src={`data:image/${dataimg.type};base64,${dataimg.url}`}
+                                                        />
+                                                    }
+                                                </td>
+                                                <td style={{verticalAlign: "middle"}}>
                                                     {item.title}
                                                 </td>
-                                                <td>
+                                                <td className="text-right" style={{verticalAlign: "middle"}}>
                                                     <button onClick={() => showDataBid(item.id)} className="btn btn-info">
                                                         Ver publicación
                                                     </button>
@@ -324,6 +405,7 @@ function ConsultarTienda(props) {
                             {(databid !== null && !searchdatabid && successmessage === "") &&
                                 <div className="alert alert-info">
                                     <strong>Estado de la publicación:</strong>
+                                    {databid.StatusId === 3 ? " Inabilitada por el administrador" : ""} 
                                     {databid.StatusId === 2 ? " Inactiva" : ""} 
                                     {databid.StatusId === 1 ? " Activa" : ""} 
                                 </div>
@@ -334,6 +416,7 @@ function ConsultarTienda(props) {
                                     <Nav tabs className="nav-fill">
                                         <NavItem>
                                             <NavLink
+                                                style={{cursor: "pointer"}}
                                                 className={activeTab === '1' ? "active font-weight-bold" : ""}
                                                 onClick={() =>  toggleTab('1')}
                                             >
@@ -342,6 +425,7 @@ function ConsultarTienda(props) {
                                         </NavItem>
                                         <NavItem>
                                             <NavLink
+                                                style={{cursor: "pointer"}}
                                                 className={activeTab === '2' ? "active font-weight-bold" : ""}
                                                 onClick={() =>  toggleTab('2')}
                                             >
@@ -350,6 +434,7 @@ function ConsultarTienda(props) {
                                         </NavItem>
                                         <NavItem>
                                             <NavLink
+                                                style={{cursor: "pointer"}}
                                                 className={activeTab === '3' ? "active font-weight-bold" : ""}
                                                 onClick={() =>  toggleTab('3')}
                                             >
@@ -612,32 +697,17 @@ function ConsultarTienda(props) {
                                                 </h3>
                                                 <div className="row">
                                                     {Array.isArray(photos) && photos.length > 1 && photos.map((item, key) => {
-                                                        let imagen = "";
-                                                        let type = "";
-                                                        
-                                                            if(Array.isArray(item.img.data)){
-                                                                imagen = item.img.data.reduce(
-                                                                    function (data, byte) {
-                                                                        return data + String.fromCharCode(byte);
-                                                                    },
-                                                                    ''
-                                                                );
+                                                        let dataimg = getBase64Img(item.img);
+                                                        //console.log(item.img.data);
+                                                        //console.log(dataimg);
 
-                                                                let separator = imagen.split(",");
-                                                                type    = separator[0];
-                                                                imagen  = separator[separator.length - 1];
-                                                            }
-                                                        
-                                                        console.log(type);
-                                                        console.log(imagen);
-
-                                                        if(isBase64(imagen)){
+                                                        if(isBase64(dataimg.url)){
                                                             return (
-                                                                <div key={key} className="col-lg-6 mb-3">
+                                                                <div key={key} className="col-lg-6 mb-4">
                                                                     <img 
                                                                         className="img-fluid"
                                                                         //style='display:block; width:100px;height:100px;'                
-                                                                        src={`data:image/${type};base64,${imagen}`}
+                                                                        src={`data:image/${dataimg.type};base64,${dataimg.url}`}
                                                                     />
                                                                 </div>
                                                             )
@@ -667,13 +737,15 @@ function ConsultarTienda(props) {
                 <ModalFooter>
                     {(!searchdatabid && databid !== null && successmessage === "") &&
                         <>
-                            {databid.StatusId === 2 &&
+                            {databid.StatusId}
+
+                            {(databid.StatusId === 2 || databid.StatusId === 3) &&
                                 <Button disabled={changing} color="info" onClick={(e) => changeStatusBid(e, "active")}>
                                     {changing ? <span><i className="fa fa-spinner fa-spin"></i></span> : 'Activar'}
                                 </Button>
                             }
 
-                            {databid.StatusId === 1 &&
+                            {(databid.StatusId === 1) &&
                                 <Button disabled={changing} color="info" onClick={(e) => changeStatusBid(e, "inactive")}>
                                     {changing ? <span><i className="fa fa-spinner fa-spin"></i></span> : 'Desactivar'}
                                 </Button>

@@ -43,7 +43,7 @@ function CreateContrat() {
 
     const [shopRequestId, setShopRequestId]         = useState(null);
     const [number, setnumber]                       = useState('');
-    const [inicio, setinicio]                       = useState(null);
+    const [inicio, setinicio]                       = useState(moment(new Date(), "YYYY-MM-DD"));
     const [fin, setfin]                             = useState(null);
     const [comProduct, setcomProduct]               = useState('');
     const [comService, setcomService]               = useState('');
@@ -71,7 +71,7 @@ function CreateContrat() {
 
         setShopRequestId(null);
         setnumber('');
-        setinicio(null);
+        setinicio(moment(new Date(), "YYYY-MM-DD"));
         setfin(null);
         setcomProduct('');
         setcomService('');
@@ -123,7 +123,7 @@ function CreateContrat() {
         if(inicio === null || inicio === ''){
             thiserrors.inicio = 'Indique la fecha de inicio del contrato';
             errorsCount++;
-        }else if(moment(newDate).isAfter(moment(inicio))){
+        }else if(moment(inicio).isBefore(moment(newDate, "YYYY-MM-DD").subtract(1, "days"))){
             thiserrors.inicio = 'La fecha debe ser igual ó superior a la fecha de hoy';
             errorsCount++;
         }
@@ -354,13 +354,13 @@ function CreateContrat() {
                                         </Col>
                                         <Col md="12">
                                             <div className="form-group">
-                                                <label htmlFor="">Número de contrato:</label>
+                                                <label htmlFor="">Ingrese el número del contrato:</label>
                                                 <input 
-                                                    type="number"
+                                                    type="text"
                                                     min="0" 
                                                     value={number}
                                                     onChange={(e) => setnumber(e.target.value)}
-                                                    placeholder="Número del contrato" 
+                                                    placeholder="Ingrese el número del contrato" 
                                                     className={((typeof errors === 'object' && errors.hasOwnProperty('number') ? 'is-invalid' : '') +' form-control')}
                                                 />
                                                 {(typeof errors === 'object' && errors.hasOwnProperty('number')) &&
@@ -614,7 +614,7 @@ function CreateContrat() {
                     </Breadcrumb>
                     <h1 className="h4 mb-3 font-weight-bold">Nuevo contrato</h1>
                     <div className="alert alert-success mb-3">
-                        ¡Contrato registrado con exito!
+                        ¡Contrato registrado con éxito!
                     </div>
                     <button onClick={() => setsuccess(false)} className="btn btn-primary">
                         Nuevo contrato
