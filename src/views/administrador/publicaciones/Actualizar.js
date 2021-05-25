@@ -214,7 +214,7 @@ function Actualizar() {
         let bidList = shop.Bids;
         let newPhotosList = [];
 
-        let countItems  = bidList.length;
+        let countItems  = 0;
         let countPhotos = 0;
         
         if(Array.isArray(bidList) && bidList.length > 0){
@@ -229,7 +229,10 @@ function Actualizar() {
 
                 if(getPrincipalImgId !== null){
                     console.log(getPrincipalImgId);
-                    newPhotosList.push({id: getPrincipalImgId.id, data: null});
+                    if(getPrincipalImgId !== undefined){
+                        countItems++;
+                        newPhotosList.push({id: getPrincipalImgId.id, data: null});
+                    }
                 }
             }
 
@@ -238,9 +241,12 @@ function Actualizar() {
                     const thisphoto = newPhotosList[j];
     
                     axios.get(urlGetImg+thisphoto.id).then((res) => {
-                        //console.log(res.data);
+                        console.log(res.data);
                         newPhotosList[j].data = res.data.data;
                         countPhotos++;
+
+                        console.log(countPhotos);
+                        console.log(countItems);
     
                         if(countPhotos === countItems){
                             setimglist(newPhotosList);
@@ -251,6 +257,9 @@ function Actualizar() {
                         console.error(err);
                     })
                 }
+            }else{
+                setsearchImages(false);
+                console.log("imagenes cargadas");
             }
         }else{
             setsearchImages(false);
@@ -456,21 +465,22 @@ function Actualizar() {
                                                         if(Array.isArray(item.photos) && item.photos.length > 0){
                                                             photoId = item.photos.find(photo => Number(photo.type) === 1);
                                                         }
+
                                                         let img = "";
-                                                        //console.log(photoId);
-                                                        if(photoId !== null){
+                                                        let dataimg = {};
+                                                        
+                                                        if(photoId !== null && photoId !== undefined){
                                                             img = imglist.find(photo => Number(photo.id) === Number(photoId.id));
+                                                            dataimg = getBase64Img(img.data);
                                                         }
 
-                                                        let dataimg = getBase64Img(img.data);
-                                                        
                                                         return (
                                                             <tr key={key}>
                                                                 <td style={{verticalAlign: "middle"}}>
                                                                     {item.id}
                                                                 </td>
                                                                 <td style={{verticalAlign: "middle"}}>
-                                                                    {(img !== null && img !== undefined) &&
+                                                                    {(img !== null && img !== undefined && img !== "") &&
                                                                         <img 
                                                                             className="img-fluid shadow"
                                                                             style={{width: "100px", borderRadius: "5px"}}                

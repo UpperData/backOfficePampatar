@@ -1087,68 +1087,76 @@ function BidsSellerAd(props) {
             axios.get(urlPhotos)
             .then((res) => {
 
-                console.log(res.data);
-
                 let newPhotos = [];
 
-                if(Array.isArray(res.data)){
-                    for (let i = 0; i < res.data.length; i++) {
-                        const item = res.data[i];
-                        if(Array.isArray(item.img.data)){
+                if(res.data.data !== null && res.data.data !== undefined && res.data.data.hasOwnProperty("result") && res.data.data.result === false){
 
-                            let imagen = item.img.data.reduce(
-                                function (data, byte) {
-                                    return data + String.fromCharCode(byte);
-                                },
-                                ''
-                            );
+                    setloading(false);
 
-                            let separator = imagen.split(",");
-                            let type      = separator[0];
-                            imagen        = separator[separator.length - 1];
+                }else{
+                    if(Array.isArray(res.data)){
+                        for (let i = 0; i < res.data.length; i++) {
+                            const item = res.data[i];
+                            console.log(item);
+                            if(Array.isArray(item.img.data)){
 
-                            //console.log(separator);
-                            //console.log(imagen);
-                            //console.log(type);
+                                let imagen = item.img.data.reduce(
+                                    function (data, byte) {
+                                        return data + String.fromCharCode(byte);
+                                    },
+                                    ''
+                                );
 
-                            let newData = {};
-                            let newItem = {}
+                                let separator = imagen.split(",");
+                                let type      = separator[0];
+                                imagen        = separator[separator.length - 1];
 
-                            if(isBase64(imagen)){
-                                newData = [{
-                                    id:newPhotos.length+1,
-                                    name: "imagen_"+newPhotos.length,
-                                    type: type,
-                                    url:  separator[1]+","+separator[2]
-                                }];
-                            }else{
-                                newData = [{
-                                    id:newPhotos.length+1,
-                                    name: "imagen_"+newPhotos.length,
-                                    type: null,
-                                    url:  null
-                                }];
+                                //console.log(separator);
+                                //console.log(imagen);
+                                //console.log(type);
+
+                                let newData = {};
+                                let newItem = {}
+
+                                if(isBase64(imagen)){
+                                    newData = [{
+                                        id:newPhotos.length+1,
+                                        name: "imagen_"+newPhotos.length,
+                                        type: type,
+                                        url:  separator[1]+","+separator[2]
+                                    }];
+                                }else{
+                                    newData = [{
+                                        id:newPhotos.length+1,
+                                        name: "imagen_"+newPhotos.length,
+                                        type: null,
+                                        url:  null
+                                    }];
+                                }
+
+                                newItem.attachmentTypeId = item.type;
+                                newItem.data = newData;
+
+                                newPhotos.push(newItem);
                             }
-
-                            newItem.attachmentTypeId = item.type;
-                            newItem.data = newData;
-
-                            newPhotos.push(newItem);
                         }
                     }
+
+                    console.log(newPhotos);
+                    setphotos(newPhotos);
+                    console.log("PHOTOS");
+                    console.log(newPhotos);
+    
+                    //setphoto1([newPhotos[0]]);
+                    //setphoto2([newPhotos[1]]);
+                    //setphoto3([newPhotos[2]]);
+                    //setphoto4([newPhotos[3]]);
+
+                    console.log(newPhotos);
+    
+                    setphotos(newPhotos);
+                    setloading(false);
                 }
-
-                console.log("PHOTOS");
-                console.log(newPhotos);
-
-                //setphoto1([newPhotos[0]]);
-                //setphoto2([newPhotos[1]]);
-                //setphoto3([newPhotos[2]]);
-                //setphoto4([newPhotos[3]]);
-
-                setphotos(newPhotos);
-                setloading(false);
-
             }).catch((err) => {
                 console.error(err);
             });

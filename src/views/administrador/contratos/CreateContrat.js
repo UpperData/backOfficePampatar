@@ -134,7 +134,7 @@ function CreateContrat() {
         }
         
         if( moment(inicio).isAfter(moment(fin)) ){
-            thiserrors.inicio = 'Esta fecha debe ser menor a la culminación';
+            thiserrors.inicio = 'Esta fecha debe ser menor a la de culminación';
             thiserrors.fin = 'Esta fecha debe ser posterior al inicio.';
             errorsCount++;
         }

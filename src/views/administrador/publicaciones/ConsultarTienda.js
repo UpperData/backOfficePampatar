@@ -75,7 +75,7 @@ function ConsultarTienda(props) {
                 setimglist([]);
                 
                 let newPhotosList   = [];
-                let countItems      = bidList.length;
+                let countItems      = 0;
                 let countPhotos     = 0;
 
                 if(Array.isArray(bidList) && bidList.length > 0){
@@ -90,7 +90,10 @@ function ConsultarTienda(props) {
         
                         if(getPrincipalImgId !== null){
                             console.log(getPrincipalImgId);
-                            newPhotosList.push({id: getPrincipalImgId.id, data: null});
+                            if(getPrincipalImgId !== undefined){
+                                countItems++;
+                                newPhotosList.push({id: getPrincipalImgId.id, data: null});
+                            }
                         }
                     }
         
@@ -326,13 +329,15 @@ function ConsultarTienda(props) {
                                         if(Array.isArray(item.photos) && item.photos.length > 0){
                                             photoId = item.photos.find(photo => Number(photo.type) === 1);
                                         }
-                                        let img = "";
-                                        //console.log(photoId);
-                                        if(photoId !== null){
-                                            img = imglist.find(photo => Number(photo.id) === Number(photoId.id));
-                                        }
 
-                                        let dataimg = getBase64Img(img.data);
+                                        let img = "";
+                                        let dataimg = {};
+
+                                        //console.log(photoId);
+                                        if(photoId !== null && photoId !== undefined){
+                                            img = imglist.find(photo => Number(photo.id) === Number(photoId.id));
+                                            dataimg = getBase64Img(img.data);
+                                        }
 
                                         return (
                                             <tr key={key}>
@@ -340,7 +345,7 @@ function ConsultarTienda(props) {
                                                     {item.id}
                                                 </td>
                                                 <td style={{verticalAlign: "middle"}}>
-                                                    {(img !== null && img !== undefined) &&
+                                                    {(img !== null && img !== undefined && photoId !== undefined) &&
                                                         <img 
                                                             className="img-fluid shadow"
                                                             style={{width: "100px", borderRadius: "5px"}}                
@@ -737,8 +742,6 @@ function ConsultarTienda(props) {
                 <ModalFooter>
                     {(!searchdatabid && databid !== null && successmessage === "") &&
                         <>
-                            {databid.StatusId}
-
                             {(databid.StatusId === 2 || databid.StatusId === 3) &&
                                 <Button disabled={changing} color="info" onClick={(e) => changeStatusBid(e, "active")}>
                                     {changing ? <span><i className="fa fa-spinner fa-spin"></i></span> : 'Activar'}

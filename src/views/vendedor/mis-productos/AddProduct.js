@@ -141,7 +141,7 @@ function AddProduct(props) {
 
                         setTimeout(() => {
                             setsuccessmessage("");
-                        }, 1000);
+                        }, 5000);
                     }else{
                         seterrormessage(res.data.data.message);
                         reset();
@@ -172,7 +172,7 @@ function AddProduct(props) {
 
                         setTimeout(() => {
                             setsuccessmessage("");
-                        }, 1000);
+                        }, 5000);
                     }else{
                         seterrormessage(res.data.data.message);
                         reset();

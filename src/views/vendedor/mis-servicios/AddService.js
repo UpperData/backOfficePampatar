@@ -116,7 +116,7 @@ function AddService(props) {
                         window.scrollTo({top: 10, behavior: 'smooth'});
                         setTimeout(() => {
                             setsuccessmessage("");
-                        }, 1000);
+                        }, 5000);
                     }else{
                         seterrormessage(res.data.data.message);
                         reset();
@@ -145,7 +145,7 @@ function AddService(props) {
                         window.scrollTo({top: 10, behavior: 'smooth'});
                         setTimeout(() => {
                             setsuccessmessage("");
-                        }, 1000);
+                        }, 5000);
                     }else{
                         seterrormessage(res.data.data.message);
                         reset();

@@ -53,12 +53,17 @@ const Profile = () => {
     let address = shopData.address;
     let dataBank = shopData.paymentCong;
 
-    let logoshop = session.storeLogo.reduce(
-      function (data, byte) {
-          return data + String.fromCharCode(byte);
-      },
-      ''
-  );
+    let logoshop = "";
+
+    if(session.storeLogo && session.storeLogo !== null && session.storeLogo !== undefined){
+
+      logoshop = session.storeLogo.reduce(
+        function (data, byte) {
+            return data + String.fromCharCode(byte);
+        },
+        ''
+      );
+    }
 
     return (
       <div>
@@ -148,7 +153,9 @@ const Profile = () => {
                             <Col md="4" xs="6" className="border-right">
                               <strong className=""><i className="mdi mdi-phone text-primary mr-2"></i>Teléfono</strong>
                               <br />
-                              <p className="text-muted">{shopData.phone[0].number}</p>
+                              <p className="text-muted">
+                                {(shopData.phone[0] !== null && shopData.phone[0].hasOwnProperty("phoneNmber") ? shopData.phone[0].phoneNmber : shopData.phone[0].number)}
+                              </p>
                             </Col>
                             <Col md="4" xs="12" className="border-right">
                               <strong className=""><i className="mdi mdi-email text-primary mr-2"></i>Correo electrónico</strong>
@@ -164,12 +171,16 @@ const Profile = () => {
                             {shopData.shopDescription}
                           </p>
 
-                          <h6 className="font-medium mt-4">
-                            Proceso de manufactura:
-                          </h6>
-                          <p>
-                            "{shopData.processId.name}"
-                          </p>
+                          {(shopData.processId !== undefined && shopData.processId !== null) &&
+                            <div>
+                              <h6 className="font-medium mt-4">
+                                Proceso de manufactura:
+                              </h6>
+                              <p>
+                                "{shopData.processId.name}"
+                              </p>
+                            </div>
+                          }
 
                           <h6 className="font-medium mt-4">
                             Tipo de tienda:
@@ -189,47 +200,49 @@ const Profile = () => {
 
                         </CardBody>
                       </Card>
-                      <Card>
-                        <div className="p-3">
-                            <CardTitle>
-                                <i className="mdi mdi-credit-card-multiple mr-2"></i>Datos bancarios
-                            </CardTitle>
-                        </div>
-                        <CardBody className="border-top">
-                            <div className="row">
-                                <div className="col-md-12">
-                                    <h6><span className="font-medium">Número de cuenta:</span></h6>
-                                    <p>
-                                      {dataBank.number}
-                                    </p>
-                                </div>
-                                <div className="col-md-12">
-                                    <h6><span className="font-medium">Tipo de cuenta:</span></h6>
-                                    <p>
-                                      {dataBank.accountType.name}
-                                    </p>
-                                </div>
-                                <div className="col-md-12">
-                                    <h6><span className="font-medium">Banco:</span></h6>
-                                    <p>
-                                      {dataBank.bank.name}
-                                    </p>
-                                </div>
-                                <div className="col-md-12">
-                                    <h6><span className="font-medium">Propietario de la cuenta:</span></h6>
-                                    <p>
-                                      {dataBank.owner}
-                                    </p>
-                                </div>
-                                <div className="col-md-12">
-                                    <h6><span className="font-medium">Rut:</span></h6>
-                                    <p>
-                                      {dataBank.rut}
-                                    </p>
-                                </div>
-                            </div>
-                        </CardBody>
-                      </Card>
+                      {(dataBank !== null) && 
+                        <Card>
+                          <div className="p-3">
+                              <CardTitle>
+                                  <i className="mdi mdi-credit-card-multiple mr-2"></i>Datos bancarios
+                              </CardTitle>
+                          </div>
+                          <CardBody className="border-top">
+                              <div className="row">
+                                  <div className="col-md-12">
+                                      <h6><span className="font-medium">Número de cuenta:</span></h6>
+                                      <p>
+                                        {dataBank.number}
+                                      </p>
+                                  </div>
+                                  <div className="col-md-12">
+                                      <h6><span className="font-medium">Tipo de cuenta:</span></h6>
+                                      <p>
+                                        {dataBank.accountType.name}
+                                      </p>
+                                  </div>
+                                  <div className="col-md-12">
+                                      <h6><span className="font-medium">Banco:</span></h6>
+                                      <p>
+                                        {dataBank.bank.name}
+                                      </p>
+                                  </div>
+                                  <div className="col-md-12">
+                                      <h6><span className="font-medium">Propietario de la cuenta:</span></h6>
+                                      <p>
+                                        {dataBank.owner}
+                                      </p>
+                                  </div>
+                                  <div className="col-md-12">
+                                      <h6><span className="font-medium">Rut:</span></h6>
+                                      <p>
+                                        {dataBank.rut}
+                                      </p>
+                                  </div>
+                              </div>
+                          </CardBody>
+                        </Card>
+                      }
                     </Col>
                   </Row>
           </Col>

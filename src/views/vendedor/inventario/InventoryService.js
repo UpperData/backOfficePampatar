@@ -12,6 +12,7 @@ import {
     BreadcrumbItem
     //CustomInput,
 } from 'reactstrap';
+import {Link} from "react-router-dom"
 import ServicesSelect from '../../../components/selects/servicesSelect';
 import moment from 'moment'
 
@@ -54,7 +55,6 @@ function InventoryService(props) {
             setserviceData(null);
             setservicesList(null);
         }
-
         setsuccessmessage('');
         seterrormessage('');
 
@@ -69,6 +69,10 @@ function InventoryService(props) {
         setprice('');
         setquantity('');
         setsearchList(false);
+
+        setTimeout(() => {
+            setsuccessmessage("");
+        }, 5000);
     }
 
     const validate = () => {
@@ -144,8 +148,12 @@ function InventoryService(props) {
         }else{
             for (let i = 0; i < days.length; i++) {
                 const element = days[i];
-                let start   = moment(element.hours.start);
-                let end     = moment(element.hours.end);
+                let start   = moment(element.hours.start, 'HH:mm');
+                let end     = moment(element.hours.end, 'HH:mm');
+
+                console.log(start);
+                console.log(end);
+                console.log(start.isAfter(end));
                 
                 if(element.day === null){
                     thiserrors.hours = 'Recuerde que para asignar un horario es necesario seleccionar un dia de la semana.';
@@ -154,7 +162,7 @@ function InventoryService(props) {
                     thiserrors.hours = 'Recuerde todo horario ingresado debe incluir una hora de comienzo y una de culminacion.';
                     errorsCount++;
                 }else if(start.isAfter(end)){
-                    thiserrors.hours = 'Recuerde que la hora de culminacion de su servicio debe ser posterior al comienzo.';
+                    thiserrors.hours = 'la hora de culminación debe ser posterior a la hora de inicio.';
                     errorsCount++;
                 }
             }
@@ -302,11 +310,12 @@ function InventoryService(props) {
         setservice(service);
         setserviceData(null);
         setsearchList(true);
-        console.log('cambiando servicio');
+
         let url = '/seller/seRvice/invenTory/GETALL/'+service.value;
 
         axios.get(url).then((res) => {
             console.log(res.data);
+            setsended(false);
             setservicesList(res.data.data.rsInventoryServiceList);
             setsearchList(false);
         }).catch((err) => {
@@ -375,6 +384,17 @@ function InventoryService(props) {
                 </h1>
             }
 
+            {!props.edit 
+            ? 
+                <p className="mb-3">
+                    En esta sección puede ingresar la información detallada de los cursos y talleres que desee impartir dentro de Pampatar.
+                </p>
+            :
+                <p className="mb-3">
+                    Modifica y actualiza la información de tus talleres y servicios en esta sección.
+                </p>
+            }
+
             {(errormessage !== '') &&
                 <div className="alert alert-warning">
                     {errormessage}
@@ -415,9 +435,7 @@ function InventoryService(props) {
             {(!searchList && !sended && props.edit && service !== null && servicesList !== null && serviceData === null) &&
             <Card>
                 <div className="p-3">
-                    <CardTitle>
-                        Servicios de este tipo en el inventario
-                    </CardTitle>
+                    Servicios de este tipo en el <strong>inventario</strong>
                 </div>
                 <CardBody className="border-top">
                     <Row>
@@ -464,7 +482,7 @@ function InventoryService(props) {
                                     {servicesList !== null && servicesList.length === 0 &&
                                         <tr>
                                             <td colSpan="20" className="text-center">
-                                                Ningun servicio de este tipo encontrado en el inventario
+                                                Ningun servicio de este tipo encontrado en el inventario, intente agregar uno en la sección <Link className="font-weight-bold" to="/service/inventory">inventario de servicios.</Link>
                                             </td>
                                         </tr>
                                     }
@@ -489,11 +507,11 @@ function InventoryService(props) {
                                         </button>
                                     }
 
-                                    Datos del servicio 
+                                    Datos del inventario 
                                     
                                     {props.edit &&
                                         <>
-                                            id {serviceData !== null ? <span className="font-weight-bold text-primary">#{+serviceData.id}</span> : ''}
+                                            <span className="ml-2">Nro</span> {serviceData !== null ? <span className="font-weight-bold text-primary ml-2">{+serviceData.id}</span> : ''}
                                         </>
                                     }
                                 </CardTitle>

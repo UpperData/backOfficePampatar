@@ -204,6 +204,8 @@ function ServicesStock() {
                                                 </thead>
                                                 <tbody>
                                                     {(stock.length > 0 && stock.map((item, key) => {
+                                                        console.log(item);
+
                                                         return (
                                                             <tr key={key}>
                                                                 <td className="font-weight-bold">
