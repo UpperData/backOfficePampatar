@@ -634,7 +634,8 @@ function BidsSellerAd(props) {
 
                 tags,
 
-                photos: newPhotos
+                photos: newPhotos,
+                urlVideos: urlVideos
             }
         }else{
             data.bidId  = BidId;
@@ -653,7 +654,8 @@ function BidsSellerAd(props) {
                 materials: formattedMaterials,
 
                 tags,
-                photos: newPhotos
+                photos: newPhotos,
+                urlVideos: urlVideos
             }
         }
 
@@ -771,7 +773,8 @@ function BidsSellerAd(props) {
                     include,
                     dimension: [dimension],
     
-                    photos: newPhotos
+                    photos: newPhotos,
+                    urlVideos: urlVideos
                 }
             }else{
                 data.bidId = BidId;
@@ -799,7 +802,8 @@ function BidsSellerAd(props) {
                     include,
                     dimension: [dimension],
     
-                    photos: newPhotos
+                    photos: newPhotos,
+                    urlVideos: urlVideos
                 }
             }
 
@@ -838,7 +842,8 @@ function BidsSellerAd(props) {
                     reasons: formattedReasons,
                     dimension: [dimension],
                     
-                    photos: newPhotos
+                    photos: newPhotos,
+                    urlVideos: urlVideos
                 }
             }else{
                 data.bidId  = BidId;
@@ -873,7 +878,8 @@ function BidsSellerAd(props) {
                     reasons: formattedReasons,
                     dimension: [dimension],
                     
-                    photos: newPhotos
+                    photos: newPhotos,
+                    urlVideos: urlVideos
                 }
             }
         }
@@ -1082,6 +1088,31 @@ function BidsSellerAd(props) {
                     return false;
                 }
             }
+
+            if(bid.skuTypeId !== 3){
+                let newVariations = [];
+
+                if(Array.isArray(bid.variations) && bid.variations.length > 0){
+                    for (let i = 0; i < bid.variations.length; i++) {
+                        const thisvariation     = bid.variations[i];
+                        let newVariationData    = {};
+
+                        newVariationData.id         = newVariations.length + 1;
+                        newVariationData.color      = thisvariation.color;
+                        newVariationData.discount   = thisvariation.discount;
+                        newVariationData.quantity   = thisvariation.quantity;
+                        newVariationData.category   = {value: thisvariation.category};
+                        newVariationData.sizetype   = {value: thisvariation.sizetype};
+                        newVariationData.size       = {value: thisvariation.size};
+
+                        newVariations.push(newVariationData);
+                    }
+                }
+
+                setvariation(newVariations);
+            }
+
+            seturlVideos(bid.urlVideos);
 
             //SET PHOTOS------------------------------------
             axios.get(urlPhotos)

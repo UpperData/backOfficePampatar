@@ -13,7 +13,7 @@ function SizesCombobox(props) {
 
     const [category, setcategory]   = useState(props.category !== null ? props.category : null);
     const [sizetype, setsizetype]   = useState(props.sizetype !== null ? props.sizetype : null);
-    const [size,    setsize]        = useState(props.size !== null ? props.size : null);
+    const [size,     setsize]        = useState(props.size !== null ? props.size : null);
 
     let result = [];
     let idkeys = 0;
@@ -38,6 +38,7 @@ function SizesCombobox(props) {
         if(loading){
             if(categoriesList.length > 0){
                 setloading(false);
+                handleSelectCategory(props.category);
             }
         }else{
 
@@ -47,6 +48,8 @@ function SizesCombobox(props) {
     //console.log(result);
 
     const handleSelectCategory = (data) => {
+        console.log(data);
+
         let findSizes = result.find(item => item.id === data.value);
         let formatsizes = [];
         //let it = 0;
@@ -138,7 +141,7 @@ function SizesCombobox(props) {
                     </label>
                     <Select 
                         isSearchable={true}
-                        value={(categoriesList.length > 0 && props.category) ? props.category : null}
+                        value={(categoriesList.length > 0 && props.category !== null) ? categoriesList.find(item => item.value === props.category.value) : null}
                         placeholder={props.placeholder ? props.placeholder : 'Categoría'} 
                         onChange={handleSelectCategory} 
                         options={categoriesList} 
@@ -152,7 +155,7 @@ function SizesCombobox(props) {
                             </label>
                             <Select 
                                 isSearchable={true}
-                                value={(sizesInTypeList.length > 0 && props.sizetype) ? props.sizetype : null}
+                                value={(sizesInTypeList.length > 0 && props.sizetype !== null) ? sizesInTypeList.find(item => item.value === props.sizetype.value) : null}
                                 placeholder={props.placeholder ? props.placeholder : 'Talla'} 
                                 onChange={(value) => handleChangeTypeSize(value)} 
                                 options={sizesInTypeList} 
@@ -168,7 +171,7 @@ function SizesCombobox(props) {
                             </label>
                             <Select 
                                 isSearchable={true}
-                                value={(sizesList.length > 0 && props.size) ? props.size : null}
+                                value={(sizesList.length > 0 && props.size !== null) ? sizesList.find(item => item.value === props.sizetype.value) : null}
                                 placeholder={props.placeholder ? props.placeholder : 'Talla'} 
                                 onChange={(data) => handleSelectSize(data)} 
                                 options={sizesList} 
