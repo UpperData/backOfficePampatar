@@ -269,7 +269,52 @@ export default () => {
                   }
               </DropdownToggle>
               <DropdownMenu right className="user-dd">
-                <div className="d-flex no-block align-items-center p-3 bg-white mb-2">
+                <div className="d-flex no-block align-items-center p-3 bg-info text-white mb-2">
+                    <div className="">
+                      {(role === 'Vendedor') 
+                        ?
+                          <>
+                          {(logoshop !== "")
+                            ?
+                              <img
+                                src={`data:image/png;base64,${logoshop}`}
+                                alt="user"
+                                className="rounded-circle"
+                                width="60"
+                                height="60"
+                              />
+                            :
+                              <img
+                                src={profilephoto}
+                                alt="user"
+                                className="rounded-circle"
+                                width="60"
+                                height="60"
+                              />
+                          }
+                          </>
+                        :
+                          <img
+                            src={profilephoto}
+                            alt="user"
+                            className="rounded-circle"
+                            width="60"
+                            height="60"
+                          />
+                      }
+                    </div>
+                    <div className="ml-2">
+                      <h4 className="mb-0">
+                        {(role === 'Vendedor') ? shopName : account.name}
+                      </h4>
+                      <p className=" mb-0">
+                        {(role === 'Vendedor') ? account.email : account.email}
+                      </p>
+                      <span className="badge badge-light font-weight-bold text-info">{backoffice.role.name}</span>
+                    </div>
+                </div>
+                <div className="d-none no-block align-items-center p-3 bg-white mb-2">
+                
                   <div className="">
                     {(role === 'Vendedor') 
                       ?
@@ -319,9 +364,9 @@ export default () => {
                     <i className="mdi mdi-shape-plus mr-1 ml-1" /> Cambiar Rol
                 </DropdownItem>
                 <DropdownItem divider />
-                  <button onClick={() => dispatch(handleLogout())} className="btn btn-rounded btn-primary mr-3 ml-3">
-                    <i className="fa fa-power-off mr-1 ml-1" /> Cerrar sesión
-                  </button>
+                <DropdownItem onClick={() => dispatch(handleLogout())}>
+                  <i className="fa fa-power-off mr-1 ml-1" /> Cerrar sesión
+                </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
             {/*--------------------------------------------------------------------------------*/}

@@ -204,6 +204,7 @@ const Sidebar = (props) => {
                             alt="user"
                             className="rounded-circle mr-3"
                             width="30"
+                            height="30"
                           />
                         :
                         <img
@@ -211,6 +212,7 @@ const Sidebar = (props) => {
                           alt="user"
                           className="rounded-circle mr-3"
                           width="30"
+                          height="30"
                         />
                       }
                     </>
@@ -220,6 +222,7 @@ const Sidebar = (props) => {
                       alt="user"
                       className="rounded-circle mr-3"
                       width="30"
+                      height="30"
                     />
                 }
                 <span className="hide-menu">

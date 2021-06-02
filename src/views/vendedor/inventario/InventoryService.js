@@ -135,10 +135,12 @@ function InventoryService(props) {
         }
 
         //price
-        if(price === ''){
-            thiserrors.price = 'Debe ingresar un precio';
-            errorsCount++;
-        }
+        /*
+            if(price === ''){
+                thiserrors.price = 'Debe ingresar un precio';
+                errorsCount++;
+            }
+        */
 
         console.log(days);
 
@@ -207,7 +209,7 @@ function InventoryService(props) {
                 serviceTypeId: serviceTypeId.value,
                 serviceId: serviceId.value,
                 note,
-                price: Number(price),
+                //price: Number(price),
                 type,
                 timetable: {
                     days: formatDays,
@@ -546,7 +548,7 @@ function InventoryService(props) {
                                             }
                                         </div>
                                     </Col>
-                                    <Col md="6">
+                                    <Col md="4">
                                         <div className="form-group">
                                             <label htmlFor="">Fecha de inicio</label>
                                             <Datetime
@@ -569,7 +571,7 @@ function InventoryService(props) {
                                             }
                                         </div>
                                     </Col>
-                                    <Col md="6">
+                                    <Col md="4">
                                         <div className="form-group">
                                             <label htmlFor="">Fecha de culminación</label>
                                             <Datetime
@@ -592,7 +594,7 @@ function InventoryService(props) {
                                             }
                                         </div>
                                     </Col>
-                                    <Col md="6">
+                                    <Col md="4">
                                         <div className="form-group">
                                             <label htmlFor="">Número de personas:</label>
                                             <input 
@@ -612,6 +614,7 @@ function InventoryService(props) {
                                             }
                                         </div>
                                     </Col>
+                                    {/* 
                                     <Col md="6">
                                         <div className="form-group">
                                             <label htmlFor="">Precio del servicio:</label>
@@ -632,6 +635,7 @@ function InventoryService(props) {
                                             }
                                         </div>
                                     </Col>
+                                    */}
                                     <Col md="12">
                                         <div className="form-group">
                                             <label htmlFor="">Nota:</label>

@@ -74,12 +74,8 @@ const Profile = () => {
             <Card>
               <CardBody>
                 <div className="text-center mt-4">
-                  <img
-                      src={`data:image/png;base64,${logoshop}`}
-                      alt="user"
-                      className="rounded-circle shadow"
-                      width="150"
-                  />
+
+                  <div className="img-circle mx-auto" style={{width: '150px',height: '150px',backgroundImage: 'url("data:image/png;base64,'+((logoshop !== null) ? logoshop : '')+'")'}}></div>
                   <CardTitle className="mt-2">
                     <h2><strong>{shopData.name}</strong></h2>
                     <h5 className="text-muted">{data.name}</h5>
@@ -103,40 +99,42 @@ const Profile = () => {
                   </Row>
                 </div>
               </CardBody>
-              <CardBody className="border-top">
-                <div>
-                    {Array.isArray(shopData.partner) && shopData.partner.length > 0 &&
-                      <Fragment>
-                          <small className="text-muted"><i className="mdi mdi-account-group mr-2"></i>Colaboradores</small>
-                          {(shopData.partner.map((item, key) => {
-                            return (
-                              <div className="my-1" key={key}>
-                                <h6 className="mb-0">
-                                  {item.firstName+' '+item.lastName}
-                                </h6>
-                                <small className="text-primary">
-                                  {item.relationship}
-                                </small>
-                              </div>
-                            )
-                          }))}
-                          <hr/>
+              {Array.isArray(shopData.partner) && shopData.partner.length > 0 &&
+                <CardBody className="border-top">
+                  <div>
+                      {Array.isArray(shopData.partner) && shopData.partner.length > 0 &&
+                        <Fragment>
+                            <small className="text-muted"><i className="mdi mdi-account-group mr-2"></i>Colaboradores</small>
+                            {(shopData.partner.map((item, key) => {
+                              return (
+                                <div className="my-1" key={key}>
+                                  <h6 className="mb-0">
+                                    {item.firstName+' '+item.lastName}
+                                  </h6>
+                                  <small className="text-primary">
+                                    {item.relationship}
+                                  </small>
+                                </div>
+                              )
+                            }))}
+                            <hr/>
 
-                          <small className="text-muted pt-4 db"><i className="mdi mdi-storefront-outline mr-2"></i>¿Posee tienda física?</small>
-                          <h6>{shopData.isLocal ? 'Si' : 'No'}</h6>
+                            <small className="text-muted pt-4 db"><i className="mdi mdi-storefront-outline mr-2"></i>¿Posee tienda física?</small>
+                            <h6>{shopData.isLocal ? 'Si' : 'No'}</h6>
 
-                          <small className="text-muted pt-4 db"><i className="mdi mdi-map-marker mr-2"></i>Dirección</small>
-                          <h6>{address[0].calle} {address[0].numero}, {address[0].local}, {address[0].comuna.name}, {address[0].province.name}, {address[0].region.name}</h6>
-                          
-                          <div className="d-none">
-                            <small className="text-muted pt-4 db"><i className="mdi mdi-account-hard-hat mr-2"></i>¿Tiene inicio de actividades?</small>
-                            <h6>{shopData.startActivity ? 'Si' : 'No'}</h6>
-                          </div>
-                      
-                      </Fragment>
-                    }
-                </div>
-              </CardBody>
+                            <small className="text-muted pt-4 db"><i className="mdi mdi-map-marker mr-2"></i>Dirección</small>
+                            <h6>{address[0].calle} {address[0].numero}, {address[0].local}, {address[0].comuna.name}, {address[0].province.name}, {address[0].region.name}</h6>
+                            
+                            <div className="d-none">
+                              <small className="text-muted pt-4 db"><i className="mdi mdi-account-hard-hat mr-2"></i>¿Tiene inicio de actividades?</small>
+                              <h6>{shopData.startActivity ? 'Si' : 'No'}</h6>
+                            </div>
+                        
+                        </Fragment>
+                      }
+                  </div>
+                </CardBody>
+              }
             </Card>
           </Col>
           <Col xs="12" md="8" lg="8">

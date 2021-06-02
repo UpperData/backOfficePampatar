@@ -134,12 +134,12 @@ function ServicesStock() {
                                                                 <span className={statusclass}><i className={statusicon}></i></span>
                                                             </div>
                                                             <h4 className={statusclass +' font-weight-bold h3'}>{data.statusStock.message}</h4>
-                                                            {(dataService.data.hasOwnProperty("result") && dataService.data.result === false) 
+                                                            {(dataService.hasOwnProperty("data") && dataService.data.result === false) 
                                                             ?
                                                                 <div>
                                                                     <h4 className="font-weight-bold">
                                                                         {dataService.data.message}
-                                                                    </h4>
+                                                                    </h4> 
                                                                 </div>
                                                             :
                                                                 <h4>
@@ -192,9 +192,6 @@ function ServicesStock() {
                                                             Cupos disponibles
                                                         </th>
                                                         <th>
-                                                            Precio
-                                                        </th>
-                                                        <th>
                                                             Inicio
                                                         </th>
                                                         <th>
@@ -216,9 +213,6 @@ function ServicesStock() {
                                                                 </td>
                                                                 <td>
                                                                     {item.quantity}
-                                                                </td>
-                                                                <td>
-                                                                    {moneyFormatter(item.price)}
                                                                 </td>
                                                                 <td>
                                                                     {moment(item.timetable.dateStart, 'DD-MM-YYYY').format('DD-MM-YYYY')}

@@ -299,9 +299,6 @@ function StockMonitorSeller(props) {
                                                         <th>
                                                             Cantidad
                                                         </th>
-                                                        <th>
-                                                            Variaciones
-                                                        </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -322,13 +319,6 @@ function StockMonitorSeller(props) {
                                                                 </td>
                                                                 <td>
                                                                     {item.quantity}
-                                                                </td>
-                                                                <td>
-                                                                    {
-                                                                    (item.variation === null) ? 
-                                                                        'Sin variaciones' : 
-                                                                        <button type="button" onClick={(e) => showVariation(e, item.id, item.variation)} className="btn btn-sm btn-outline-primary font-weight-bold"><i className="fa fa-paint-brush mr-2"></i>Lista de variaciones</button>
-                                                                    }
                                                                 </td>
                                                             </tr>
                                                         )
