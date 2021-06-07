@@ -193,10 +193,8 @@ const Sidebar = (props) => {
                   activeClassName="active"
                   className="sidebar-link p-0"
                 >
-                {
-                (role === 'Vendedor') 
-                  ?
-                    <>
+                {(role === 'Vendedor') &&
+                    <Fragment>
                       {logoshop !== "" 
                         ?
                           <img
@@ -215,8 +213,10 @@ const Sidebar = (props) => {
                           height="30"
                         />
                       }
-                    </>
-                  :
+                    </Fragment>
+                }
+
+                {(role !== 'Vendedor') &&
                     <img
                       src={`data:image/png;base64,${DefaultUser}`}
                       alt="user"
@@ -225,9 +225,11 @@ const Sidebar = (props) => {
                       height="30"
                     />
                 }
+
                 <span className="hide-menu">
                   {(role === 'Vendedor') ? shopName : role}
                 </span>
+
               </NavLink>
             </li>
             {renderRoutes.map((prop, key) => {

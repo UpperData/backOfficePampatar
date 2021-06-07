@@ -1,9 +1,9 @@
 {
-  "name": "adminpro",
+  "name": "pampatar-backoffice",
   "version": "1.0.0",
   "homepage": "/",
   "private": true,
-  "description": "adminpro react admin comes with the beautiful Ui with easy to use code",
+  "description": "pampatar-backoffice",
   "main": "index.js",
   "scripts": {
     "start": "set PORT=4000 && react-scripts start",
