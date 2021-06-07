@@ -1,5 +1,4 @@
 import React, {useState, useEffect, Fragment} from 'react'
-import "react-datetime/css/react-datetime.css";
 import DaysSelect from '../selects/DaysSelect';
 
 import Datetime from 'react-datetime';

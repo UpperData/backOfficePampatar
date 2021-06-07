@@ -1,6 +1,10 @@
 import React, { Suspense, lazy } from "react";
 import ReactDOM from "react-dom";
 import Spinner from "./views/spinner/Spinner";
+
+import "./assets/css/react-datetime.css"
+import "./assets/css/react-tagsinput.css"
+
 import "./assets/scss/style.scss";
 import "./data";
 

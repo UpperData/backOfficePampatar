@@ -17,7 +17,7 @@ import GenderSelect from '../../../components/selects/GenderSelect';
 import NationalitySelect from '../../../components/selects/NationalitySelect';
 
 //styles
-import "react-datetime/css/react-datetime.css";
+
 import PhoneMultiple from '../../../components/phones/phoneMultiple';
 import UserIndentityDocument from '../../../components/helpers/userIndentityDocument'
 import BankSelect from '../../../components/selects/BankSelect';

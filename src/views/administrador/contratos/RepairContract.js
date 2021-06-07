@@ -15,9 +15,6 @@ import axios from 'axios'
 import InlineSpinner from '../../spinner/InlineSpinner';
 import moment from 'moment'
 
-//styles
-import "react-datetime/css/react-datetime.css";
-import "react-tagsinput/react-tagsinput.css";
 import CustomFileInput from '../../../components/files/CustomFileInput';
 import ShopWithContractsSelect from '../../../components/selects/ShopsWithContractsSelect';
 

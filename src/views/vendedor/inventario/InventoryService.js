@@ -17,7 +17,7 @@ import ServicesSelect from '../../../components/selects/servicesSelect';
 import moment from 'moment'
 
 //styles
-import "react-datetime/css/react-datetime.css";
+
 import ServiceTypesSelect from '../../../components/selects/ServiceTypesSelect';
 import TimePanel from '../../../components/time/TimePanel';
 import InlineSpinner from '../../spinner/InlineSpinner';
