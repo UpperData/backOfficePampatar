@@ -5,10 +5,10 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { useSelector } from "react-redux";
 import FeatherIcon from "feather-icons-react";
 
+import tippy from 'tippy.js';
+
 import DefaultUser from "../../../components/files/DefaultUser";
 
-import tippy from 'tippy.js';
-import 'tippy.js/dist/tippy.css'; 
 
 const Sidebar = (props) => {
 
