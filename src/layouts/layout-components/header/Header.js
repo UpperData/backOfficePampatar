@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import {useSelector, useDispatch} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {set_role, set_backoffice_menu} from '../../../redux/backoffice/Actions'
@@ -238,7 +238,7 @@ export default () => {
               <DropdownToggle nav caret className="pro-pic">
                   {(role === 'Vendedor') 
                     ?
-                      <>
+                      <Fragment>
                       {(logoshop !== "")
                         ?
                           <img
@@ -257,7 +257,7 @@ export default () => {
                             height="31"
                           />
                       }
-                      </>
+                      </Fragment>
                     :
                       <img
                         src={profilephoto}
@@ -273,26 +273,26 @@ export default () => {
                     <div className="">
                       {(role === 'Vendedor') 
                         ?
-                          <>
-                          {(logoshop !== "")
-                            ?
-                              <img
-                                src={`data:image/png;base64,${logoshop}`}
-                                alt="user"
-                                className="rounded-circle"
-                                width="60"
-                                height="60"
-                              />
-                            :
-                              <img
-                                src={profilephoto}
-                                alt="user"
-                                className="rounded-circle"
-                                width="60"
-                                height="60"
-                              />
-                          }
-                          </>
+                          <Fragment>
+                            {(logoshop !== "")
+                              ?
+                                <img
+                                  src={`data:image/png;base64,${logoshop}`}
+                                  alt="user"
+                                  className="rounded-circle"
+                                  width="60"
+                                  height="60"
+                                />
+                              :
+                                <img
+                                  src={profilephoto}
+                                  alt="user"
+                                  className="rounded-circle"
+                                  width="60"
+                                  height="60"
+                                />
+                            }
+                          </Fragment>
                         :
                           <img
                             src={profilephoto}
@@ -318,7 +318,7 @@ export default () => {
                   <div className="">
                     {(role === 'Vendedor') 
                       ?
-                        <>
+                        <Fragment>
                         {(logoshop !== "")
                           ?
                             <img
@@ -335,7 +335,7 @@ export default () => {
                               width="31"
                             />
                         }
-                        </>
+                        </Fragment>
                       :
                         <img
                           src={profilephoto}

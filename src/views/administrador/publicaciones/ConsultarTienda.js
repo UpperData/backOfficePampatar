@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, Fragment} from 'react';
 import axios from "axios";
 import {Card,CardBody,CardTitle,Table,Row,Col, TabContent, TabPane, Nav, NavItem, NavLink, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,CustomInput,Button, Modal, ModalHeader, ModalBody, ModalFooter, Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import ShopWithContractsSelect from '../../../components/selects/ShopsWithContractsSelect';
@@ -485,7 +485,7 @@ function ConsultarTienda(props) {
                                                         </p>
                                                     </div>
                                                     {(databid.skuTypeId !== 3) &&
-                                                        <>
+                                                        <Fragment>
                                                             <div className="col-lg-12">
                                                                 <h6 className="font-weight-bold">Subcategorias:</h6>
                                                             </div>
@@ -571,7 +571,7 @@ function ConsultarTienda(props) {
                                                                     }
                                                                 </p>
                                                         </div>
-                                                        </>
+                                                        </Fragment>
                                                     }
                                                 </div>
                                             </div>
@@ -603,7 +603,7 @@ function ConsultarTienda(props) {
                                                         <hr/>
                                                     </div>
                                                     {(databid.skuTypeId !== 3) &&
-                                                        <>
+                                                        <Fragment>
                                                             <div className="col-lg-6 mb-2">
                                                                 <h6><strong>Producto personalizable:</strong> {databid.customizable ? "Si": "No"}</h6>
                                                             </div>
@@ -612,7 +612,7 @@ function ConsultarTienda(props) {
                                                                     <h6><strong>Tipo de personalización:</strong> {databid.customize}</h6>
                                                                 </div>
                                                             }
-                                                        </>
+                                                        </Fragment>
                                                     }
                                                     {(databid.skuTypeId !== 3 && databid.include !== "" && databid.include !== null) &&
                                                         <div className="col-lg-6 mb-2">
@@ -641,7 +641,7 @@ function ConsultarTienda(props) {
                                                         </div>
                                                     }
                                                     {(databid.skuTypeId !== 3) &&
-                                                        <>
+                                                        <Fragment>
                                                             <div className="col-lg-12">
                                                                 {(databid.materials !== null) &&
                                                                         <div>
@@ -690,7 +690,7 @@ function ConsultarTienda(props) {
                                                                     </div>
                                                                 } 
                                                             </div>
-                                                        </>
+                                                        </Fragment>
                                                     }
                                                 </div>
                                             </div>
@@ -741,7 +741,7 @@ function ConsultarTienda(props) {
                 </ModalBody>
                 <ModalFooter>
                     {(!searchdatabid && databid !== null && successmessage === "") &&
-                        <>
+                        <Fragment>
                             {(databid.StatusId === 2 || databid.StatusId === 3) &&
                                 <Button disabled={changing} color="info" onClick={(e) => changeStatusBid(e, "active")}>
                                     {changing ? <span><i className="fa fa-spinner fa-spin"></i></span> : 'Activar'}
@@ -753,7 +753,7 @@ function ConsultarTienda(props) {
                                     {changing ? <span><i className="fa fa-spinner fa-spin"></i></span> : 'Desactivar'}
                                 </Button>
                             }
-                        </>
+                        </Fragment>
                     }
                     <Button color="primary" onClick={toggle}>
                         Cancelar

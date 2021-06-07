@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, Fragment} from 'react'
 import axios from "axios"
 import InlineSpinner from '../../spinner/InlineSpinner';
 import {TabContent, TabPane, Nav, NavItem, NavLink, Card, CardBody, CardTitle, Row, Table, Col, Button, Modal, ModalHeader, ModalBody, ModalFooter, Breadcrumb, BreadcrumbItem} from "reactstrap"
@@ -623,7 +623,7 @@ function Actualizar() {
                                                             </p>
                                                         </div>
                                                         {(databid.skuTypeId !== 3) &&
-                                                            <>
+                                                            <Fragment>
                                                                 <div className="col-lg-12">
                                                                     <h6 className="font-weight-bold">Subcategorias:</h6>
                                                                 </div>
@@ -709,7 +709,7 @@ function Actualizar() {
                                                                         }
                                                                     </p>
                                                             </div>
-                                                            </>
+                                                            </Fragment>
                                                         }
                                                     </div>
                                                     </div>
@@ -752,7 +752,7 @@ function Actualizar() {
                                                             </p>
                                                         </div>
                                                         {(databidupdate.skuTypeId !== 3 && databidupdate.category.hasOwnProperty("subCat1")) &&
-                                                            <>
+                                                            <Fragment>
                                                                 <div className="col-lg-12">
                                                                     <h6 className="font-weight-bold">Subcategorias:</h6>
                                                                 </div>
@@ -838,7 +838,7 @@ function Actualizar() {
                                                                         }
                                                                     </p>
                                                             </div>
-                                                            </>
+                                                            </Fragment>
                                                         }
                                                     </div>
                                                     </div>
@@ -880,7 +880,7 @@ function Actualizar() {
                                                                     <hr/>
                                                                 </div> 
                                                                 {(databid.skuTypeId !== 3) &&
-                                                                    <>
+                                                                    <Fragment>
                                                                         <div className="col-lg-12 mb-2">
                                                                             <h6><strong>¿Es personalizable?</strong> {databid.customizable ? "Si": "No"}</h6>
                                                                         </div>
@@ -889,7 +889,7 @@ function Actualizar() {
                                                                                 <h6><strong>Personalización:</strong> {databid.customize}</h6>
                                                                             </div>
                                                                         }
-                                                                    </>
+                                                                    </Fragment>
                                                                 }
                                                                 {(databid.skuTypeId !== 3 && databid.include !== "" && databid.include !== null) &&
                                                                     <div className="col-lg-12 mb-2">
@@ -921,7 +921,7 @@ function Actualizar() {
                                                                 }
 
                                                                 {(databid.skuTypeId !== 3) &&
-                                                                    <>
+                                                                    <Fragment>
                                                                         <div className="col-lg-12">
                                                                             {(databid.materials !== null) &&
                                                                                     <div>
@@ -973,7 +973,7 @@ function Actualizar() {
                                                                                 </div>
                                                                             } 
                                                                         </div>
-                                                                    </>
+                                                                    </Fragment>
                                                                 }
                                                         </div>
                                                         
@@ -1010,7 +1010,7 @@ function Actualizar() {
                                                                         <hr/>
                                                                     </div> 
                                                                     {(databid.skuTypeId !== 3) &&
-                                                                        <>
+                                                                        <Fragment>
                                                                             <div className="col-lg-12 mb-2">
                                                                                 <h6><strong>¿Es personalizable?</strong> {databidupdate.customizable ? "Si": "No"}</h6>
                                                                             </div>
@@ -1019,7 +1019,7 @@ function Actualizar() {
                                                                                     <h6><strong>Personalización:</strong> {databidupdate.customize}</h6>
                                                                                 </div>
                                                                             }
-                                                                        </>
+                                                                        </Fragment>
                                                                     }
                                                                     {(databid.skuTypeId !== 3 && databid.include !== "" && databidupdate.include !== null) &&
                                                                         <div className="col-lg-12 mb-2">
@@ -1051,7 +1051,7 @@ function Actualizar() {
                                                                     }
                                                                     
                                                                     {(databid.skuTypeId !== 3) &&
-                                                                        <>
+                                                                        <Fragment>
                                                                             <div className="col-lg-12">
                                                                                 {(databidupdate.materials !== null) &&
                                                                                         <div>
@@ -1103,7 +1103,7 @@ function Actualizar() {
                                                                                     </div>
                                                                                 } 
                                                                             </div>
-                                                                        </>
+                                                                        </Fragment>
                                                                     }
                                                         </div>
                                                         
@@ -1233,14 +1233,14 @@ function Actualizar() {
                 </ModalBody>
                 <ModalFooter>
                     {(!searchdatabid && databid !== null && successmessage === "") &&
-                        <>
+                        <Fragment>
                             <Button disabled={changing} color="info" onClick={(e) => updateRequest(e, "aprobar")}>
                                 {changing ? <span><i className="fa fa-spinner fa-spin"></i></span> : 'Aprobar'}
                             </Button>
                             <Button disabled={changing} color="info" onClick={(e) => updateRequest(e, "rechazar")}>
                                 {changing ? <span><i className="fa fa-spinner fa-spin"></i></span> : 'Rechazar'}
                             </Button>
-                        </>
+                        </Fragment>
                     }
                     <Button color="primary" onClick={toggle}>
                         Cancelar

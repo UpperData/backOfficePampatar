@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, Fragment} from 'react'
 import axios from "axios"
 import TagsInput from "react-tagsinput";
 import {useSelector} from "react-redux"
@@ -2305,7 +2305,7 @@ function BidsSellerAd(props) {
                                                 
                                                 {!isEdit 
                                                 ?
-                                                    <>
+                                                    <Fragment>
                                                         {(steps.indexOf(activeStep) + 1) < (Number(steps.length))
                                                         ?
                                                             <button 
@@ -2325,9 +2325,9 @@ function BidsSellerAd(props) {
                                                                 {!sending    ? "Publicar" : <i className="fa-spin fa-spinner fa"></i>}
                                                             </button>
                                                         }
-                                                    </>
+                                                    </Fragment>
                                                 :
-                                                    <>
+                                                    <Fragment>
                                                         {(steps.indexOf(activeStep) + 1) < (Number(steps.length))
                                                         ?
                                                             <button 
@@ -2347,7 +2347,7 @@ function BidsSellerAd(props) {
                                                                 {!sending    ? "Editar publicación" : <i className="fa-spin fa-spinner fa"></i>}
                                                             </button>
                                                         }
-                                                    </>
+                                                    </Fragment>
                                                 }
                                             </div>
                                         </div>

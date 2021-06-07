@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, Fragment} from 'react'
 import axios from 'axios'
 import Datetime from 'react-datetime';
 import {
@@ -512,9 +512,9 @@ function InventoryService(props) {
                                     Datos del inventario 
                                     
                                     {props.edit &&
-                                        <>
+                                        <Fragment>
                                             <span className="ml-2">Nro</span> {serviceData !== null ? <span className="font-weight-bold text-primary ml-2">{+serviceData.id}</span> : ''}
-                                        </>
+                                        </Fragment>
                                     }
                                 </CardTitle>
                             </div>

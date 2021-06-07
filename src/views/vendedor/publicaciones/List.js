@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, Fragment} from 'react'
 import axios from "axios"
 import {Link} from "react-router-dom"
 import InlineSpinner from '../../spinner/InlineSpinner';
@@ -413,7 +413,7 @@ function List() {
                                                             </p>
                                                         </div>
                                                         {(databid.skuTypeId !== 3) &&
-                                                            <>
+                                                            <Fragment>
                                                                 <div className="col-lg-12">
                                                                     <h6 className="font-weight-bold">Subcategorias:</h6>
                                                                 </div>
@@ -499,7 +499,7 @@ function List() {
                                                                         }
                                                                     </p>
                                                             </div>
-                                                            </>
+                                                            </Fragment>
                                                         }
                                                     </div>
                                                 </div>
@@ -531,7 +531,7 @@ function List() {
                                                             <hr/>
                                                         </div>
                                                         {(databid.skuTypeId !== 3) &&
-                                                            <>
+                                                            <Fragment>
                                                                 <div className="col-lg-6 mb-2">
                                                                     <h6><strong>Producto personalizable:</strong> {databid.customizable ? "Si": "No"}</h6>
                                                                 </div>
@@ -540,7 +540,7 @@ function List() {
                                                                         <h6><strong>Tipo de personalización:</strong> {databid.customize}</h6>
                                                                     </div>
                                                                 }
-                                                            </>
+                                                            </Fragment>
                                                         }
                                                         {(databid.skuTypeId !== 3 && databid.include !== "" && databid.include !== null) &&
                                                             <div className="col-lg-6 mb-2">
@@ -569,7 +569,7 @@ function List() {
                                                             </div>
                                                         }
                                                         {(databid.skuTypeId !== 3) &&
-                                                            <>
+                                                            <Fragment>
                                                                 <div className="col-lg-12">
                                                                     {(databid.materials !== null) &&
                                                                             <div>
@@ -618,7 +618,7 @@ function List() {
                                                                         </div>
                                                                     } 
                                                                 </div>
-                                                            </>
+                                                            </Fragment>
                                                         }
                                                     </div>
                                                 </div>

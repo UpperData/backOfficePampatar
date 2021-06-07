@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, Fragment} from 'react';
 import axios from "axios";
 import {Card,CardBody,CardTitle,Table,Row,Col, TabContent, TabPane, Nav, NavItem, NavLink, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,CustomInput,Button, Modal, ModalHeader, ModalBody, ModalFooter, Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import ShopWithContractsSelect from '../../../components/selects/ShopsWithContractsSelect';
@@ -522,7 +522,7 @@ function Procesar() {
                                                         </p>
                                                     </div>
                                                     {(databid.skuTypeId !== 3) &&
-                                                        <>
+                                                        <Fragment>
                                                             <div className="col-lg-12">
                                                                 <h6 className="font-weight-bold">Subcategorias:</h6>
                                                             </div>
@@ -608,7 +608,7 @@ function Procesar() {
                                                                     }
                                                                 </p>
                                                         </div>
-                                                        </>
+                                                        </Fragment>
                                                     }
                                                 </div>
                                             </div>
@@ -640,7 +640,7 @@ function Procesar() {
                                                         <hr/>
                                                     </div>
                                                     {(databid.skuTypeId !== 3) &&
-                                                        <>
+                                                        <Fragment>
                                                             <div className="col-lg-6 mb-2">
                                                                 <h6><strong>Producto personalizable:</strong> {databid.customizable ? "Si": "No"}</h6>
                                                             </div>
@@ -649,7 +649,7 @@ function Procesar() {
                                                                     <h6><strong>Tipo de personalización:</strong> {databid.customize}</h6>
                                                                 </div>
                                                             }
-                                                        </>
+                                                        </Fragment>
                                                     }
                                                     {(databid.skuTypeId !== 3 && databid.include !== "" && databid.include !== null) &&
                                                         <div className="col-lg-6 mb-2">
@@ -678,7 +678,7 @@ function Procesar() {
                                                         </div>
                                                     }
                                                     {(databid.skuTypeId !== 3) &&
-                                                        <>
+                                                        <Fragment>
                                                             <div className="col-lg-12">
                                                                 {(databid.materials !== null) &&
                                                                         <div>
@@ -727,7 +727,7 @@ function Procesar() {
                                                                     </div>
                                                                 } 
                                                             </div>
-                                                        </>
+                                                        </Fragment>
                                                     }
                                                 </div>
                                             </div>
@@ -786,14 +786,14 @@ function Procesar() {
                 </ModalBody>
                 <ModalFooter>
                     {(!searchdatabid && databid !== null && successmessage === "") &&
-                        <>
+                        <Fragment>
                             <Button disabled={changing} color="info" onClick={(e) => changeStatusBid(e, "accept")}>
                                 {changing ? <span><i className="fa fa-spinner fa-spin"></i></span> : 'Aceptar'}
                             </Button>
                             <Button disabled={changing} color="info" onClick={(e) => changeStatusBid(e, "reject")}>
                                 {changing ? <span><i className="fa fa-spinner fa-spin"></i></span> : 'Rechazar'}
                             </Button>
-                        </>
+                        </Fragment>
                     }
                     <Button color="primary" onClick={toggle}>
                         Cancelar
