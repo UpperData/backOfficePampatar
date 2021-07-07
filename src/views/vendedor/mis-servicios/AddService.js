@@ -196,26 +196,26 @@ function AddService(props) {
                     {props.Edit
                     ?
                         <Breadcrumb listClassName="px-0">
-                            <BreadcrumbItem><a href="##">Mis Servicios</a></BreadcrumbItem>
-                            <BreadcrumbItem active>Actualizar servicio</BreadcrumbItem>
+                            <BreadcrumbItem><a href="##">Mis Talleres</a></BreadcrumbItem>
+                            <BreadcrumbItem active>Actualizar Taller</BreadcrumbItem>
                         </Breadcrumb>
                     :
                         <Breadcrumb listClassName="px-0">
-                            <BreadcrumbItem><a href="##">Mis Servicios</a></BreadcrumbItem>
-                            <BreadcrumbItem active>Nuevo servicio</BreadcrumbItem>
+                            <BreadcrumbItem><a href="##">Mis Talleres</a></BreadcrumbItem>
+                            <BreadcrumbItem active>Nuevo Taller</BreadcrumbItem>
                         </Breadcrumb>
                     }
 
                     <div className="row align-items-center justify-content-between mb-3">
                         <div className="col col-lg-auto">
                             <h1 className="h4 mb-0 font-weight-bold">
-                                {props.Edit ? 'Actualizar servicio' : 'Nuevo servicio'}
+                                {props.Edit ? 'Actualizar taller' : 'Nuevo taller'}
                             </h1>
                         </div>
                         {!props.Edit &&
                             <div className="col col-lg-auto">
                                 <Link to="/viewServices" className="btn btn-info">
-                                    Listado de servicios
+                                    Listado de talleres
                                 </Link>
                             </div>
                         }
@@ -238,9 +238,7 @@ function AddService(props) {
                                 <Col md="12">
                                     <Card>
                                         <div className="p-3">
-                                            <CardTitle>
-                                                Seleccione un servicio.
-                                            </CardTitle>
+                                            Seleccione un taller.
                                         </div>
                                         <CardBody className="border-top">
                                             <ServicesSelect 

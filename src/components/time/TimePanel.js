@@ -36,6 +36,7 @@ function TimePanel(props) {
         let list = times;
         list[id - 1].hours[type] = date;
 
+        console.log(date);
         //console.log(list[id - 1]);
 
         settimes(list);
@@ -135,9 +136,10 @@ function TimePanel(props) {
                                                     <Datetime
                                                         locale="es"
                                                         dateFormat={false}
+                                                        timeFormat="HH:mm"
                                                         inputProps={{ placeholder: "Seleccione una hora", readOnly: true }}
-                                                        value={(activeInput) ? isActive[0].hours.start : '' }
-                                                        onChange={(date) => changehh(item.id,'start', date)}
+                                                        value={(activeInput) ? isActive[0].hours.start : ''}
+                                                        onChange={(date) => changehh(item.id,'start',date)}
                                                     />
                                                 </div>
                                             </div>
@@ -147,8 +149,9 @@ function TimePanel(props) {
                                                     <Datetime
                                                         locale="es"
                                                         dateFormat={false}
+                                                        timeFormat="HH:mm"
                                                         inputProps={{ placeholder: "Seleccione una hora", readOnly: true }}
-                                                        value={(activeInput) ? isActive[0].hours.end : '' }
+                                                        value={(activeInput) ? isActive[0].hours.end : ''}
                                                         onChange={(date) => changehh(item.id,'end', date)}
                                                     />
                                                 </div>

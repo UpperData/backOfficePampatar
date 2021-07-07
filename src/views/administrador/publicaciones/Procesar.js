@@ -281,7 +281,7 @@ function Procesar() {
                                     let logoshop = '';
                                     console.log(item);
 
-                                    if(item.logo !== null){
+                                    if(item.logo !== null && item.logo !== undefined){
                                         logoshop = item.logo.data.reduce(
                                             function (data, byte) {
                                                 return data + String.fromCharCode(byte);

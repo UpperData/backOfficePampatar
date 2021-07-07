@@ -2,7 +2,8 @@ import { AuthenticationService } from '../../jwt/_services';
 import {
     LOGIN,
     LOGOUT,
-    SET_STORE_LOGO
+    SET_STORE_LOGO,
+    SET_NOTIFICATIONS
 } from '../constants/';
 import axios from 'axios';
 
@@ -40,6 +41,25 @@ export const set_store_logo = () => {
                     payload: res.data.data.rsShop.logo.data
                 })
             }
+          })
+          .catch(err => console.log(err + "action"))
+    }
+}
+
+export const set_notifications = (idrole) => {
+
+    let url     = '/GEt/NoTifiCATION/useRS/ROLE/';
+    url         = url+idrole;
+
+    return dispatch => {
+        axios
+          .get(url)
+          .then(res => {
+            console.log(res.data);
+            dispatch({
+                type: SET_NOTIFICATIONS,
+                payload: res.data
+            });
           })
           .catch(err => console.log(err + "action"))
     }

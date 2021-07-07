@@ -82,14 +82,14 @@ function InventoryService(props) {
         //serviceId
         if(!props.edit){
             if(serviceId === null){
-                thiserrors.serviceId = 'Seleccione un servicio';
+                thiserrors.serviceId = 'Seleccione un taller';
                 errorsCount++;
             }
         }
 
         //serviceType
         if(serviceTypeId === null){
-            thiserrors.serviceTypeId = 'Seleccione un tipo servicio';
+            thiserrors.serviceTypeId = 'Seleccione un tipo taller';
             errorsCount++;
         }
 
@@ -150,11 +150,14 @@ function InventoryService(props) {
         }else{
             for (let i = 0; i < days.length; i++) {
                 const element = days[i];
-                let start   = moment(element.hours.start, 'HH:mm');
-                let end     = moment(element.hours.end, 'HH:mm');
 
-                console.log(start);
-                console.log(end);
+                console.log(element.hours);
+
+                let start   = moment(element.hours.start);
+                let end     = moment(element.hours.end);
+
+                console.log(start.format("hh:mm"));
+                console.log(end.format("hh:mm"));
                 console.log(start.isAfter(end));
                 
                 if(element.day === null){
@@ -263,8 +266,8 @@ function InventoryService(props) {
                 formatElement.name      = element.day.label;
                 formatElement.hours     = {};
 
-                formatElement.hours.start   = moment(element.hours.start).format('HH:mm');
-                formatElement.hours.end     = moment(element.hours.end).format('HH:mm');
+                formatElement.hours.start   = moment(element.hours.start,   'HH:mm').format('HH:mm');
+                formatElement.hours.end     = moment(element.hours.end,     'HH:mm').format('HH:mm');
 
                 formatDays.push(formatElement);
             }
@@ -278,7 +281,7 @@ function InventoryService(props) {
                 timetable: {
                     days: formatDays,
                     dateStart: moment(dateStart).format('DD/MM/YYYY'),
-                    dateEnd: moment(dateEnd).format('DD/MM/YYYY')
+                    dateEnd:   moment(dateEnd).format('DD/MM/YYYY')
                 },
                 quantity:Number(quantity)
             }
@@ -296,7 +299,7 @@ function InventoryService(props) {
                     reset();
                     setsended(true);
                     window.scrollTo({top: 10, behavior: 'smooth'});
-                    setsuccessmessage('¡Servicio editado satisfactoriamente!')
+                    setsuccessmessage('¡Taller editado satisfactoriamente!')
                 }else{
                     window.scrollTo({top: 10, behavior: 'smooth'});
                     seterrormessage(res.data.data.message);
@@ -326,13 +329,15 @@ function InventoryService(props) {
     }
 
     const setserviceDataToEdit = (service) => {
+        console.log(service);
+
         setserviceData(service);
         setquantity(service.quantity);
         setserviceTypeId({ value: service.serviceTypeId });
         setprice(service.price);
         setnote(service.note);
-        setdateStart(service.timetable.dateStart);
-        setdateEnd(service.timetable.dateEnd);
+        setdateStart(moment(service.timetable.dateStart, 'YYYY-MM-DD'));
+        setdateEnd(moment(service.timetable.dateEnd, 'YYYY-MM-DD'));
         let formatDays = [];
 
         for (let i = 0; i < service.timetable.days.length; i++) {
@@ -345,8 +350,8 @@ function InventoryService(props) {
             formatElement.label         = element.name;
             formatElement.hours         = {};
 
-            formatElement.hours.start   = moment(element.hours.start, 'HH:mm').format('HH:mm');
-            formatElement.hours.end     = moment(element.hours.end, 'HH:mm').format('HH:mm');
+            formatElement.hours.start   = moment(element.hours.start, 'HH:mm');
+            formatElement.hours.end     = moment(element.hours.end,   'HH:mm');
 
             formatDays.push(formatElement);
         }
@@ -371,7 +376,7 @@ function InventoryService(props) {
             :
                 <Breadcrumb listClassName="px-0">
                     <BreadcrumbItem><a href="##">Inventario</a></BreadcrumbItem>
-                    <BreadcrumbItem active>Actualizar servicio</BreadcrumbItem>
+                    <BreadcrumbItem active>Actualizar talleres</BreadcrumbItem>
                 </Breadcrumb>
             }
 
@@ -382,7 +387,7 @@ function InventoryService(props) {
                 </h1>
             :
                 <h1 className="h4 mb-3 font-weight-bold">
-                    Actualizar servicio
+                    Actualizar talleres
                 </h1>
             }
 
@@ -418,9 +423,7 @@ function InventoryService(props) {
             {props.edit &&
                 <Card>
                     <div className="p-3">
-                        <CardTitle>
-                            Seleccione un servicio
-                        </CardTitle>
+                        Seleccione un taller
                     </div>
                     <CardBody className="border-top">
                         <ServicesSelect value={service} onChange={changeService} />

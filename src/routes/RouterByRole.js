@@ -23,15 +23,24 @@ const ConsultarTienda   = lazy(()     => import("../views/administrador/publicac
 const Procesar          = lazy(()     => import("../views/administrador/publicaciones/Procesar"));
 const Actualizar        = lazy(()     => import("../views/administrador/publicaciones/Actualizar"));
 
+//taxes
 const CurrentTaxes  = lazy(()     => import("../views/administrador/impuestos/CurrentTaxes"));
 const ShowTax       = lazy(()     => import("../views/administrador/impuestos/ShowTax"));
 const UpdateTax     = lazy(()     => import("../views/administrador/impuestos/UpdateTax"));
 
+//notifications
+const SendToUser      = lazy(()     => import("../views/administrador/notificaciones/SendToUser"));
+const SendToGroup     = lazy(()     => import("../views/administrador/notificaciones/SendToGroup"));
+const History         = lazy(()     => import("../views/administrador/notificaciones/History"));
+
 //vendedor
 
-const BidsSellerAd    = lazy(()     => import("../views/vendedor/publicaciones/BidsSellerAd"));
-const List            = lazy(()     => import("../views/vendedor/publicaciones/List"));
-const UpdateBid       = lazy(()     => import("../views/vendedor/publicaciones/UpdateBid"));
+const NotificationsList = lazy(()     => import("../views/notifications/history"));
+const ShowNotificacion  = lazy(()     => import("../views/notifications/show"));
+
+const BidsSellerAd      = lazy(()     => import("../views/vendedor/publicaciones/BidsSellerAd"));
+const List              = lazy(()     => import("../views/vendedor/publicaciones/List"));
+const UpdateBid         = lazy(()     => import("../views/vendedor/publicaciones/UpdateBid"));
 
 const ViewWarehouseSeller = lazy(() => import("../views/vendedor/mis-almacenes/ViewWarehouseSeller"));
 const AddWarehouseSeller = lazy(() => import("../views/vendedor/mis-almacenes/AddWarehouseSeller"));
@@ -76,7 +85,19 @@ var ThemeRoutesByRole = [
     component: Profile,
     onlyRoute:true
   },
-  //Vendedor
+  //Vendedor--------------------------------------------------
+  {
+    path: "/notifications/list",
+    name: "Lista de notificaciones",
+    component:NotificationsList,
+    onlyRoute:true
+  },
+  {
+    path: "/notifications/view/:id",
+    name: "Lista de notificaciones",
+    component:ShowNotificacion,
+    onlyRoute:true
+  },
   //almacenes
   {
     path: "/viewWarehouseSeller",
@@ -309,6 +330,25 @@ var ThemeRoutesByRole = [
     path: "/admin/shop/:id",
     name: "Mis Tiendas",
     component: MiTienda,
+    onlyRoute:true
+  },
+  //notificaciones
+  {
+    path: "/HisTORY/NoTIfICAtiONS",
+    name: "Historial de envios",
+    component:History,
+    onlyRoute:true
+  },
+  {
+    path: "/notificationsSend",
+    name: "Enviar a usuarios",
+    component: SendToUser,
+    onlyRoute:true
+  },
+  {
+    path: "/masivE/NotifICAtions",
+    name: "Enviar a grupo",
+    component: SendToGroup,
     onlyRoute:true
   },
   //redirect

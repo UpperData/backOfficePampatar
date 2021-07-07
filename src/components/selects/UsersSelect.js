@@ -2,12 +2,13 @@ import React, {useState, useEffect} from 'react'
 import Select from 'react-select'
 import axios from 'axios'
 
-function ServicesSelect(props) {
+function UsersSelect(props) {
 
     const [list, setList]       = useState([]);
     const [loading, setLoading] = useState(true);
     const [search,  setsearch]  = useState(true);
-    let url = '/services/myList';
+
+    let url = '/GEt/AcTIvE/accOUNtS/roLe/'+props.roleId;
 
     useEffect(() => {
         if(loading){
@@ -15,19 +16,24 @@ function ServicesSelect(props) {
                 const getData = () => {
                     axios.get(url).then((res) => {
                         console.log(res.data);
-                        let services = res.data.data.sku;
+
+                        let users = res.data.rows;
                         let newList = [];
             
-                        for(var i=0; i < services.length; i++){
+                        for(var i=0; i < users.length; i++){
                             
-                            let thisElement = services[i];
+                            let thisElement = users[i];
             
                             let formattedElement = {};
-                            formattedElement.label = thisElement.name;
-                            formattedElement.value = thisElement.id;
+                            formattedElement.label = thisElement.Account.email;
+                            formattedElement.value = thisElement.Account.id;
             
                             newList.push(formattedElement);
-                        }            
+                        }   
+                        
+                        newList.sort(function (a, b) {
+                            return a.label.toLowerCase().localeCompare(b.label.toLowerCase());
+                        });
             
                         setList(newList);
                         setLoading(false);
@@ -38,7 +44,7 @@ function ServicesSelect(props) {
                 getData();
             }
         }
-    }, [loading,search,url]);
+    }, [url, loading, search]);
 
     const handleSelect = async (selectedOption) => {
         console.log(selectedOption);
@@ -51,7 +57,7 @@ function ServicesSelect(props) {
     if(loading){
         return (
             <Select 
-                placeholder="Cargando......"  
+                placeholder="Cargando usuarios"  
                 options={[]} 
             />
         )
@@ -59,7 +65,7 @@ function ServicesSelect(props) {
         return (
             <Select 
                 isSearchable={true}
-                placeholder="Seleccionar" 
+                placeholder="Seleccione un usuario" 
                 value={(props.value !== undefined && props.value !== null) ? props.value :null} 
                 onChange={handleSelect} 
                 options={list} 
@@ -68,4 +74,4 @@ function ServicesSelect(props) {
     }
 }
 
-export default ServicesSelect
+export default UsersSelect

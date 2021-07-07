@@ -340,7 +340,7 @@ function StockMonitorSeller(props) {
 
             <Modal isOpen={modal} toggle={toggle}>
                 <ModalHeader toggle={toggle}>
-                    Almacen: {(datawarehouse !== null) ? <strong>{datawarehouse.name}</strong> : ''}
+                    Almacén: {(datawarehouse !== null) ? <strong>{datawarehouse.name}</strong> : ''}
                 </ModalHeader>
                 <ModalBody>
                    {searchdatawarehouse &&
@@ -362,7 +362,7 @@ function StockMonitorSeller(props) {
                    }
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="secondary" onClick={toggle}>Cancel</Button>
+                    <Button color="secondary" onClick={toggle}>Cerrar</Button>
                 </ModalFooter>
             </Modal>
             

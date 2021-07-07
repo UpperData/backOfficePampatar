@@ -1,6 +1,6 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import {useSelector, useDispatch} from 'react-redux'
-import {Link} from 'react-router-dom'
+import {Link, useHistory} from 'react-router-dom'
 import {set_role, set_backoffice_menu} from '../../../redux/backoffice/Actions'
 import {
   Nav,
@@ -22,22 +22,28 @@ import profilephoto from "../../../assets/images/users/user.png";
 
 import logo from "../../../assets/images/pampatar/pampatar_color_1.png";
 import logoIcon from "../../../assets/images/pampatar/isotipo_color.png";
-import { handleLogout } from "../../../redux/session/Actions";
+import { handleLogout, set_notifications } from "../../../redux/session/Actions";
 import DefaultUser from "../../../components/files/DefaultUser";
 
 export default () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen,   setIsOpen]   = useState(false);
   const [collapse, setCollapse] = useState(false);
+
+  const [loading, setloading]   = useState(true);
+  const [search, setsearch]     = useState(true);
 
   const session     = useSelector(state => state.session);
   const settings    = useSelector((state) => state.settings);
   const backoffice  = useSelector((state) => state.backoffice);
   const dispatch    = useDispatch();
 
-  let shopName = session.userData.shop.name;
-  let role = backoffice.role.name;
-  let account = session.userData.account;
-  let logoshop = '';
+  let shopName  = session.userData.shop.name;
+  let role      = backoffice.role.name;
+  let roleId    = backoffice.role.id;
+  let account   = session.userData.account;
+  let logoshop  = '';
+
+  const history = useHistory();
 
   if(role === 'Vendedor' && session.storeLogo !== null){
     logoshop = session.storeLogo.reduce(
@@ -47,6 +53,29 @@ export default () => {
       ''
     );
   }
+
+  const getData = () => {
+    console.log("Buscando notificaciones");
+    dispatch(set_notifications(roleId));
+
+    setloading(false);
+  }
+  
+  const watchChangeRoute = () => {
+    history.listen((location) => { 
+      getData();
+    });
+  }
+
+  useEffect(() => {
+    if(loading){
+      if(search){
+        setsearch(false);
+        getData();
+        watchChangeRoute();
+      }
+    }
+  });
 
   const toggle = () => {
     setIsOpen(!isOpen);
@@ -91,6 +120,10 @@ export default () => {
       default:
     }
   };
+
+  console.log(session.notifications);
+
+  let countMessages = 0;
 
   return (
     <header className="topbar navbarbg" data-navbarbg={settings.activeNavbarBg}>
@@ -177,55 +210,85 @@ export default () => {
             {/* Start Notifications Dropdown                                                   */}
             {/*--------------------------------------------------------------------------------*/}
             <UncontrolledDropdown nav inNavbar>
-              <DropdownToggle nav caret>
+              <DropdownToggle id="toggleNotificationsBtn" nav caret>
                 <i className="mdi mdi-bell font-18" />
               </DropdownToggle>
               <DropdownMenu right className="mailbox">
                 <div className="d-flex no-block align-items-center p-3 border-bottom">
-                  <h5 className="mb-0 font-weight-bold">Notificaciones</h5>
+                  <h5 className="mb-0 text-muted">Notificaciones</h5>
                 </div>
                 <div className="message-center notifications">
-                  {/*<!-- Message -->*/}
-                  {data.notifications.map((notification, index) => {
-                    return (
-                      <span href="" className="d-none message-item" key={index}>
+
+                  {typeof session.notifications === "object" && session.notifications.hasOwnProperty("rows") && session.notifications.count > 0 && session.notifications.rows.map((notification, index) => {
+                    
+                    countMessages++;
+                    
+                    if(countMessages <= 3){
+                      return (
+                        <Link onClick={() => document.getElementById("toggleNotificationsBtn").click()} to={`/notifications/view/${notification.id}`} className="message-item" key={index}>
+                          <span
+                            className={
+                              "btn btn-circle btn-primary"
+                            }
+                          >
+                            <i className={"mdi mdi-message"} />
+                          </span>
+                          <div className="mail-contnet">
+                            <h5 className="message-title">
+                              {notification.body.title}
+                            </h5>
+                            <span className="mail-desc">
+                              {notification.body.text}
+                            </span>
+                            <span className="time d-none">{notification.time}</span>
+                          </div>
+                        </Link>
+                      );
+                    }else{
+                      return ""
+                    }
+                  })}
+
+                  {typeof session.notifications === "object" && session.notifications.hasOwnProperty("rows") && session.notifications.count <= 0 &&
+                    <span href="" className="message-item">
                         <span
                           className={
-                            "btn btn-circle btn-" + notification.iconbg
+                            "btn btn-circle btn-info"
                           }
                         >
-                          <i className={notification.iconclass} />
+                          <i className="fa fa-exclamation-triangle" />
                         </span>
                         <div className="mail-contnet">
                           <h5 className="message-title">
-                            {notification.title}
+                            Sin notificaciones
                           </h5>
-                          <span className="mail-desc">{notification.desc}</span>
-                          <span className="time">{notification.time}</span>
                         </div>
                       </span>
-                    );
-                  })}
+                  }
 
-                  <span href="" className="message-item">
-                      <span
-                        className={
-                          "btn btn-circle btn-success"
-                        }
-                      >
-                        <i className="fa fa-check-circle" />
+
+                  {typeof session.notifications === "object" && session.notifications.hasOwnProperty("data") && session.notifications.data.result === false &&
+                    <span href="" className="message-item">
+                        <span
+                          className={
+                            "btn btn-circle btn-info"
+                          }
+                        >
+                          <i className="fa fa-exclamation-triangle" />
+                        </span>
+                        <div className="mail-contnet">
+                          <h5 className="message-title">
+                            Sin notificaciones
+                          </h5>
+                        </div>
                       </span>
-                      <div className="mail-contnet">
-                        <h5 className="message-title">
-                          Sin notificaciones
-                        </h5>
-                      </div>
-                    </span>
+                  }
+
                 </div>
-                <a className="nav-link text-center mb-1 text-dark" href=";">
-                  <strong className="text-secondary">Ver más</strong>{" "}
-                  <i className="fa fa-angle-right text-secondary" />
-                </a>
+                <Link to="/notifications/list/" onClick={() => document.getElementById("toggleNotificationsBtn").click()} className="nav-link text-info text-center mb-0 text-dark" href=";">
+                    Ver lista completa
+                    <i className="ml-3 fa fa-angle-right" />
+                </Link>
               </DropdownMenu>
             </UncontrolledDropdown>
             {/*--------------------------------------------------------------------------------*/}

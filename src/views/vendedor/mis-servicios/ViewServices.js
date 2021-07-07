@@ -55,17 +55,17 @@ function ViewServices() {
             <div>
                 <div>
                     <Breadcrumb listClassName="px-0">
-                        <BreadcrumbItem><a href="##">Mis Servicios</a></BreadcrumbItem>
-                        <BreadcrumbItem active>Listar servicios</BreadcrumbItem>
+                        <BreadcrumbItem><a href="##">Mis Talleres</a></BreadcrumbItem>
+                        <BreadcrumbItem active>Listar talleres</BreadcrumbItem>
                     </Breadcrumb>
                     <div className="row pb-3">
                         <div className="col-md-6">
-                            <h1 className="h4 mb-3 font-weight-bold">Listar servicios</h1>
+                            <h1 className="h4 mb-3 font-weight-bold">Listar talleres</h1>
                         </div>
                         <div className="col-md-6">
                             <div className="text-md-right">
                                 <Link to="/addService" className="btn btn-info">
-                                    Nuevo servicio
+                                    Nuevo taller
                                 </Link>
                             </div>
                         </div>
@@ -85,7 +85,7 @@ function ViewServices() {
                             <Card>
                                 <div className="p-3">
                                     <CardTitle>
-                                        <i className="fa fa-list mr-2"></i>Servicios disponibles
+                                        <i className="fa fa-list mr-2"></i>Talleres disponibles
                                     </CardTitle>
                                 </div>
                                 <CardBody className="border-top">
@@ -95,7 +95,7 @@ function ViewServices() {
                                                     <thead>
                                                         <tr>
                                                             <th>
-                                                                Nombre del servicio
+                                                                Nombre
                                                             </th>
                                                         </tr>
                                                     </thead>
@@ -129,10 +129,10 @@ function ViewServices() {
         return(
             <div>
                 <Breadcrumb listClassName="px-0">
-                    <BreadcrumbItem><a href="##">Mis Servicios</a></BreadcrumbItem>
-                    <BreadcrumbItem active>Listar servicios</BreadcrumbItem>
+                    <BreadcrumbItem><a href="##">Mis Talleres</a></BreadcrumbItem>
+                    <BreadcrumbItem active>Listar talleres</BreadcrumbItem>
                 </Breadcrumb>
-                <h1 className="h4 mb-3 font-weight-bold">Listar servicios</h1>
+                <h1 className="h4 mb-3 font-weight-bold">Listar talleres</h1>
                 <InlineSpinner />
             </div>
         )
