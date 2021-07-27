@@ -56,6 +56,17 @@ export const set_notifications = (idrole) => {
           .get(url)
           .then(res => {
             console.log(res.data);
+
+            if(Number(res.data.count) > 0){
+                let newOrder = res.data.rows;
+                newOrder.sort(function(a, b) {
+                    return Number(b.id) - Number(a.id);
+                });
+
+                console.log(newOrder);
+                res.data.rows = newOrder;
+            }
+
             dispatch({
                 type: SET_NOTIFICATIONS,
                 payload: res.data

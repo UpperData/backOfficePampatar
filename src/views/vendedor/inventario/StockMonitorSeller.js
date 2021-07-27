@@ -28,6 +28,8 @@ function StockMonitorSeller(props) {
     const [stock,   setstock]  = useState(null);
     const [dataProduct,   setdataProduct]  = useState(null);
 
+    const [price, setprice] = useState(null);
+
     const [modal, setModal] = useState(false);
     const [datawarehouse, setdatawarehouse]     = useState(null);
     const [searchdatawarehouse, setseachdatawarehouse]     = useState(false);
@@ -54,6 +56,8 @@ function StockMonitorSeller(props) {
         let url         = '/seller/inventory/lot/sku/list/all/'+data.value;
         let urlprice    = '/seller/inventory/stock/sku/'+data.value+'/'+type;
 
+        let urlprice2   =  '/getPriceCurrent/Inventory/sku/'+data.value+'/product';
+
         setsearch(true);
 
         axios.get(url).then((res) => {
@@ -70,7 +74,16 @@ function StockMonitorSeller(props) {
                 console.log(res.data);
                 console.log(stock);
                 setdataProduct(stock);
-                setsearch(false);
+                //setsearch(false);
+
+                axios.get(urlprice2).then((res) => {
+                    console.log('PRECIO',res.data);
+                    setsearch(false);
+                    setprice(res.data);
+                }).catch((err) => {
+                    console.error(err);
+                    setsearch(false);
+                });
                 
             }).catch((err) => {
                 console.error(err);
@@ -168,6 +181,8 @@ function StockMonitorSeller(props) {
         }
     }
 
+    console.log(price);
+
     return (
         <div>
 
@@ -255,7 +270,14 @@ function StockMonitorSeller(props) {
                                                                 <span className={statusclass}><i className={statusicon}></i></span>
                                                             </div>
                                                             <h4 className={statusclass +' font-weight-bold h3'}>{dataProduct.statusStock.message}</h4>
-                                                            <h4 className="d-none"><span className="h4 font-weight-bold">Precio Actual:</span><span className="font-weight-light ml-2">{moneyFormatter(dataProduct.price)}</span></h4>
+                                                            {price !== null && typeof price === 'object' && price.hasOwnProperty("endPrice") &&
+                                                                <h4>
+                                                                    <span className="h4 font-weight-bold">Precio Actual:</span>
+                                                                    <span className="font-weight-light ml-2">
+                                                                        {moneyFormatter(price.endPrice)}
+                                                                    </span>
+                                                                </h4>
+                                                            }
                                                         </div>
                                                     </div>
                                                     <div className="col-lg-6">
@@ -268,7 +290,7 @@ function StockMonitorSeller(props) {
                                                                         <h5 className="h6 font-weight-bold">Unidades</h5>
                                                                     </div>
                                                                 </div>
-                                                                <h4><span className="h4 font-weight-bold">Stock Mínimo:</span> <span className="font-weight-light ml-2">{dataProduct.minStock}</span></h4> 
+                                                                <h4><span className="h4 font-weight-bold">Stock Mínimo:</span> <span className="font-weight-light ml-2"></span></h4> 
                                                             </div>
                                                         </div>
                                                     </div>

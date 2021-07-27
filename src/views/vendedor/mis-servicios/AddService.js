@@ -22,6 +22,8 @@ function AddService(props) {
 
     const [errors, seterrors] = useState({});
 
+    const [price,  setprice]           = useState('');
+
     const [name,     setname]     = useState('');
     const [service, setservice] = useState(null);
 
@@ -30,9 +32,20 @@ function AddService(props) {
 
     const reset = () => {
         setname('');
+        setprice('');
         setloading(false);
         setservice(null);
         window.scrollTo({top: 10, behavior: 'smooth'});
+    }
+
+    var regex = new RegExp("^[a-zA-Z0-9áéíóú_ \-]+$");
+
+    const onlyTextAndNumbers = (e) => {
+        var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+        if (!regex.test(key)) {
+          e.preventDefault();
+          return false;
+       }
     }
 
     const changeService = (data) => {
@@ -72,6 +85,13 @@ function AddService(props) {
         }else if(name.trim().length > 40){
             thiserrors.name = 'El nombre del servicio ingresado es demasiado largo';
             errorsCount++;
+        }
+
+        if(!props.Edit){
+            if(price.trim() === ''){
+                thiserrors.price = 'Debe ingresar un precio para el taller';
+                errorsCount++;
+            }   
         }
 
         if(errorsCount > 0){
@@ -140,12 +160,34 @@ function AddService(props) {
                     console.log(res);
                     setsending(false);
                     if(res.data.data.result){
-                        setsuccessmessage('¡Servicio creado satisfactoriamente!');
-                        reset();
-                        window.scrollTo({top: 10, behavior: 'smooth'});
-                        setTimeout(() => {
-                            setsuccessmessage("");
-                        }, 5000);
+
+                        let urlUpdatePrice = '/seller/inventory/price/edit/';
+                        
+                        let data = {
+                            type: 'service',
+                            skuId: res.data.data.serviceId,
+                            price
+                        }
+
+                        axios({
+                            method: 'put',
+                            url:    urlUpdatePrice,
+                            data
+                        }).then((res) => {
+                            console.log(res.data);
+                            if(res.data.data.result){
+                                setsuccessmessage('¡Servicio creado satisfactoriamente!');
+                                reset();
+                                window.scrollTo({top: 10, behavior: 'smooth'});
+                                setTimeout(() => {
+                                    setsuccessmessage("");
+                                }, 5000);
+                            }
+                        }).catch((err) => {
+                            console.error(err);
+                            setsending(false);
+                        });
+
                     }else{
                         seterrormessage(res.data.data.message);
                         reset();
@@ -257,23 +299,21 @@ function AddService(props) {
                             <Row>
                                 <Col md="12">
                                     <Card>
-                                        <div className="p-3">
-                                            <CardTitle>
-                                                Datos del servicio
-                                            </CardTitle>
+                                        <div className="p-3 mb-0">
+                                            Datos del servicio
                                         </div>
                                         <CardBody className="border-top">
                                                 <Row>
-                                                    <Col xs="12">
+                                                    <Col xs={(!props.Edit) ? "6" : "12"}>
                                                         <div className="form-group">
-                                                            <label htmlFor="service-name">Nombre del servicio:</label>
+                                                            <label htmlFor="service-name">Nombre:</label>
                                                             <input 
                                                                 type="text"
                                                                 id="service-name"
                                                                 min="0" 
                                                                 value={name}
                                                                 onChange={(e) => setname(e.target.value)}
-                                                                placeholder="Ingrese el nombre del servicio" 
+                                                                placeholder="Ingrese el nombre" 
                                                                 className={((typeof errors === 'object' && errors.hasOwnProperty('name') ? 'is-invalid' : '') +' form-control')}
                                                             />
                                                             {(typeof errors === 'object' && errors.hasOwnProperty('name')) &&
@@ -285,6 +325,30 @@ function AddService(props) {
                                                             }
                                                         </div>
                                                     </Col>
+                                                    {(!props.Edit) &&
+                                                        <Col xs="6">
+                                                            <div className="form-group">
+                                                                <label htmlFor="product-name">Precio:</label>
+                                                                <input 
+                                                                    type="number"
+                                                                    id="product-price"
+                                                                    onKeyPress={(e) => onlyTextAndNumbers(e)}
+                                                                    min="0" 
+                                                                    value={price}
+                                                                    onChange={(e) => setprice(e.target.value)}
+                                                                    placeholder="Precio" 
+                                                                    className={((typeof errors === 'object' && errors.hasOwnProperty('price') ? 'is-invalid' : '') +' form-control')}
+                                                                />
+                                                                {(typeof errors === 'object' && errors.hasOwnProperty('price')) &&
+                                                                    <div className="help-block text-danger font-weight-bold">
+                                                                        <small>
+                                                                            {errors.price}
+                                                                        </small>
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        </Col>
+                                                    }
                                                 </Row>
                                         </CardBody>
                                     </Card>
@@ -292,13 +356,13 @@ function AddService(props) {
                                     ?
                                     <p className="text-right">
                                         <button type="submit" disabled={sending} className="btn btn-lg font-weight-bold btn-warning">
-                                            {(sending) ? <span>Cargando<i className="fa fa-spin fa-spinner ml-2"></i></span> : 'Actualizar servicio'}
+                                            {(sending) ? <span>Cargando<i className="fa fa-spin fa-spinner ml-2"></i></span> : 'Actualizar Taller'}
                                         </button>
                                     </p>
                                     :
                                     <p className="text-right">
                                         <button type="submit" disabled={sending} className="btn btn-lg font-weight-bold btn-primary">
-                                            {(sending) ? <span>Cargando<i className="fa fa-spin fa-spinner ml-2"></i></span> : 'Añadir servicio'}
+                                            {(sending) ? <span>Cargando<i className="fa fa-spin fa-spinner ml-2"></i></span> : 'Añadir Taller'}
                                         </button>
                                     </p>
                                     }

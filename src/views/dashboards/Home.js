@@ -82,8 +82,8 @@ const Home = () => {
                 colors={['rgb(250, 67, 58)', 'rgb(14, 47, 113)']} 
 
                 tablerows={[
-                  {title: 'Productos', value: moneyFormatter(data.totalProduct), strong: false},
-                  {title: 'Servicios', value: moneyFormatter(data.totalService), strong: false},
+                  {title: 'Productos', value: moneyFormatter(data.totalProduct), strong: false, color: 'rgb(250, 67, 58)'},
+                  {title: 'Servicios', value: moneyFormatter(data.totalService), strong: false, color: 'rgb(14, 47, 113)'},
 
                   {title: 'Total',     value: moneyFormatter(data.totalService + data.totalProduct), strong: true}
                 ]}
@@ -177,8 +177,8 @@ const Home = () => {
                 colors={['rgb(250, 67, 58)', 'rgb(14, 47, 113)']} 
 
                 tablerows={[
-                  {title: 'Productos', value: moneyFormatter(data.totalProduct), strong: false},
-                  {title: 'Servicios', value: moneyFormatter(data.totalService), strong: false},
+                  {title: 'Productos', value: moneyFormatter(data.totalProduct), strong: false, color: 'rgb(250, 67, 58)'},
+                  {title: 'Servicios', value: moneyFormatter(data.totalService), strong: false, color: 'rgb(14, 47, 113)'},
 
                   {title: 'Total',     value: moneyFormatter(data.totalService + data.totalProduct), strong: true}
                 ]}

@@ -28,12 +28,15 @@ function AddProduct(props) {
     const [skuTypeId,       setskuTypeId]       = useState(null);
     const [product,         setproduct]         = useState(null);
 
+    const [price,           setprice]           = useState('');
+
     const [searchservice, setsearchservice] = useState(false);
     const [loadingservice, setloadingservice] = useState(true);
 
     const reset = () => {
         setloading(false);
         setname('');
+        setprice('');
         setproduct(null);
         setskuTypeId(null);
         window.scrollTo({top: 10, behavior: 'smooth'});
@@ -93,6 +96,13 @@ function AddProduct(props) {
             errorsCount++;
         }
 
+        if(!props.Edit){
+            if(price.trim() === ''){
+                thiserrors.price = 'Debe ingresar un precio para el producto';
+                errorsCount++;
+            }   
+        }
+
         if(skuTypeId === null){
             thiserrors.skuTypeId = 'Debe seleccionar un tipo de producto';
             errorsCount++;
@@ -106,7 +116,7 @@ function AddProduct(props) {
         return true;
     }
 
-    const addWarehouse = (e) => {
+    const goToaddProduct = (e) => {
         e.preventDefault();
         e.stopPropagation();
 
@@ -125,6 +135,7 @@ function AddProduct(props) {
                 let data = {
                     id: product.value,
                     name,
+                    skuTypeId: skuTypeId.value
                 }
 
                 axios({
@@ -135,6 +146,7 @@ function AddProduct(props) {
                     console.log(res);
                     setsending(false);
                     if(res.data.data.result){
+
                         setloading(true);
                         setsuccessmessage('¡Producto actualizado satisfactoriamente!')
                         reset();
@@ -167,12 +179,37 @@ function AddProduct(props) {
                     setsending(false);
                     if(res.data.data.result){
                         //setloading(true);
-                        setsuccessmessage('¡Producto creado satisfactoriamente!');
-                        reset();
 
-                        setTimeout(() => {
-                            setsuccessmessage("");
-                        }, 5000);
+                        let urlUpdatePrice = '/seller/inventory/price/edit/';
+        
+                        setsending(true);
+                        
+                        let data = {
+                            type: 'product',
+                            skuId: res.data.data.skuId,
+                            price
+                        }
+
+                        axios({
+                            method: 'put',
+                            url:    urlUpdatePrice,
+                            data
+                        }).then((res) => {
+                            console.log(res.data);
+                            if(res.data.data.result){
+                                setsending(false);
+                                setsuccessmessage('¡Producto creado satisfactoriamente!');
+                                reset();
+
+                                setTimeout(() => {
+                                    setsuccessmessage("");
+                                }, 5000);
+                            }
+                        }).catch((err) => {
+                            console.error(err);
+                            setsending(false);
+                        });
+
                     }else{
                         seterrormessage(res.data.data.message);
                         reset();
@@ -286,7 +323,7 @@ function AddProduct(props) {
                     }
 
                     {((!props.Edit) || (props.Edit && product !== null && !loadingservice)) &&
-                        <form onSubmit={(e) => addWarehouse(e)} action="">
+                        <form onSubmit={(e) => goToaddProduct(e)} action="">
                             <Row>
                                 <Col md="12">
                                     <Card>
@@ -332,6 +369,30 @@ function AddProduct(props) {
                                                             }
                                                         </div>
                                                     </Col>
+                                                    {(!props.Edit) &&
+                                                        <Col xs="12">
+                                                            <div className="form-group">
+                                                                <label htmlFor="product-name">Precio del producto:</label>
+                                                                <input 
+                                                                    type="number"
+                                                                    id="product-price"
+                                                                    onKeyPress={(e) => onlyTextAndNumbers(e)}
+                                                                    min="0" 
+                                                                    value={price}
+                                                                    onChange={(e) => setprice(e.target.value)}
+                                                                    placeholder="Precio del producto" 
+                                                                    className={((typeof errors === 'object' && errors.hasOwnProperty('price') ? 'is-invalid' : '') +' form-control')}
+                                                                />
+                                                                {(typeof errors === 'object' && errors.hasOwnProperty('price')) &&
+                                                                    <div className="help-block text-danger font-weight-bold">
+                                                                        <small>
+                                                                            {errors.price}
+                                                                        </small>
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        </Col>
+                                                    }
                                                 </Row>
                                         </CardBody>
                                     </Card>

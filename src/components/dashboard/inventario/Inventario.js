@@ -76,10 +76,10 @@ const DonutInventario = (props) => {
                                     return (
                                         <tr key={key}>
                                             <td className={`border-top-0 ${item.strong ? 'font-weight-bold' : ''}`}>
-                                                {item.title}
+                                                {!item.strong ? <i className="fa fa-circle mr-2" style={{color: item.color}}></i> : <span className=""></span>} {item.title}
                                             </td>
                                             <td className={`text-right font-medium border-top-0 ${item.strong ? 'font-weight-bold' : ''}`}>
-                                                {item.value}
+                                                <span className="">{item.value}</span>
                                             </td>
                                         </tr>
                                     )

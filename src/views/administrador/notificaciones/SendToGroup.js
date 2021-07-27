@@ -117,7 +117,7 @@ function SendToGroup() {
                     title,
                     text,
                     extra,
-                    roleId: Number(role.value)
+                    RoleId: Number(role.value)
                 }
             }).then((res) => {
                 console.log(res.data);

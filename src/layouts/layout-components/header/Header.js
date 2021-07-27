@@ -121,7 +121,7 @@ export default () => {
     }
   };
 
-  console.log(session.notifications);
+  //console.log(session.notifications);
 
   let countMessages = 0;
 
