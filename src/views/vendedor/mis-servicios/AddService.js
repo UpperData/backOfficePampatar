@@ -364,7 +364,7 @@ function AddService(props) {
                                         <button type="submit" disabled={sending} className="btn btn-lg font-weight-bold btn-primary">
                                             {(sending) ? <span>Cargando<i className="fa fa-spin fa-spinner ml-2"></i></span> : 'Añadir Taller'}
                                         </button>
-                                    </p>
+                                    </p> 
                                     }
                                 </Col>
                             </Row>

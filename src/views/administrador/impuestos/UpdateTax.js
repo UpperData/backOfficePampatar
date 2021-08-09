@@ -75,9 +75,19 @@ function UpdateTax() {
                 setdata(null);
                 settaxvalue('');
                 setModal(false);
+
+                setTimeout(() => {
+                    setsuccessmessage('');
+                    seterrormessage('');
+                }, 8000);
             }else{
                 window.scrollTo({top: 10, behavior: 'smooth'});
                 seterrormessage(res.data.data.message);
+
+                setTimeout(() => {
+                    setsuccessmessage('');
+                    seterrormessage('');
+                }, 8000);
             }
             setsending(false);
         }).catch((err) => {
@@ -133,24 +143,26 @@ function UpdateTax() {
                         <Card>
                             <div className="p-3">
                                 <CardTitle>
-                                    Datos <span className="text-muted">({(data !== null) ? 'Actualizado por última vez el '+data.taxValues[0].createdAt.split('T')[0] : ''})</span>
+                                    Datos <span className="text-muted">({(data !== null && data.hasOwnProperty('taxValues') && data.taxValues.length > 0) ? 'Actualizado por última vez el '+data.taxValues[0].createdAt.split('T')[0] : 'Sin actualizaciones previas'})</span>
                                 </CardTitle>
                             </div>
                             <CardBody className="border-top">
                                 <Row>
-                                    <Col md="6">
-                                        <div className="form-group">
-                                            <label htmlFor="">Valor del impuesto</label>
-                                            <input 
-                                                type="text" 
-                                                value={data.taxValues[0].value}
-                                                placeholder="Precio"
-                                                className="form-control"
-                                                readOnly
-                                            />
-                                        </div>
-                                    </Col>
-                                    <Col md="6">
+                                    {(data !== null && data.hasOwnProperty('taxValues') && data.taxValues.length > 0) &&
+                                        <Col md="6">
+                                            <div className="form-group">
+                                                <label htmlFor="">Valor del impuesto</label>
+                                                <input 
+                                                    type="text" 
+                                                    value={data.taxValues[0].value}
+                                                    placeholder="Precio"
+                                                    className="form-control"
+                                                    readOnly
+                                                />
+                                            </div>
+                                        </Col>
+                                    }
+                                    <Col md={(data !== null && data.hasOwnProperty('taxValues') && data.taxValues.length > 0) ? '6' : '12'}>
                                          <div className="form-group">
                                             <label htmlFor="">Nuevo valor</label>
                                             <div>
