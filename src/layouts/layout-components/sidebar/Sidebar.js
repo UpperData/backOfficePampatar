@@ -37,9 +37,13 @@ const Sidebar = (props) => {
 
 
   //VARIABLES
-  let shopName = session.userData.shop.name;
-  let role = backoffice.role.name;
+  let shopName  = "";
+  let role      = backoffice.role.name;
   //let account = session.userData.account;
+
+  if(role == 'Vendedor' || role == 'Comprador'){
+    shopName = session.userData.shop.name;
+  }
 
 
   /*--------------------------------------------------------------------------------*/

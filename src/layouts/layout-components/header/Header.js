@@ -37,13 +37,17 @@ export default () => {
   const backoffice  = useSelector((state) => state.backoffice);
   const dispatch    = useDispatch();
 
-  let shopName  = session.userData.shop.name;
+  let shopName  = "";
   let role      = backoffice.role.name;
   let roleId    = backoffice.role.id;
   let account   = session.userData.account;
   let logoshop  = '';
 
   const history = useHistory();
+
+  if(role == 'Vendedor' || role == 'Comprador'){
+    shopName = session.userData.shop.name;
+  }
 
   if(role === 'Vendedor' && session.storeLogo !== null){
     logoshop = session.storeLogo.reduce(

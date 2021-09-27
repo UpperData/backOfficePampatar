@@ -13,6 +13,8 @@ const Home = () => {
 
   const [data, setdata]       = useState(null);
 
+  const [datagraphinventory, setdatagraphinventory] = useState(null);
+
   const getData = () => {
     let url = "";
 
@@ -23,8 +25,11 @@ const Home = () => {
     }
 
     axios.get(url).then((res) => {
-      console.log(res);
-      setdata(res.data.data);
+      let datagraph = res.data.data;
+      console.log(datagraph.graphs.inventoryValue);
+      
+      setdatagraphinventory(datagraph.graphs.inventoryValue);
+      setdata(datagraph);
     });
   }
 
@@ -76,16 +81,16 @@ const Home = () => {
             <Col xs={12} md={8} lg={12}>
               <DonutInventario 
 
-                total={data.totalService + data.totalProduct}
+                total={datagraphinventory.totalService + datagraphinventory.totalProduct}
                 labels={['Productos', 'Servicios']}
-                data={[data.totalProduct, data.totalService]} 
+                data={[datagraphinventory.totalProduct, datagraphinventory.totalService]} 
                 colors={['rgb(250, 67, 58)', 'rgb(14, 47, 113)']} 
 
                 tablerows={[
-                  {title: 'Productos', value: moneyFormatter(data.totalProduct), strong: false, color: 'rgb(250, 67, 58)'},
-                  {title: 'Servicios', value: moneyFormatter(data.totalService), strong: false, color: 'rgb(14, 47, 113)'},
+                  {title: 'Productos', value: moneyFormatter(datagraphinventory.totalProduct), strong: false, color: 'rgb(250, 67, 58)'},
+                  {title: 'Servicios', value: moneyFormatter(datagraphinventory.totalService), strong: false, color: 'rgb(14, 47, 113)'},
 
-                  {title: 'Total',     value: moneyFormatter(data.totalService + data.totalProduct), strong: true}
+                  {title: 'Total',     value: moneyFormatter(datagraphinventory.totalService + datagraphinventory.totalProduct), strong: true}
                 ]}
 
               />
@@ -105,7 +110,7 @@ const Home = () => {
                             Inventario de servicios
                           </h6>
                           <h2 className="mt-0">
-                            {moneyFormatter(data.totalService)}
+                            {moneyFormatter(datagraphinventory.totalService)}
                           </h2>
                         </div>
                     </div>
@@ -130,7 +135,7 @@ const Home = () => {
                             Inventario de productos
                           </h6>
                           <h2 className="mt-0">
-                            {moneyFormatter(data.totalProduct)}
+                            {moneyFormatter(datagraphinventory.totalProduct)}
                           </h2>
                         </div>
                     </div>
@@ -171,16 +176,16 @@ const Home = () => {
             <Col xs={12} md={8} lg={12}>
               <DonutInventario 
 
-                total={data.totalService + data.totalProduct}
+                total={datagraphinventory.totalService + datagraphinventory.totalProduct}
                 labels={['Productos', 'Servicios']}
-                data={[data.totalProduct, data.totalService]} 
+                data={[datagraphinventory.totalProduct, datagraphinventory.totalService]} 
                 colors={['rgb(250, 67, 58)', 'rgb(14, 47, 113)']} 
 
                 tablerows={[
-                  {title: 'Productos', value: moneyFormatter(data.totalProduct), strong: false, color: 'rgb(250, 67, 58)'},
-                  {title: 'Servicios', value: moneyFormatter(data.totalService), strong: false, color: 'rgb(14, 47, 113)'},
+                  {title: 'Productos', value: moneyFormatter(datagraphinventory.totalProduct), strong: false, color: 'rgb(250, 67, 58)'},
+                  {title: 'Servicios', value: moneyFormatter(datagraphinventory.totalService), strong: false, color: 'rgb(14, 47, 113)'},
 
-                  {title: 'Total',     value: moneyFormatter(data.totalService + data.totalProduct), strong: true}
+                  {title: 'Total',     value: moneyFormatter(datagraphinventory.totalService + datagraphinventory.totalProduct), strong: true}
                 ]}
 
               />
@@ -200,7 +205,7 @@ const Home = () => {
                             Inventario de servicios
                           </h6>
                           <h2 className="mt-0">
-                            {moneyFormatter(data.totalService)}
+                            {moneyFormatter(datagraphinventory.totalService)}
                           </h2>
                         </div>
                     </div>
@@ -225,7 +230,7 @@ const Home = () => {
                             Inventario de productos
                           </h6>
                           <h2 className="mt-0">
-                            {moneyFormatter(data.totalProduct)}
+                            {moneyFormatter(datagraphinventory.totalProduct)}
                           </h2>
                         </div>
                     </div>

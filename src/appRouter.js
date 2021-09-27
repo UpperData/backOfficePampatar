@@ -117,7 +117,7 @@ const AppRouter = (props) => {
           //const response = error.response.data
           const originalRequest = error.config;
   
-          if (code === 403 && !originalRequest._retry && !failRequestByToken) {
+          if ((code === 403) && !originalRequest._retry && !failRequestByToken) {
               originalRequest._retry = true;
               failRequestByToken = true;
               //let STORAGE_ISLOGED = localStorage.getItem('is_loged');
@@ -253,10 +253,6 @@ const AppRouter = (props) => {
           if(backoffice.disponibilityTypes === null){
             dispatch(set_disponibility_types());
           }
-
-          if(session.storeLogo === null){
-            dispatch(set_store_logo());
-          }
         }
 
         if(backoffice.role.hasOwnProperty('id')){
@@ -268,7 +264,12 @@ const AppRouter = (props) => {
           //console.log('Rol cargado desde el localstorage', RoleInLocalStorage);
           let roles = session.userData.role;
           let getRoleByUser = roles.find(item => item.id === Number(RoleInLocalStorage));
+          let getRoleByUserSeller = roles.filter(item => (item.name === "Comprador" || item.name === "Vendedor"));
+
           dispatch(set_role(getRoleByUser));
+          if(session.storeLogo === null && getRoleByUserSeller.length > 0){
+            dispatch(set_store_logo());
+          }
         }
       }else{
         //console.log('Cambiando de sesión');
