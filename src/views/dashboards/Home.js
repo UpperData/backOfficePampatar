@@ -1,8 +1,12 @@
 import React, {useEffect, useState} from "react";
-import { Card, CardBody, Row, Col } from "reactstrap";
+import { Card, CardBody, Row, Col, CardTitle } from "reactstrap";
 
 import axios from 'axios'
 import {useSelector} from 'react-redux'
+import Chart from 'react-c3-component';
+import 'c3/c3.css';
+
+import moment from "moment"
 import { moneyFormatter } from "../../utils/helpers";
 import DonutInventario from "../../components/dashboard/inventario/Inventario";
 
@@ -14,6 +18,7 @@ const Home = () => {
   const [data, setdata]       = useState(null);
 
   const [datagraphinventory, setdatagraphinventory] = useState(null);
+  const [datagraphsalesbymonth, setdatagraphsalesbymonth] = useState(null);
 
   const getData = () => {
     let url = "";
@@ -26,12 +31,29 @@ const Home = () => {
 
     axios.get(url).then((res) => {
       let datagraph = res.data.data;
-      console.log(datagraph.graphs.inventoryValue);
-      
+      console.log(datagraph);
+
       setdatagraphinventory(datagraph.graphs.inventoryValue);
+      setdatagraphsalesbymonth(datagraph.graphs.salesByMonth);
+
       setdata(datagraph);
     });
   }
+
+  let meses = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre"
+  ]
 
   useEffect(() => {
     if(loading){
@@ -47,6 +69,21 @@ const Home = () => {
 
   let role = backoffice.role.name;
   let account = session.userData.account;
+
+  let sTotalSales = [];
+  let pTotalSales = [];
+
+  console.log(datagraphsalesbymonth);
+
+  if(datagraphsalesbymonth !== null && Array.isArray(datagraphsalesbymonth)){
+    for (let i = 0; i < datagraphsalesbymonth.length; i++) {
+      const dataMonth = datagraphsalesbymonth[i];
+      if(dataMonth !== null){
+        sTotalSales.push(dataMonth.sTotalSales);
+        pTotalSales.push(dataMonth.pTotalSales);
+      }
+    }
+  }
 
   if(role === 'Vendedor'){
     return (
@@ -147,6 +184,10 @@ const Home = () => {
       </div>
     );
   }else if(role === 'Administrador'){
+
+    console.log(sTotalSales);
+    console.log(pTotalSales);
+
     return (
       <div>
         <h1 className="h4 mb-3 font-weight-bold">Dashboard</h1>
@@ -190,6 +231,47 @@ const Home = () => {
 
               />
             </Col>
+            {(!setdatagraphsalesbymonth !== null) &&
+            <Col md="6">
+                <Card>
+                    <CardBody>
+                        <h4 className="card-title mb-4">
+                          Ventas por mes
+                        </h4>
+                        <Chart
+                            config={{
+                                data: {
+                                    columns: [
+                                        ["Servicios"].concat(sTotalSales),
+                                        ["Productos"].concat(pTotalSales)
+                                    ]
+                                },
+                                grid: { y: { show: !0, stroke: "#ff0" } },
+                                size: { height: 250 },
+                                point: { r: 4 },
+                                color: { pattern: ["rgb(14, 47, 113)", "rgb(250, 67, 58)"] },
+                                axis: {
+                                    x:{
+                                        tick: {
+                                            format: function (x) { return meses[x]; }
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                  format: {
+                                      title: function (datax) { return meses[datax]; },
+                                      value: function (value, ratio, id) {
+                                          //var format = id === 'data1' ? d3.format(',') : d3.format('$');
+                                          return value;
+                                      }
+                                  }
+                                }
+                            }}
+                        />
+                    </CardBody>
+                </Card>
+            </Col>
+            }
             <Col className="d-none" xs={12} md={6} lg={4}>
               <div className="card">
                 <span className="lstick widget-card"></span>

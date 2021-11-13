@@ -263,6 +263,8 @@ const AppRouter = (props) => {
         }else if(RoleInLocalStorage !== undefined && Number(RoleInLocalStorage) > -1 && RoleInLocalStorage !== null){
           //console.log('Rol cargado desde el localstorage', RoleInLocalStorage);
           let roles = session.userData.role;
+          console.log("user data:",session.userData);
+
           let getRoleByUser = roles.find(item => item.id === Number(RoleInLocalStorage));
           let getRoleByUserSeller = roles.filter(item => (item.name === "Comprador" || item.name === "Vendedor"));
 
@@ -270,6 +272,7 @@ const AppRouter = (props) => {
           if(session.storeLogo === null && getRoleByUserSeller.length > 0){
             dispatch(set_store_logo());
           }
+
         }
       }else{
         //console.log('Cambiando de sesión');
