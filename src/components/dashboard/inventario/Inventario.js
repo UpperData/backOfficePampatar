@@ -55,7 +55,7 @@ const DonutInventario = (props) => {
         <Card>
             <span className="lstick"></span>
             <CardBody>
-                <h4 className="card-title mb-4">
+                <h4 className="card-title text-muted h6 mb-4">
                     Valor de inventario
                 </h4>
                 <div className="row align-items-center">

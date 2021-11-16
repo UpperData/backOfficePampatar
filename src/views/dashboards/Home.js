@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { Card, CardBody, Row, Col, CardTitle } from "reactstrap";
+import { Card, CardBody, Row, Col, CardTitle, UncontrolledTooltip  } from "reactstrap";
 
 import axios from 'axios'
 import {useSelector} from 'react-redux'
@@ -73,7 +73,7 @@ const Home = () => {
   let sTotalSales = [];
   let pTotalSales = [];
 
-  console.log(datagraphsalesbymonth);
+  //console.log(datagraphsalesbymonth);
 
   if(datagraphsalesbymonth !== null && Array.isArray(datagraphsalesbymonth)){
     for (let i = 0; i < datagraphsalesbymonth.length; i++) {
@@ -115,6 +115,141 @@ const Home = () => {
         </Row>
         {data !== null &&
           <Row>
+              <Col sm={12} md={6} lg={4}>
+                <Card>
+                    <span className="lstick widget-card"></span>
+                    <CardBody>
+                        <div className="d-flex">
+                            <div className="mr-3 align-self-center">
+                              <div className="content-icon-rounded">
+                                <i className="fa fa-2x fa-clipboard text-info"></i>
+                              </div>
+                            </div>
+                            <div className="align-self-center">
+                                <h6 className="text-muted mt-2 mb-0">
+                                  Publicaciones
+                                </h6>
+                                <h2 className="mt-2 h2">
+                                  <span>
+
+                                    <UncontrolledTooltip placement="top" target="tooltip-productos-publicaciones">
+                                      Productos
+                                    </UncontrolledTooltip>
+                                    <i className="fa fa-cube text-muted mr-2" id="tooltip-productos-publicaciones"></i>
+                                    
+                                    <span className="ml-0">
+                                      {data.cards.publications.product}
+                                    </span>
+
+                                    <span className="mx-2">/</span>
+
+                                    <UncontrolledTooltip placement="top" target="tooltip-servicios-publicaciones">
+                                      Servicios
+                                    </UncontrolledTooltip>
+                                    <i className="fa fa-users text-muted mr-2" id="tooltip-servicios-publicaciones"></i>
+                                    
+                                    <span className="ml-0">
+                                      {data.cards.publications.service}
+                                    </span>
+                                  </span>
+                                </h2>
+                            </div>
+                        </div>
+                    </CardBody>
+                </Card>
+            </Col>
+            <Col sm={12} md={6} lg={4}>
+                <Card>
+                    <span className="lstick widget-card"></span>
+                    <CardBody>
+                        <div className="d-flex">
+                            <div className="mr-3 align-self-center">
+                              <div className="content-icon-rounded">
+                                <i className="fa fa-2x fa-credit-card text-info"></i>
+                              </div>
+                            </div>
+                            <div className="align-self-center">
+                                <h6 className="text-muted mt-2 mb-0">
+                                  Ultimas transacciones
+                                </h6>
+                                <h2 className="mt-2 h2">
+                                  <span>
+
+                                    <UncontrolledTooltip placement="top" target="tooltip-productos-publicaciones">
+                                      Productos
+                                    </UncontrolledTooltip>
+                                    <i className="fa fa-cube text-muted mr-2" id="tooltip-productos-publicaciones"></i>
+                                    
+                                    <span className="ml-0">
+                                      {data.cards.lastTransactions.product}
+                                    </span>
+
+                                    <span className="mx-2">/</span>
+
+                                    <UncontrolledTooltip placement="top" target="tooltip-servicios-publicaciones">
+                                      Servicios
+                                    </UncontrolledTooltip>
+                                    <i className="fa fa-users text-muted mr-2" id="tooltip-servicios-publicaciones"></i>
+                                    
+                                    <span className="ml-0">
+                                      {data.cards.lastTransactions.service}
+                                    </span>
+                                  </span>
+                                </h2>
+                            </div>
+                        </div>
+                    </CardBody>
+                </Card>
+            </Col>
+            <Col sm={12} md={6} lg={4}>
+                <Card>
+                    <span className="lstick widget-card"></span>
+                    <CardBody>
+                        <div className="d-flex">
+                            <div className="mr-3 align-self-center">
+                              <div className="content-icon-rounded">
+                                <i className="fa fa-2x fa-boxes text-info"></i>
+                              </div>
+                            </div>
+                            <div className="align-self-center">
+                                <h6 className="text-muted mt-2 mb-0">
+                                  Alerta de stock
+                                </h6>
+                                <h2 className="mt-2 h2">
+                                  <span>
+
+                                    <UncontrolledTooltip placement="top" target="tooltip-productos-publicaciones">
+                                      Productos
+                                    </UncontrolledTooltip>
+                                    <i className="fa fa-cube text-muted mr-2" id="tooltip-productos-publicaciones"></i>
+                                    
+                                    <span className="ml-0">
+                                      {data.cards.stockAlert.product}
+                                    </span>
+
+                                    <span className="mx-2">/</span>
+
+                                    <UncontrolledTooltip placement="top" target="tooltip-servicios-publicaciones">
+                                      Servicios
+                                    </UncontrolledTooltip>
+                                    <i className="fa fa-users text-muted mr-2" id="tooltip-servicios-publicaciones"></i>
+                                    
+                                    <span className="ml-0">
+                                      {data.cards.stockAlert.service}
+                                    </span>
+                                  </span>
+                                </h2>
+                            </div>
+                        </div>
+                    </CardBody>
+                </Card>
+            </Col>
+
+
+
+
+
+
             <Col xs={12} md={8} lg={12}>
               <DonutInventario 
 
@@ -185,8 +320,8 @@ const Home = () => {
     );
   }else if(role === 'Administrador'){
 
-    console.log(sTotalSales);
-    console.log(pTotalSales);
+    //console.log(sTotalSales);
+    //console.log(pTotalSales);
 
     return (
       <div>
@@ -197,7 +332,7 @@ const Home = () => {
               <Card>
                   <span className="lstick"></span>
                   <CardBody>
-                    <h4 className="h5 mb-0 font-weight-normal card-title">
+                    <h4 className="h6 mb-0 font-weight-normal text-muted card-title">
                       <i className="mdi mdi-store-outline d-none mr-2"></i>  
                       Administrador
                     </h4>
@@ -214,6 +349,137 @@ const Home = () => {
         </Row>
         {data !== null &&
           <Row>
+
+            <Col sm={12} md={6} lg={4}>
+                <Card>
+                    <span className="lstick widget-card"></span>
+                    <CardBody>
+                        <div className="d-flex">
+                            <div className="mr-3 align-self-center">
+                              <div className="content-icon-rounded">
+                                <i className="fa fa-2x fa-clipboard text-info"></i>
+                              </div>
+                            </div>
+                            <div className="align-self-center">
+                                <h6 className="text-muted mt-2 mb-0">
+                                  Publicaciones
+                                </h6>
+                                <h2 className="mt-2 h2">
+                                  <span>
+
+                                    <UncontrolledTooltip placement="top" target="tooltip-productos-publicaciones">
+                                      Productos
+                                    </UncontrolledTooltip>
+                                    <i className="fa fa-cube text-muted mr-2" id="tooltip-productos-publicaciones"></i>
+                                    
+                                    <span className="ml-0">
+                                      {data.cards.publications.product}
+                                    </span>
+
+                                    <span className="mx-2">/</span>
+
+                                    <UncontrolledTooltip placement="top" target="tooltip-servicios-publicaciones">
+                                      Servicios
+                                    </UncontrolledTooltip>
+                                    <i className="fa fa-users text-muted mr-2" id="tooltip-servicios-publicaciones"></i>
+                                    
+                                    <span className="ml-0">
+                                      {data.cards.publications.service}
+                                    </span>
+                                  </span>
+                                </h2>
+                            </div>
+                        </div>
+                    </CardBody>
+                </Card>
+            </Col>
+            <Col sm={12} md={6} lg={4}>
+                <Card>
+                    <span className="lstick widget-card"></span>
+                    <CardBody>
+                        <div className="d-flex">
+                            <div className="mr-3 align-self-center">
+                              <div className="content-icon-rounded">
+                                <i className="fa fa-2x fa-credit-card text-info"></i>
+                              </div>
+                            </div>
+                            <div className="align-self-center">
+                                <h6 className="text-muted mt-2 mb-0">
+                                  Ultimas transacciones
+                                </h6>
+                                <h2 className="mt-2 h2">
+                                  <span>
+
+                                    <UncontrolledTooltip placement="top" target="tooltip-productos-publicaciones">
+                                      Productos
+                                    </UncontrolledTooltip>
+                                    <i className="fa fa-cube text-muted mr-2" id="tooltip-productos-publicaciones"></i>
+                                    
+                                    <span className="ml-0">
+                                      {data.cards.lastTransactions.product}
+                                    </span>
+
+                                    <span className="mx-2">/</span>
+
+                                    <UncontrolledTooltip placement="top" target="tooltip-servicios-publicaciones">
+                                      Servicios
+                                    </UncontrolledTooltip>
+                                    <i className="fa fa-users text-muted mr-2" id="tooltip-servicios-publicaciones"></i>
+                                    
+                                    <span className="ml-0">
+                                      {data.cards.lastTransactions.service}
+                                    </span>
+                                  </span>
+                                </h2>
+                            </div>
+                        </div>
+                    </CardBody>
+                </Card>
+            </Col>
+            <Col sm={12} md={6} lg={4}>
+                <Card>
+                    <span className="lstick widget-card"></span>
+                    <CardBody>
+                        <div className="d-flex">
+                            <div className="mr-3 align-self-center">
+                              <div className="content-icon-rounded">
+                                <i className="fa fa-2x fa-boxes text-info"></i>
+                              </div>
+                            </div>
+                            <div className="align-self-center">
+                                <h6 className="text-muted mt-2 mb-0">
+                                  Alerta de stock
+                                </h6>
+                                <h2 className="mt-2 h2">
+                                  <span>
+
+                                    <UncontrolledTooltip placement="top" target="tooltip-productos-publicaciones">
+                                      Productos
+                                    </UncontrolledTooltip>
+                                    <i className="fa fa-cube text-muted mr-2" id="tooltip-productos-publicaciones"></i>
+                                    
+                                    <span className="ml-0">
+                                      {data.cards.stockAlert.product}
+                                    </span>
+
+                                    <span className="mx-2">/</span>
+
+                                    <UncontrolledTooltip placement="top" target="tooltip-servicios-publicaciones">
+                                      Servicios
+                                    </UncontrolledTooltip>
+                                    <i className="fa fa-users text-muted mr-2" id="tooltip-servicios-publicaciones"></i>
+                                    
+                                    <span className="ml-0">
+                                      {data.cards.stockAlert.service}
+                                    </span>
+                                  </span>
+                                </h2>
+                            </div>
+                        </div>
+                    </CardBody>
+                </Card>
+            </Col>
+
             <Col xs={12} md={8} lg={12}>
               <DonutInventario 
 
@@ -232,10 +498,11 @@ const Home = () => {
               />
             </Col>
             {(!setdatagraphsalesbymonth !== null) &&
-            <Col md="6">
+            <Col md="12">
                 <Card>
+                    <span className="lstick"></span>
                     <CardBody>
-                        <h4 className="card-title mb-4">
+                        <h4 className="card-title text-muted h6 mb-4">
                           Ventas por mes
                         </h4>
                         <Chart
