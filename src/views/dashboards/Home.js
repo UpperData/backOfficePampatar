@@ -96,7 +96,7 @@ const Home = () => {
                   <span className="lstick"></span>
                   <CardBody>
                     <div className="d-flex align-items-center justify-content-between">
-                      <h4 className="h5 mb-0 font-weight-normal card-title">
+                      <h4 className="h5 mb-0 font-weight-normal text-muted card-title">
                         <i className="mdi mdi-store-outline d-none mr-2"></i>  
                         Nombre de la tienda
                       </h4>
@@ -105,7 +105,7 @@ const Home = () => {
                       </button>
                     </div>
                     <div className="my-3">
-                      <h1 className="text-info font-weight-normal h1">
+                      <h1 className="text-info font-weight-bold h1">
                         {session.userData.shop.name}</h1>
                     </div>
                   </CardBody>
@@ -267,55 +267,52 @@ const Home = () => {
 
               />
             </Col>
-            <Col className="d-none" xs={12} md={6} lg={4}>
-              <div className="card">
-                <span className="lstick widget-card"></span>
-                <div className="card-body">
-                    <div className="d-flex">
-                        <div className="mr-4 align-self-center">
-                          <div className="icon-chart-data">
-                            <i style={{fontSize: "25px"}} className="icon-earphones-alt text-info"></i>
-                          </div>
-                        </div>
-                        <div className="align-self-center">
-                          <h6 className="text-muted font-weight-normal mt-2 mb-0">
-                            Inventario de servicios
-                          </h6>
-                          <h2 className="mt-0">
-                            {moneyFormatter(datagraphinventory.totalService)}
-                          </h2>
-                        </div>
-                    </div>
-                  </div>
-              </div>
-            </Col>
-            <Col className="d-none" xs={12} md={6} lg={4}>
-              <div className="card">
-                <span className="lstick widget-card"></span>
-                <div className="card-body">
-                    <div className="d-flex">
-                        <div className="mr-4 align-self-center">
-                          <div className="icon-chart-data">
-                            <i 
-                              style={{fontSize: "25px"}} 
-                              className="icon-handbag text-info"
-                            ></i>
-                          </div>
-                        </div>
-                        <div className="align-self-center">
-                          <h6 className="text-muted font-weight-normal mt-2 mb-0">
-                            Inventario de productos
-                          </h6>
-                          <h2 className="mt-0">
-                            {moneyFormatter(datagraphinventory.totalProduct)}
-                          </h2>
-                        </div>
-                    </div>
-                  </div>
-              </div>
-            </Col>
+
           </Row>
         }
+
+{(!setdatagraphsalesbymonth !== null) &&
+              <Col md="12">
+                  <Card>
+                      <span className="lstick"></span>
+                      <CardBody>
+                          <h4 className="card-title text-muted h6 mb-4">
+                            Ventas por mes
+                          </h4>
+                          <Chart
+                              config={{
+                                  data: {
+                                      columns: [
+                                          ["Servicios"].concat(sTotalSales),
+                                          ["Productos"].concat(pTotalSales)
+                                      ]
+                                  },
+                                  grid: { y: { show: !0, stroke: "#ff0" } },
+                                  size: { height: 250 },
+                                  point: { r: 4 },
+                                  color: { pattern: ["rgb(14, 47, 113)", "rgb(250, 67, 58)"] },
+                                  axis: {
+                                      x:{
+                                          tick: {
+                                              format: function (x) { return meses[x]; }
+                                          }
+                                      }
+                                  },
+                                  tooltip: {
+                                    format: {
+                                        title: function (datax) { return meses[datax]; },
+                                        value: function (value, ratio, id) {
+                                            //var format = id === 'data1' ? d3.format(',') : d3.format('$');
+                                            return value;
+                                        }
+                                    }
+                                  }
+                              }}
+                          />
+                      </CardBody>
+                  </Card>
+              </Col>
+            }
       </div>
     );
   }else if(role === 'Administrador'){
@@ -498,94 +495,47 @@ const Home = () => {
               />
             </Col>
             {(!setdatagraphsalesbymonth !== null) &&
-            <Col md="12">
-                <Card>
-                    <span className="lstick"></span>
-                    <CardBody>
-                        <h4 className="card-title text-muted h6 mb-4">
-                          Ventas por mes
-                        </h4>
-                        <Chart
-                            config={{
-                                data: {
-                                    columns: [
-                                        ["Servicios"].concat(sTotalSales),
-                                        ["Productos"].concat(pTotalSales)
-                                    ]
-                                },
-                                grid: { y: { show: !0, stroke: "#ff0" } },
-                                size: { height: 250 },
-                                point: { r: 4 },
-                                color: { pattern: ["rgb(14, 47, 113)", "rgb(250, 67, 58)"] },
-                                axis: {
-                                    x:{
-                                        tick: {
-                                            format: function (x) { return meses[x]; }
+              <Col md="12">
+                  <Card>
+                      <span className="lstick"></span>
+                      <CardBody>
+                          <h4 className="card-title text-muted h6 mb-4">
+                            Ventas por mes
+                          </h4>
+                          <Chart
+                              config={{
+                                  data: {
+                                      columns: [
+                                          ["Servicios"].concat(sTotalSales),
+                                          ["Productos"].concat(pTotalSales)
+                                      ]
+                                  },
+                                  grid: { y: { show: !0, stroke: "#ff0" } },
+                                  size: { height: 250 },
+                                  point: { r: 4 },
+                                  color: { pattern: ["rgb(14, 47, 113)", "rgb(250, 67, 58)"] },
+                                  axis: {
+                                      x:{
+                                          tick: {
+                                              format: function (x) { return meses[x]; }
+                                          }
+                                      }
+                                  },
+                                  tooltip: {
+                                    format: {
+                                        title: function (datax) { return meses[datax]; },
+                                        value: function (value, ratio, id) {
+                                            //var format = id === 'data1' ? d3.format(',') : d3.format('$');
+                                            return value;
                                         }
                                     }
-                                },
-                                tooltip: {
-                                  format: {
-                                      title: function (datax) { return meses[datax]; },
-                                      value: function (value, ratio, id) {
-                                          //var format = id === 'data1' ? d3.format(',') : d3.format('$');
-                                          return value;
-                                      }
                                   }
-                                }
-                            }}
-                        />
-                    </CardBody>
-                </Card>
-            </Col>
+                              }}
+                          />
+                      </CardBody>
+                  </Card>
+              </Col>
             }
-            <Col className="d-none" xs={12} md={6} lg={4}>
-              <div className="card">
-                <span className="lstick widget-card"></span>
-                <div className="card-body">
-                    <div className="d-flex">
-                        <div className="mr-4 align-self-center">
-                          <div className="icon-chart-data">
-                            <i style={{fontSize: "25px"}} className="icon-earphones-alt text-info"></i>
-                          </div>
-                        </div>
-                        <div className="align-self-center">
-                          <h6 className="text-muted font-weight-normal mt-2 mb-0">
-                            Inventario de servicios
-                          </h6>
-                          <h2 className="mt-0">
-                            {moneyFormatter(datagraphinventory.totalService)}
-                          </h2>
-                        </div>
-                    </div>
-                  </div>
-              </div>
-            </Col>
-            <Col className="d-none" xs={12} md={6} lg={4}>
-              <div className="card">
-                <span className="lstick widget-card"></span>
-                <div className="card-body">
-                    <div className="d-flex">
-                        <div className="mr-4 align-self-center">
-                          <div className="icon-chart-data">
-                            <i 
-                              style={{fontSize: "25px"}} 
-                              className="icon-handbag text-info"
-                            ></i>
-                          </div>
-                        </div>
-                        <div className="align-self-center">
-                          <h6 className="text-muted font-weight-normal mt-2 mb-0">
-                            Inventario de productos
-                          </h6>
-                          <h2 className="mt-0">
-                            {moneyFormatter(datagraphinventory.totalProduct)}
-                          </h2>
-                        </div>
-                    </div>
-                  </div>
-              </div>
-            </Col>
           </Row>
         }
       </div>
